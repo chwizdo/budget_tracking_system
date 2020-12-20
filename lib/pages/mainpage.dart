@@ -1,9 +1,9 @@
 import 'package:flutter/material.dart';
-import 'package:budget_tracking_system/tabs/account.dart';
-import 'package:budget_tracking_system/tabs/budget.dart';
-import 'package:budget_tracking_system/tabs/record.dart';
-import 'package:budget_tracking_system/tabs/settings.dart';
-import 'package:budget_tracking_system/tabs/statistic.dart';
+import 'package:budget_tracking_system/bottomNavTabs/account.dart';
+import 'package:budget_tracking_system/bottomNavTabs/budget.dart';
+import 'package:budget_tracking_system/bottomNavTabs/record.dart';
+import 'package:budget_tracking_system/bottomNavTabs/settings.dart';
+import 'package:budget_tracking_system/bottomNavTabs/statistic.dart';
 
 class Mainpage extends StatefulWidget {
   @override
@@ -15,7 +15,7 @@ class _MainpageState extends State<Mainpage> {
   //Variable initialized to store index number of each tab menu of bottom navigation bar
   int selectedIndex = 0;
 
-  //Each page of the tabs are represented as a class inside the list.
+  //Each page of the bottomNavTabs are represented as a class inside the list.
   //Eg: Budget() is page 2 which is having an index of 1. 
   List tabIndex = [
     Record(),
@@ -50,7 +50,7 @@ class _MainpageState extends State<Mainpage> {
             //So it displays icon and the title together for each tab. 
             type: BottomNavigationBarType.fixed,
             iconSize: 30,
-            //Adds Bottom Navigation Bar Tabs
+            //Adds Bottom Navigation Bar bottomNavTabs
             items: [
               BottomNavigationBarItem(
                 icon: Icon(Icons.book),

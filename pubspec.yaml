@@ -25,16 +25,13 @@ dependencies:
     sdk: flutter
   grouped_list: ^3.7.1
   intl: ^0.16.1
-<<<<<<< HEAD
   custom_radio_grouped_button: ^1.0.6+1
-
-=======
   firebase_auth: ^0.14.0+5
   cloud_firestore: ^0.12.9+4
   provider: ^3.1.0
   flutter_spinkit: ^4.1.2+1
   firebase_core: ^0.4.5
->>>>>>> 5f79ecc48c722cf86992e26b92001aff48862a80
+  http: ^0.12.2
 
   # The following adds the Cupertino Icons font to your application.
   # Use with the CupertinoIcons class for iOS style icons.

@@ -37,7 +37,7 @@ class RecordGroupSeparator extends StatelessWidget {
                 "${this.date.day}",
                 style: TextStyle(
                   color: Colors.white,
-                  fontSize: 25
+                  fontSize: 25.0
                 ),
               ),
             ),
@@ -49,7 +49,7 @@ class RecordGroupSeparator extends StatelessWidget {
                 DateFormat('EEEE').format(date),
                 style: TextStyle(
                   color: Colors.grey,
-                  fontSize: 14
+                  fontSize: 14.0
                 ),
               ),
             ),
@@ -123,77 +123,74 @@ class _RecordState extends State<Record> {
             groupSeparatorBuilder: (DateTime currentDate) => RecordGroupSeparator(date: currentDate),
             //Arrange the grouped lists in descending order
             order: GroupedListOrder.DESC,
+            useStickyGroupSeparators: true,
+            separator: Divider(
+              color: Colors.grey,
+              indent: 15.0,
+              endIndent: 15.0,
+            ),
             padding: EdgeInsets.only(bottom: 100),
             //To build and display all the items of recordView list.
             itemBuilder: (context, dynamic record){
               return Container(
-                decoration: BoxDecoration(
-                  border: Border(
-                    bottom: BorderSide(
-                      color: Colors.grey
+                height: 70.0,
+                //Each list is a row and is expanded to 3 parts.
+                child: Row(
+                  children: [
+                    //First part is to display the category.
+                    Expanded(
+                      flex: 4,
+                      child: ListTile(
+                        leading: Text(
+                          record.category,
+                          //Used to wrap long texts
+                          overflow: TextOverflow.ellipsis,
+                          style: TextStyle(
+                            color: Colors.grey,
+                            fontSize: 14
+                          ),
+                        ),
+                      ),
                     ),
-                  ),
-                ),
-                child: Container(
-                  height: 70,
-                  //Each list is a row and is expanded to 3 parts.
-                  child: Row(
-                    children: [
-                      //First part is to display the category.
+                    //Second part is to display the title.
+                    Expanded(
+                      flex: 9,
+                      child: ListTile(
+                        title: Text(
+                          record.title,
+                          overflow: TextOverflow.ellipsis,
+                          style: TextStyle(color: Colors.white),
+                        ),
+                        subtitle: Text(
+                          record.account,
+                          style: TextStyle(color: Colors.grey),
+                        ),
+                      ),
+                    ),
+                    //Third part is to display the money.
                       Expanded(
-                        flex: 4,
-                        child: ListTile(
-                          leading: Text(
-                            record.category,
-                            //Used to wrap long texts
-                            overflow: TextOverflow.ellipsis,
+                      flex: 5,
+                      child: ListTile(
+                        //An if else statement is used to check whether it is an expense or income
+                        //If it is expenses, add '-' in front of money, else add '+'
+                        trailing: record.type == 'Expenses' ?
+                          Text(
+                            "- RM " + record.money.toString(),
                             style: TextStyle(
-                              color: Colors.grey,
-                              fontSize: 14
-                            ),
+                              color: Colors.white,
+                              fontSize: 14.0
+                              ),
+                            )
+                            :Text(
+                            "+ RM " + record.money.toString(),
+                            style: TextStyle(
+                              color: Colors.white,
+                              fontSize: 14.0
                           ),
                         ),
                       ),
-                      //Second part is to display the title.
-                      Expanded(
-                        flex: 9,
-                        child: ListTile(
-                          title: Text(
-                            record.title,
-                            overflow: TextOverflow.ellipsis,
-                            style: TextStyle(color: Colors.white),
-                          ),
-                          subtitle: Text(
-                            record.account,
-                            style: TextStyle(color: Colors.grey),
-                          ),
-                        ),
-                      ),
-                      //Third part is to display the money.
-                       Expanded(
-                        flex: 5,
-                        child: ListTile(
-                          //An if else statement is used to check whether it is an expense or income
-                          //If it is expenses, add '-' in front of money, else add '+'
-                          trailing: record.type == 'Expenses' ?
-                            Text(
-                              "- RM " + record.money.toString(),
-                              style: TextStyle(
-                                color: Colors.white,
-                                fontSize: 14
-                                ),
-                              )
-                              :Text(
-                              "+ RM " + record.money.toString(),
-                              style: TextStyle(
-                                color: Colors.white,
-                                fontSize: 14
-                            ),
-                          ),
-                        ),
-                      ),
-                    ],
-                  ),
+                    ),
+                  ],
                 ),
               );
             },
@@ -205,12 +202,14 @@ class _RecordState extends State<Record> {
       child: Text(
         "+",
         style: TextStyle(
-          fontSize: 25,
+          fontSize: 25.0,
           color: Color.fromRGBO(41, 41, 41, 1)
         ),
       ),
       backgroundColor: Color.fromRGBO(255, 185, 49, 1),
-      onPressed: () {},
+      onPressed: () {
+        Navigator.pushNamed(context, '/addrecord');
+      },
       ),
     );
   }

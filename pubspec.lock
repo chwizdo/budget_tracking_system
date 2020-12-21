@@ -57,6 +57,13 @@ packages:
       url: "https://pub.dartlang.org"
     source: hosted
     version: "1.0.0"
+  custom_radio_grouped_button:
+    dependency: "direct main"
+    description:
+      name: custom_radio_grouped_button
+      url: "https://pub.dartlang.org"
+    source: hosted
+    version: "1.0.6+1"
   fake_async:
     dependency: transitive
     description:
@@ -164,7 +171,7 @@ packages:
     source: hosted
     version: "0.12.10-nullsafety.1"
   meta:
-    dependency: transitive
+    dependency: "direct main"
     description:
       name: meta
       url: "https://pub.dartlang.org"

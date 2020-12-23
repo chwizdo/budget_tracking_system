@@ -2,21 +2,9 @@ import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
 import 'package:grouped_list/grouped_list.dart';
 import 'package:budget_tracking_system/services/auth.dart';
-
-//Create the Records() Class to initialize variables and create constructors to accept various inputs
-class Records {
-  String category, title, account, type;
-  double money;
-  DateTime currentDate;
-
-  Records(
-      {this.category,
-      this.title,
-      this.account,
-      this.money,
-      this.type,
-      this.currentDate});
-}
+import 'package:budget_tracking_system/services/record.dart' as recordServ;
+import 'package:budget_tracking_system/services/category.dart';
+import 'package:budget_tracking_system/services/account.dart';
 
 //A separator class that is responsible for grouping the list based on day by creating a new container/header for each list.
 class RecordGroupSeparator extends StatelessWidget {
@@ -66,71 +54,80 @@ class Record extends StatefulWidget {
 }
 
 class _RecordState extends State<Record> {
-  //A list to store all the records by passing the values through using the constructor from Records() Class.
+  // Temporary list to store all the records
   List recordView = [
-    Records(
-        category: 'Food',
-        title: 'McD Fried Chicken',
-        account: 'Maybank',
-        money: 13.50,
-        type: 'Expenses',
-        currentDate: DateTime.utc(2020, 12, 20)),
-    Records(
-        category: 'Food',
-        title: 'Blueberry Waffle',
-        account: 'Cash',
-        money: 4.50,
-        type: 'Expenses',
-        currentDate: DateTime.utc(2020, 12, 20)),
-    Records(
-        category: 'Transport',
-        title: 'Fuel',
-        account: 'Maybank',
-        money: 54.60,
-        type: 'Expenses',
-        currentDate: DateTime.utc(2020, 12, 20)),
-    Records(
-        category: 'Entertainment',
-        title: 'Avenger End Game',
-        account: 'Maybank',
-        money: 17.50,
-        type: 'Expenses',
-        currentDate: DateTime.utc(2020, 12, 19)),
-    Records(
-        category: 'Food',
-        title: 'Starbucks Coffee',
-        account: 'Maybank',
-        money: 17.50,
-        type: 'Expenses',
-        currentDate: DateTime.utc(2020, 12, 19)),
-    Records(
-        category: 'Food',
-        title: 'Starbucks Coffee',
-        account: 'Maybank',
-        money: 17.50,
-        type: 'Expenses',
-        currentDate: DateTime.utc(2020, 12, 18)),
-    Records(
-        category: 'Food',
-        title: 'Starbucks Coffee',
-        account: 'Maybank',
-        money: 17.50,
-        type: 'Expenses',
-        currentDate: DateTime.utc(2020, 12, 30)),
-    Records(
-        category: 'Food',
-        title: 'Chicken Rice',
-        account: 'Maybank',
-        money: 17.50,
-        type: 'Expenses',
-        currentDate: DateTime.utc(2020, 12, 29)),
-    Records(
-        category: 'Food',
-        title: 'Fried Rice',
-        account: 'Maybank',
-        money: 17.50,
-        type: 'Expenses',
-        currentDate: DateTime.utc(2020, 12, 29)),
+    recordServ.Record(
+      type: 'expense',
+      title: 'McD Fried Chicken',
+      dateTime: DateTime.utc(2020, 12, 20),
+      category: Category(name: 'food', type: 'expenses'),
+      account: Account(name: 'Maybank', currency: 'MYR', amount: 500),
+      amount: 13.50,
+    ),
+    recordServ.Record(
+      type: 'expense',
+      title: 'Blueberry Waffle',
+      dateTime: DateTime.utc(2020, 12, 20),
+      category: Category(name: 'food', type: 'expenses'),
+      account: Account(name: 'Cash', currency: 'MYR', amount: 500),
+      amount: 4.50,
+    ),
+    recordServ.Record(
+      type: 'expense',
+      title: 'Fuel',
+      dateTime: DateTime.utc(2020, 12, 20),
+      category: Category(name: 'transport', type: 'expenses'),
+      account: Account(name: 'Maybank', currency: 'MYR', amount: 500),
+      amount: 54.60,
+    ),
+    recordServ.Record(
+      type: 'expense',
+      title: 'Avenger End Game',
+      dateTime: DateTime.utc(2020, 12, 19),
+      category: Category(name: 'entertainment', type: 'expenses'),
+      account: Account(name: 'Maybank', currency: 'MYR', amount: 500),
+      amount: 17.50,
+    ),
+    recordServ.Record(
+      type: 'expense',
+      title: 'Starbucks Coffee',
+      dateTime: DateTime.utc(2020, 12, 19),
+      category: Category(name: 'food', type: 'expenses'),
+      account: Account(name: 'Maybank', currency: 'MYR', amount: 500),
+      amount: 17.50,
+    ),
+    recordServ.Record(
+      type: 'expense',
+      title: 'Starbucks Coffee',
+      dateTime: DateTime.utc(2020, 12, 19),
+      category: Category(name: 'food', type: 'expenses'),
+      account: Account(name: 'Maybank', currency: 'MYR', amount: 500),
+      amount: 17.50,
+    ),
+    recordServ.Record(
+      type: 'expense',
+      title: 'Starbucks Coffee',
+      dateTime: DateTime.utc(2020, 12, 19),
+      category: Category(name: 'food', type: 'expenses'),
+      account: Account(name: 'Maybank', currency: 'MYR', amount: 500),
+      amount: 17.50,
+    ),
+    recordServ.Record(
+      type: 'expense',
+      title: 'Chicken Rice',
+      dateTime: DateTime.utc(2020, 12, 29),
+      category: Category(name: 'food', type: 'expenses'),
+      account: Account(name: 'Maybank', currency: 'MYR', amount: 500),
+      amount: 17.50,
+    ),
+    recordServ.Record(
+      type: 'expense',
+      title: 'Fried Rice',
+      dateTime: DateTime.utc(2020, 12, 29),
+      category: Category(name: 'food', type: 'expenses'),
+      account: Account(name: 'Maybank', currency: 'MYR', amount: 500),
+      amount: 17.50,
+    ),
   ];
   final AuthService _auth = AuthService();
   @override
@@ -172,12 +169,12 @@ class _RecordState extends State<Record> {
           elements: recordView,
           //groupBy is a function that chooses what to group given by an element.
           //In this case, we give an element named record to represent our recordView list, and we want to group by currentDate.
-          groupBy: (record) => record.currentDate,
+          groupBy: (record) => record.dateTime,
           //This function prepares to separate the lists by date.
           //This can be done by returning a constructor of RecordGroupSeparator() that passes currentDate to date.
           //Hence the RecordGroupSeparator() class can perform its own task which is to generate respective headers for each lists.
-          groupSeparatorBuilder: (DateTime currentDate) =>
-              RecordGroupSeparator(date: currentDate),
+          groupSeparatorBuilder: (DateTime dateTime) =>
+              RecordGroupSeparator(date: dateTime),
           //Arrange the grouped lists in descending order
           order: GroupedListOrder.DESC,
           useStickyGroupSeparators: true,
@@ -199,7 +196,7 @@ class _RecordState extends State<Record> {
                     flex: 4,
                     child: ListTile(
                       leading: Text(
-                        record.category,
+                        record.category.name,
                         //Used to wrap long texts
                         overflow: TextOverflow.ellipsis,
                         style: TextStyle(color: Colors.grey, fontSize: 14),
@@ -216,7 +213,7 @@ class _RecordState extends State<Record> {
                         style: TextStyle(color: Colors.white),
                       ),
                       subtitle: Text(
-                        record.account,
+                        record.account.name,
                         style: TextStyle(color: Colors.grey),
                       ),
                     ),
@@ -229,12 +226,12 @@ class _RecordState extends State<Record> {
                       //If it is expenses, add '-' in front of money, else add '+'
                       trailing: record.type == 'Expenses'
                           ? Text(
-                              "- RM " + record.money.toString(),
+                              "- RM " + record.amount.toString(),
                               style: TextStyle(
                                   color: Colors.white, fontSize: 14.0),
                             )
                           : Text(
-                              "+ RM " + record.money.toString(),
+                              "+ RM " + record.amount.toString(),
                               style: TextStyle(
                                   color: Colors.white, fontSize: 14.0),
                             ),

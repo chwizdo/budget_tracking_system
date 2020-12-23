@@ -17,6 +17,7 @@ class Record {
   double _amount;
   String _note;
   String _attachment;
+  bool _isFav;
 
   // constructor to create new record
   // type, date & time, category and amount are mandatory
@@ -29,6 +30,7 @@ class Record {
     @required double amount,
     String note,
     String attachment,
+    bool isFav,
   })  : _type = type,
         _title = title,
         _dateTime = dateTime,
@@ -36,7 +38,8 @@ class Record {
         _account = account,
         _amount = amount,
         _note = note,
-        _attachment = attachment;
+        _attachment = attachment,
+        _isFav = isFav;
 
   // getters for all private properties
   String get type {
@@ -71,6 +74,10 @@ class Record {
     return _attachment;
   }
 
+  bool get isFav {
+    return _isFav;
+  }
+
   // update all private properties
   // type, date & time, category and amount are mandatory
   void setProperties({
@@ -82,6 +89,7 @@ class Record {
     @required double amount,
     String note,
     String attachment,
+    bool isFav,
   }) {
     _type = type;
     _title = title;
@@ -91,12 +99,17 @@ class Record {
     _amount = amount;
     _note = note;
     _attachment = attachment;
+    _isFav = isFav;
   }
 
+  static List<Record> search() {}
+
   // TODO delete record
+  // Implemented in main page
   void rmRecord() {}
 
   // TODO retrieve all records from database
   // Does not require to create instance
+  // Implemented in main page
   static List<Record> getRecords() {}
 }

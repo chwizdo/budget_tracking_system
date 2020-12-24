@@ -1,0 +1,261 @@
+import 'package:flutter/material.dart';
+import 'package:intl/intl.dart';
+import 'package:grouped_list/grouped_list.dart';
+import 'package:budget_tracking_system/services/auth.dart';
+import 'package:budget_tracking_system/services/record.dart' as recordServ;
+import 'package:budget_tracking_system/services/category.dart';
+import 'package:budget_tracking_system/services/account.dart';
+
+//A separator class that is responsible for grouping the list based on day by creating a new container/header for each list.
+class RecordGroupSeparator extends StatelessWidget {
+  //Initialize variable and creating a constructor
+  final DateTime date;
+  RecordGroupSeparator({this.date});
+
+  @override
+  Widget build(BuildContext context) {
+    //Creates a container box which has these properties
+    return Container(
+      decoration: BoxDecoration(color: Color.fromRGBO(41, 41, 41, 1)),
+      height: 50,
+      child: Padding(
+        padding: const EdgeInsets.only(left: 12.0),
+        //The header is a row and has 2 parts
+        child: Row(
+          children: [
+            //The first part is to display the day of the month from date.
+            //Eg: If the record was added on 2020/12/19, it will display 19.
+            Expanded(
+              flex: 1,
+              child: Text(
+                "${this.date.day}",
+                style: TextStyle(color: Colors.white, fontSize: 25.0),
+              ),
+            ),
+            //This second part is to display the exact day of the month.
+            //Eg: Tuesday
+            Expanded(
+              flex: 7,
+              child: Text(
+                DateFormat('EEEE').format(date),
+                style: TextStyle(color: Colors.grey, fontSize: 14.0),
+              ),
+            ),
+          ],
+        ),
+      ),
+    );
+  }
+}
+
+class Record extends StatefulWidget {
+  @override
+  _RecordState createState() => _RecordState();
+}
+
+class _RecordState extends State<Record> {
+  // Temporary list to store all the records
+  List recordView = [
+    recordServ.Record(
+      type: 'expense',
+      title: 'McD Fried Chicken',
+      dateTime: DateTime.utc(2020, 12, 20),
+      category: Category(name: 'food', type: 'expenses'),
+      account: Account(name: 'Maybank', currency: 'MYR', amount: 500),
+      amount: 13.50,
+    ),
+    recordServ.Record(
+      type: 'expense',
+      title: 'Blueberry Waffle',
+      dateTime: DateTime.utc(2020, 12, 20),
+      category: Category(name: 'food', type: 'expenses'),
+      account: Account(name: 'Cash', currency: 'MYR', amount: 500),
+      amount: 4.50,
+    ),
+    recordServ.Record(
+      type: 'expense',
+      title: 'Fuel',
+      dateTime: DateTime.utc(2020, 12, 20),
+      category: Category(name: 'transport', type: 'expenses'),
+      account: Account(name: 'Maybank', currency: 'MYR', amount: 500),
+      amount: 54.60,
+    ),
+    recordServ.Record(
+      type: 'expense',
+      title: 'Avenger End Game',
+      dateTime: DateTime.utc(2020, 12, 19),
+      category: Category(name: 'entertainment', type: 'expenses'),
+      account: Account(name: 'Maybank', currency: 'MYR', amount: 500),
+      amount: 17.50,
+    ),
+    recordServ.Record(
+      type: 'expense',
+      title: 'Starbucks Coffee',
+      dateTime: DateTime.utc(2020, 12, 19),
+      category: Category(name: 'food', type: 'expenses'),
+      account: Account(name: 'Maybank', currency: 'MYR', amount: 500),
+      amount: 17.50,
+    ),
+    recordServ.Record(
+      type: 'expense',
+      title: 'Starbucks Coffee',
+      dateTime: DateTime.utc(2020, 12, 19),
+      category: Category(name: 'food', type: 'expenses'),
+      account: Account(name: 'Maybank', currency: 'MYR', amount: 500),
+      amount: 17.50,
+    ),
+    recordServ.Record(
+      type: 'expense',
+      title: 'Starbucks Coffee',
+      dateTime: DateTime.utc(2020, 12, 19),
+      category: Category(name: 'food', type: 'expenses'),
+      account: Account(name: 'Maybank', currency: 'MYR', amount: 500),
+      amount: 17.50,
+    ),
+    recordServ.Record(
+      type: 'expense',
+      title: 'Chicken Rice',
+      dateTime: DateTime.utc(2020, 12, 29),
+      category: Category(name: 'food', type: 'expenses'),
+      account: Account(name: 'Maybank', currency: 'MYR', amount: 500),
+      amount: 17.50,
+    ),
+    recordServ.Record(
+      type: 'expense',
+      title: 'Fried Rice',
+      dateTime: DateTime.utc(2020, 12, 29),
+      category: Category(name: 'food', type: 'expenses'),
+      account: Account(name: 'Maybank', currency: 'MYR', amount: 500),
+      amount: 17.50,
+    ),
+  ];
+  final AuthService _auth = AuthService();
+  @override
+  Widget build(BuildContext context) {
+    return Scaffold(
+      backgroundColor: Color.fromRGBO(57, 57, 57, 1),
+      appBar: AppBar(
+        backgroundColor: Color.fromRGBO(18, 18, 18, 1),
+        title: Text('Hello'),
+        centerTitle: true,
+        //Actions Button inside the AppBar widget - Favourite Icon and Search Icon
+        actions: [
+          IconButton(
+            icon: Icon(
+              Icons.search,
+              color: Colors.white,
+            ),
+            onPressed: () {},
+          ),
+          IconButton(
+            icon: Icon(
+              Icons.favorite,
+              color: Colors.white,
+            ),
+            //temporary log out function
+            onPressed: () async {
+              await _auth.signOut();
+            },
+          ),
+        ],
+      ),
+
+      body: SafeArea(
+        //GroupedListView is a widget that can help group the list view by anything
+        //Eg: Can group lists based on category or date.
+        //DateTime object is explicitly stated so that it can group the records by date
+        child: GroupedListView<dynamic, DateTime>(
+          //Elements takes in a list of data that needs to be grouped, in this case recordView's data needs to be taken in.
+          elements: recordView,
+          //groupBy is a function that chooses what to group given by an element.
+          //In this case, we give an element named record to represent our recordView list, and we want to group by currentDate.
+          groupBy: (record) => record.dateTime,
+          //This function prepares to separate the lists by date.
+          //This can be done by returning a constructor of RecordGroupSeparator() that passes currentDate to date.
+          //Hence the RecordGroupSeparator() class can perform its own task which is to generate respective headers for each lists.
+          groupSeparatorBuilder: (DateTime dateTime) =>
+              RecordGroupSeparator(date: dateTime),
+          //Arrange the grouped lists in descending order
+          order: GroupedListOrder.DESC,
+          useStickyGroupSeparators: true,
+          separator: Divider(
+            color: Colors.grey,
+            indent: 15.0,
+            endIndent: 15.0,
+          ),
+          padding: EdgeInsets.only(bottom: 100),
+          //To build and display all the items of recordView list.
+          itemBuilder: (context, dynamic record) {
+            return Container(
+              height: 70.0,
+              //Each list is a row and is expanded to 3 parts.
+              child: Row(
+                children: [
+                  //First part is to display the category.
+                  Expanded(
+                    flex: 4,
+                    child: ListTile(
+                      leading: Text(
+                        record.category.name,
+                        //Used to wrap long texts
+                        overflow: TextOverflow.ellipsis,
+                        style: TextStyle(color: Colors.grey, fontSize: 14),
+                      ),
+                    ),
+                  ),
+                  //Second part is to display the title.
+                  Expanded(
+                    flex: 9,
+                    child: ListTile(
+                      title: Text(
+                        record.title,
+                        overflow: TextOverflow.ellipsis,
+                        style: TextStyle(color: Colors.white),
+                      ),
+                      subtitle: Text(
+                        record.account.name,
+                        style: TextStyle(color: Colors.grey),
+                      ),
+                    ),
+                  ),
+                  //Third part is to display the money.
+                  Expanded(
+                    flex: 5,
+                    child: ListTile(
+                      //An if else statement is used to check whether it is an expense or income
+                      //If it is expenses, add '-' in front of money, else add '+'
+                      trailing: record.type == 'Expenses'
+                          ? Text(
+                              "- RM " + record.amount.toString(),
+                              style: TextStyle(
+                                  color: Colors.white, fontSize: 14.0),
+                            )
+                          : Text(
+                              "+ RM " + record.amount.toString(),
+                              style: TextStyle(
+                                  color: Colors.white, fontSize: 14.0),
+                            ),
+                    ),
+                  ),
+                ],
+              ),
+            );
+          },
+        ),
+      ),
+
+      //This button can be navigated to add records page.
+      floatingActionButton: FloatingActionButton(
+        child: Text(
+          "+",
+          style:
+              TextStyle(fontSize: 25.0, color: Color.fromRGBO(41, 41, 41, 1)),
+        ),
+        backgroundColor: Color.fromRGBO(255, 185, 49, 1),
+        onPressed: () {
+          Navigator.pushNamed(context, '/addrecord');
+        },
+      ),
+    );
+  }
+}

@@ -2,22 +2,23 @@ import 'package:flutter/material.dart';
 import 'package:budget_tracking_system/services/auth.dart';
 import 'package:budget_tracking_system/pages/loading.dart';
 
-class Login extends StatefulWidget {
+class Register extends StatefulWidget {
   final Function toggleView;
-  Login({this.toggleView});
+  Register({this.toggleView});
+
   @override
-  _LoginState createState() => _LoginState();
+  _RegisterState createState() => _RegisterState();
 }
 
-class _LoginState extends State<Login> {
+class _RegisterState extends State<Register> {
   final AuthService _auth = AuthService();
   final _formKey = GlobalKey<FormState>();
+
   bool loading = false;
 
   String email = '';
   String password = '';
   String error = '';
-
   bool passwordVisible;
 
   @override
@@ -35,7 +36,7 @@ class _LoginState extends State<Login> {
             backgroundColor: Color.fromRGBO(57, 57, 57, 1),
             body: SafeArea(
               child: Padding(
-                padding: const EdgeInsets.all(12.0),
+                padding: const EdgeInsets.all(10.0),
                 child: Form(
                   key: _formKey,
                   child: ListView(
@@ -44,7 +45,7 @@ class _LoginState extends State<Login> {
                       //Creates a space to display the logo.
                       Column(
                         children: [
-                          SizedBox(height: 100.0),
+                          SizedBox(height: 80.0),
                           Image.asset(
                             'assets/Logo.png',
                             height: 150.0,
@@ -52,11 +53,12 @@ class _LoginState extends State<Login> {
                           ),
                         ],
                       ),
+
+                      SizedBox(height: 40.0),
+
                       //Creates a text field for email input.
-                      SizedBox(height: 60.0),
                       TextFormField(
-                        validator: (val) =>
-                            val.isEmpty ? 'Enter an Email' : null,
+                        validator: (val) => val.isEmpty ? 'Enter Email' : null,
                         onChanged: (val) {
                           setState(() => email = val);
                         },
@@ -79,7 +81,6 @@ class _LoginState extends State<Login> {
                                   BorderRadius.all(Radius.circular(10.0)),
                               borderSide:
                                   BorderSide(color: Colors.transparent)),
-
                           //An icon that appears at the very beginning of the text form field.
                           prefixIcon: Icon(
                             Icons.account_circle,
@@ -90,7 +91,6 @@ class _LoginState extends State<Login> {
                           hintText: 'example@mail.com',
                           hintStyle: TextStyle(
                               color: Color.fromRGBO(101, 101, 101, 1)),
-
                           labelStyle: TextStyle(
                               fontSize: 20.0,
                               color: Color.fromRGBO(101, 101, 101, 1)),
@@ -102,11 +102,10 @@ class _LoginState extends State<Login> {
                       //Creates a text field for password input.
                       TextFormField(
                         validator: (val) =>
-                            val.length < 6 ? 'Enter Password' : null,
+                            val.length < 6 ? 'Enter 6 digits password' : null,
                         onChanged: (val) {
                           setState(() => password = val);
                         },
-                        //Hides the password characters
                         obscureText: !passwordVisible,
                         style: TextStyle(color: Colors.white),
                         decoration: InputDecoration(
@@ -127,25 +126,64 @@ class _LoginState extends State<Login> {
                             Icons.lock,
                             color: Color.fromRGBO(101, 101, 101, 1),
                           ),
-                          //An icon that displays at the very end of the text form field.
-                          //To check whether a user pressed the show password icon.
                           suffixIcon: IconButton(
-                            onPressed: () {
-                              setState(() {
-                                //If a user tap the visibility icon, passwordVisible boolean state will be changed.
-                                passwordVisible = !passwordVisible;
-                              });
-                            },
                             icon: Icon(
-                              //If passwordVisible is False, display the visibility icon.
-                              //Else display the visibility_off icon.
                               passwordVisible
                                   ? Icons.visibility
                                   : Icons.visibility_off,
                               color: Color.fromRGBO(101, 101, 101, 1),
                             ),
+                            onPressed: () {
+                              setState(() {
+                                passwordVisible = !passwordVisible;
+                              });
+                            },
                           ),
                           labelText: 'Password',
+                          labelStyle: TextStyle(
+                              fontSize: 20.0,
+                              color: Color.fromRGBO(101, 101, 101, 1)),
+                        ),
+                      ),
+
+                      SizedBox(height: 20),
+
+                      //Creates a text field for password input confirmation.
+                      TextFormField(
+                        obscureText: !passwordVisible,
+                        style: TextStyle(color: Colors.white),
+                        decoration: InputDecoration(
+                          border: InputBorder.none,
+                          filled: true,
+                          fillColor: Color.fromRGBO(41, 41, 41, 1),
+                          enabledBorder: OutlineInputBorder(
+                            borderRadius:
+                                BorderRadius.all(Radius.circular(10.0)),
+                            borderSide: BorderSide(color: Colors.transparent),
+                          ),
+                          focusedBorder: OutlineInputBorder(
+                              borderRadius:
+                                  BorderRadius.all(Radius.circular(10.0)),
+                              borderSide:
+                                  BorderSide(color: Colors.transparent)),
+                          prefixIcon: Icon(
+                            Icons.lock,
+                            color: Color.fromRGBO(101, 101, 101, 1),
+                          ),
+                          suffixIcon: IconButton(
+                            icon: Icon(
+                              passwordVisible
+                                  ? Icons.visibility
+                                  : Icons.visibility_off,
+                              color: Color.fromRGBO(101, 101, 101, 1),
+                            ),
+                            onPressed: () {
+                              setState(() {
+                                passwordVisible = !passwordVisible;
+                              });
+                            },
+                          ),
+                          labelText: 'Re-Password',
                           labelStyle: TextStyle(
                               fontSize: 20.0,
                               color: Color.fromRGBO(101, 101, 101, 1)),
@@ -164,25 +202,26 @@ class _LoginState extends State<Login> {
                               color: Color.fromRGBO(255, 185, 49, 1),
                               shape: RoundedRectangleBorder(
                                   borderRadius: BorderRadius.circular(18.0)),
-                              onPressed: () async {
-                                //Navigator.pushReplacementNamed(context, '/mainpage');
+                              onPressed: ()
+                                  // Navigator.pushReplacementNamed(
+                                  //     context, '/mainpage');
+
+                                  async {
                                 if (_formKey.currentState.validate()) {
                                   setState(() => loading = true);
-                                  // FirebaseUser user =
-                                  //     FirebaseAuth.instance.currentUser();
                                   dynamic result =
-                                      await _auth.signInWithEmailAndPassword(
+                                      await _auth.registerWithEmailAndPassword(
                                           email, password);
                                   if (result == null) {
                                     setState(() {
-                                      error = 'Please Try Again';
+                                      error = 'Error Please Try Again';
                                       loading = false;
                                     });
                                   }
                                 }
                               },
                               child: Text(
-                                'Login',
+                                'Sign Up',
                                 style: TextStyle(
                                   fontSize: 20.0,
                                   color: Color.fromRGBO(41, 41, 41, 1),
@@ -192,20 +231,21 @@ class _LoginState extends State<Login> {
                           ),
 
                           SizedBox(height: 20.0),
+
                           //A clickable text that navigates user to register new account.
                           GestureDetector(
                             onTap: () {
-                              //Navigator.pushReplacementNamed(context, '/register');
+                              //Navigator.pushReplacementNamed(context, '/login');
                               widget.toggleView();
                             },
                             child: Text(
-                              'Sign Up Here',
+                              'Return to Login',
                               style: TextStyle(
                                   decoration: TextDecoration.underline,
                                   color: Colors.grey),
                             ),
                           ),
-                          SizedBox(height: 10.0),
+                          SizedBox(height: 12.0),
                           Text(
                             error,
                             style: TextStyle(color: Colors.red, fontSize: 14.0),

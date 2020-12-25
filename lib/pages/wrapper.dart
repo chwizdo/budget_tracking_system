@@ -1,7 +1,8 @@
+import 'package:budget_tracking_system/bottomNavTabs/record.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:budget_tracking_system/pages/switch.dart';
-import 'package:budget_tracking_system/pages/mainpage.dart';
+//import 'package:budget_tracking_system/pages/mainpage.dart';
 import 'package:budget_tracking_system/services/user.dart';
 
 class Wrapper extends StatelessWidget {
@@ -11,7 +12,9 @@ class Wrapper extends StatelessWidget {
     if (user == null) {
       return Authenticate();
     } else {
-      return Mainpage();
+      return Record(
+        uid: user.uid,
+      );
     }
   }
 }

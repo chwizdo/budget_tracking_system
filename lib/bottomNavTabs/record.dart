@@ -1,10 +1,13 @@
+import 'package:budget_tracking_system/pages/addrecord.dart';
+import 'package:budget_tracking_system/services/user.dart';
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
 import 'package:grouped_list/grouped_list.dart';
 import 'package:budget_tracking_system/services/auth.dart';
-import 'package:budget_tracking_system/services/record.dart' as recordServ;
-import 'package:budget_tracking_system/services/category.dart';
-import 'package:budget_tracking_system/services/account.dart';
+// import 'package:budget_tracking_system/services/record.dart' as recordServ;
+// import 'package:budget_tracking_system/services/category.dart';
+// import 'package:budget_tracking_system/services/account.dart';
+import 'package:provider/provider.dart';
 
 //A separator class that is responsible for grouping the list based on day by creating a new container/header for each list.
 class RecordGroupSeparator extends StatelessWidget {
@@ -49,89 +52,95 @@ class RecordGroupSeparator extends StatelessWidget {
 }
 
 class Record extends StatefulWidget {
+  final String uid;
+
+  Record({Key key, @required this.uid}) : super(key: key);
   @override
-  _RecordState createState() => _RecordState();
+  _RecordState createState() => _RecordState(uid);
 }
 
 class _RecordState extends State<Record> {
+  final String uid;
+  _RecordState(this.uid);
   // Temporary list to store all the records
   List recordView = [
-    recordServ.Record(
-      type: 'expense',
-      title: 'McD Fried Chicken',
-      dateTime: DateTime.utc(2020, 12, 20),
-      category: Category(name: 'food', type: 'expenses'),
-      account: Account(name: 'Maybank', currency: 'MYR', amount: 500),
-      amount: 13.50,
-    ),
-    recordServ.Record(
-      type: 'expense',
-      title: 'Blueberry Waffle',
-      dateTime: DateTime.utc(2020, 12, 20),
-      category: Category(name: 'food', type: 'expenses'),
-      account: Account(name: 'Cash', currency: 'MYR', amount: 500),
-      amount: 4.50,
-    ),
-    recordServ.Record(
-      type: 'expense',
-      title: 'Fuel',
-      dateTime: DateTime.utc(2020, 12, 20),
-      category: Category(name: 'transport', type: 'expenses'),
-      account: Account(name: 'Maybank', currency: 'MYR', amount: 500),
-      amount: 54.60,
-    ),
-    recordServ.Record(
-      type: 'expense',
-      title: 'Avenger End Game',
-      dateTime: DateTime.utc(2020, 12, 19),
-      category: Category(name: 'entertainment', type: 'expenses'),
-      account: Account(name: 'Maybank', currency: 'MYR', amount: 500),
-      amount: 17.50,
-    ),
-    recordServ.Record(
-      type: 'expense',
-      title: 'Starbucks Coffee',
-      dateTime: DateTime.utc(2020, 12, 19),
-      category: Category(name: 'food', type: 'expenses'),
-      account: Account(name: 'Maybank', currency: 'MYR', amount: 500),
-      amount: 17.50,
-    ),
-    recordServ.Record(
-      type: 'expense',
-      title: 'Starbucks Coffee',
-      dateTime: DateTime.utc(2020, 12, 19),
-      category: Category(name: 'food', type: 'expenses'),
-      account: Account(name: 'Maybank', currency: 'MYR', amount: 500),
-      amount: 17.50,
-    ),
-    recordServ.Record(
-      type: 'expense',
-      title: 'Starbucks Coffee',
-      dateTime: DateTime.utc(2020, 12, 19),
-      category: Category(name: 'food', type: 'expenses'),
-      account: Account(name: 'Maybank', currency: 'MYR', amount: 500),
-      amount: 17.50,
-    ),
-    recordServ.Record(
-      type: 'expense',
-      title: 'Chicken Rice',
-      dateTime: DateTime.utc(2020, 12, 29),
-      category: Category(name: 'food', type: 'expenses'),
-      account: Account(name: 'Maybank', currency: 'MYR', amount: 500),
-      amount: 17.50,
-    ),
-    recordServ.Record(
-      type: 'expense',
-      title: 'Fried Rice',
-      dateTime: DateTime.utc(2020, 12, 29),
-      category: Category(name: 'food', type: 'expenses'),
-      account: Account(name: 'Maybank', currency: 'MYR', amount: 500),
-      amount: 17.50,
-    ),
+    // recordServ.Record(
+    //   type: 'expense',
+    //   title: 'McD Fried Chicken',
+    //   dateTime: DateTime.utc(2020, 12, 20),
+    //   category: Category(name: 'food', type: 'expenses'),
+    //   account: Account(name: 'Maybank', currency: 'MYR', amount: 500),
+    //   amount: 13.50,
+    // ),
+    // recordServ.Record(
+    //   type: 'expense',
+    //   title: 'Blueberry Waffle',
+    //   dateTime: DateTime.utc(2020, 12, 20),
+    //   category: Category(name: 'food', type: 'expenses'),
+    //   account: Account(name: 'Cash', currency: 'MYR', amount: 500),
+    //   amount: 4.50,
+    // ),
+    // recordServ.Record(
+    //   type: 'expense',
+    //   title: 'Fuel',
+    //   dateTime: DateTime.utc(2020, 12, 20),
+    //   category: Category(name: 'transport', type: 'expenses'),
+    //   account: Account(name: 'Maybank', currency: 'MYR', amount: 500),
+    //   amount: 54.60,
+    // ),
+    // recordServ.Record(
+    //   type: 'expense',
+    //   title: 'Avenger End Game',
+    //   dateTime: DateTime.utc(2020, 12, 19),
+    //   category: Category(name: 'entertainment', type: 'expenses'),
+    //   account: Account(name: 'Maybank', currency: 'MYR', amount: 500),
+    //   amount: 17.50,
+    // ),
+    // recordServ.Record(
+    //   type: 'expense',
+    //   title: 'Starbucks Coffee',
+    //   dateTime: DateTime.utc(2020, 12, 19),
+    //   category: Category(name: 'food', type: 'expenses'),
+    //   account: Account(name: 'Maybank', currency: 'MYR', amount: 500),
+    //   amount: 17.50,
+    // ),
+    // recordServ.Record(
+    //   type: 'expense',
+    //   title: 'Starbucks Coffee',
+    //   dateTime: DateTime.utc(2020, 12, 19),
+    //   category: Category(name: 'food', type: 'expenses'),
+    //   account: Account(name: 'Maybank', currency: 'MYR', amount: 500),
+    //   amount: 17.50,
+    // ),
+    // recordServ.Record(
+    //   type: 'expense',
+    //   title: 'Starbucks Coffee',
+    //   dateTime: DateTime.utc(2020, 12, 19),
+    //   category: Category(name: 'food', type: 'expenses'),
+    //   account: Account(name: 'Maybank', currency: 'MYR', amount: 500),
+    //   amount: 17.50,
+    // ),
+    // recordServ.Record(
+    //   type: 'expense',
+    //   title: 'Chicken Rice',
+    //   dateTime: DateTime.utc(2020, 12, 29),
+    //   category: Category(name: 'food', type: 'expenses'),
+    //   account: Account(name: 'Maybank', currency: 'MYR', amount: 500),
+    //   amount: 17.50,
+    // ),
+    // recordServ.Record(
+    //   type: 'expense',
+    //   title: 'Fried Rice',
+    //   dateTime: DateTime.utc(2020, 12, 29),
+    //   category: Category(name: 'food', type: 'expenses'),
+    //   account: Account(name: 'Maybank', currency: 'MYR', amount: 500),
+    //   amount: 17.50,
+    // ),
   ];
   final AuthService _auth = AuthService();
   @override
   Widget build(BuildContext context) {
+    final user = Provider.of<User>(context);
     return Scaffold(
       backgroundColor: Color.fromRGBO(57, 57, 57, 1),
       appBar: AppBar(
@@ -253,7 +262,15 @@ class _RecordState extends State<Record> {
         ),
         backgroundColor: Color.fromRGBO(255, 185, 49, 1),
         onPressed: () {
-          Navigator.pushNamed(context, '/addrecord');
+          // Navigator.pushNamed(context, '/addrecord');
+          Navigator.push(
+            context,
+            MaterialPageRoute(
+                builder: (context) => AddRecord(
+                      uid: user.uid,
+                    ),
+                fullscreenDialog: true),
+          );
         },
       ),
     );

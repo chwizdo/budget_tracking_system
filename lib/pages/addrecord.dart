@@ -1,21 +1,50 @@
+//import 'package:budget_tracking_system/services/account.dart';
+//import 'package:budget_tracking_system/services/category.dart';
+import 'package:budget_tracking_system/services/record.dart';
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:custom_radio_grouped_button/custom_radio_grouped_button.dart';
 
-
 class AddRecord extends StatefulWidget {
+  final String uid;
+
+  AddRecord({Key key, @required this.uid}) : super(key: key);
 
   @override
-  _AddRecordState createState() => _AddRecordState();
+  _AddRecordState createState() => _AddRecordState(uid);
 }
 
 class _AddRecordState extends State<AddRecord> {
+  final String uid;
+  _AddRecordState(this.uid);
+
+  var recordcollections = Firestore.instance.collection('users');
+  String type;
+  String title;
+  DateTime dateTime;
+  String category;
+  String account;
+  double amount;
+  String note;
+  String attachment;
+  bool isFav;
+
+  @override
+  void initState() {
+    // TODO: implement initState
+    super.initState();
+    isFav = false;
+  }
 
   //Creates a list of items for DropdownButton category and account.
+
   String currentSelectedCategory = "Food";
   List<String> categoryTypes = ["Food", "Transport", "Entertainment"];
 
   String currentSelectedAccount = "Cash";
-  List<String> accountTypes = ["Cash", "Maybank", "Credit Card"];
+  List<String> accountTypes = ["Cash", "maybank", "credit card"];
+
+  GlobalKey<FormState> formkey = GlobalKey<FormState>();
 
   @override
   Widget build(BuildContext context) {
@@ -31,462 +60,538 @@ class _AddRecordState extends State<AddRecord> {
               Icons.favorite,
               color: Colors.white,
             ),
-            onPressed: () {},
+            onPressed: () {
+              setState(() {});
+            },
           ),
         ],
       ),
-
-      body: SafeArea(
-        child: Container(
+      body: Form(
+        key: formkey,
+        child: SafeArea(
           child: Padding(
-            //Padding for the whole body content wrapped in container.
             padding: const EdgeInsets.all(6.0),
+            //Padding for the whole body content wrapped in container.
+            //padding: const EdgeInsets.all(6.0),
             //ListView is used because it automatically resizes on keyboard input, whilst also supporting scrolling.
-            child: ListView(
-              children: [
+            child: ListView(children: [
               //Creates the 3 radio button.
-                Column(
+              Column(
+                children: [
+                  SizedBox(height: 12.0),
+                  CustomRadioButton(
+                    //Select default radio button value.
+                    defaultSelected: 'INCOME',
+                    //Transparent border color when selecting a border.
+                    selectedBorderColor: Colors.transparent,
+                    //Transparent border color when a border is not selected.
+                    unSelectedBorderColor: Colors.transparent,
+                    //Enable rounded rectangle shape.
+                    enableShape: true,
+                    width: 120.0,
+                    elevation: 0,
+                    //Color fill when selecting a border.
+                    selectedColor: Color.fromRGBO(255, 185, 49, 1),
+                    //Color fill when a border is not selected.
+                    unSelectedColor: Color.fromRGBO(41, 41, 41, 1),
+                    //Labels for each radio button.
+                    buttonLables: [
+                      'Income',
+                      'Expenses',
+                      'Transfer',
+                    ],
+                    //Values representing for each radio button.
+                    buttonValues: [
+                      'INCOME',
+                      'EXPENSES',
+                      'TRANSFER',
+                    ],
+                    //Styling of the radio buttons.
+                    buttonTextStyle: ButtonTextStyle(
+                        selectedColor: Colors.black,
+                        unSelectedColor: Colors.white,
+                        textStyle: TextStyle(fontSize: 16.0)),
+                    radioButtonValue: (value) {
+                      if (value == 'INCOME') {
+                        setState(() {
+                          type = 'Income';
+                        });
+                        //Do something
+                        //Use another if else statement to indicate what action to perform for each value.
+                      } else if (value == 'EXPENSES') {
+                        setState(() {
+                          type = 'Expenses';
+                        });
+                      } else if (value == 'TRANSFER') {
+                        setState(() {
+                          type = 'Transfer';
+                        });
+                      }
+                    },
+                  ),
+                ],
+              ),
+
+              SizedBox(height: 30.0),
+
+              //Display Title Text Field
+              Container(
+                margin: EdgeInsets.only(left: 12.0, right: 10.0),
+                child: Row(
                   children: [
-                    SizedBox(height: 12.0),
-                    CustomRadioButton(
-                      //Select default radio button value.
-                      defaultSelected: 'INCOME',
-                      //Transparent border color when selecting a border.
-                      selectedBorderColor: Colors.transparent,
-                      //Transparent border color when a border is not selected.
-                      unSelectedBorderColor: Colors.transparent,
-                      //Enable rounded rectangle shape.
-                      enableShape: true,
-                      width: 120.0,
-                      elevation: 0,
-                      //Color fill when selecting a border.
-                      selectedColor: Color.fromRGBO(255, 185, 49, 1),
-                      //Color fill when a border is not selected.
-                      unSelectedColor: Color.fromRGBO(41, 41, 41, 1),
-                      //Labels for each radio button.
-                      buttonLables: [
-                        'Income',
-                        'Expenses',
-                        'Transfer',
-                      ],
-                      //Values representing for each radio button.
-                      buttonValues: [
-                        'INCOME',
-                        'EXPENSES',
-                        'TRANSFER',
-                      ],
-                      //Styling of the radio buttons.
-                      buttonTextStyle: ButtonTextStyle(
-                          selectedColor: Colors.black,
-                          unSelectedColor: Colors.white,
-                          textStyle: TextStyle(fontSize: 16.0)),
-                      radioButtonValue: (value) {
-                        if (value == 'INCOME') {
-                          //Do something
-                          //Use another if else statement to indicate what action to perform for each value.
-                        }
-                      },
+                    Expanded(
+                      flex: 1,
+                      child: Text(
+                        'Title:',
+                        style: TextStyle(color: Colors.white, fontSize: 18.0),
+                      ),
+                    ),
+                    Expanded(
+                      flex: 3,
+                      child: Container(
+                        height: 50.0,
+                        child: TextFormField(
+                          validator: (_val) {
+                            if (_val.isEmpty) {
+                              return null;
+                            } else {
+                              return null;
+                            }
+                          },
+                          onChanged: (_val) {
+                            title = (_val);
+                          },
+                          style: TextStyle(color: Colors.white),
+                          decoration: InputDecoration(
+                            //Remove visible borders
+                            border: InputBorder.none,
+                            //Enables color fill in the text form field.
+                            filled: true,
+                            fillColor: Color.fromRGBO(41, 41, 41, 1),
+                            //Border when it is not focused by user input.
+                            enabledBorder: OutlineInputBorder(
+                              borderRadius:
+                                  BorderRadius.all(Radius.circular(10.0)),
+                              borderSide: BorderSide(color: Colors.transparent),
+                            ),
+                            //Border when it is focused by user input.
+                            focusedBorder: OutlineInputBorder(
+                                borderRadius:
+                                    BorderRadius.all(Radius.circular(10.0)),
+                                borderSide:
+                                    BorderSide(color: Colors.transparent)),
+                            contentPadding: EdgeInsets.all(12.0),
+                          ),
+                        ),
+                      ),
                     ),
                   ],
                 ),
+              ),
 
-                SizedBox(height: 30.0),
+              SizedBox(height: 12.0),
 
-                //Display Title Text Field             
-                Container(
-                  margin: EdgeInsets.only(left: 12.0, right: 10.0),
-                  child: Row(
-                    children: [
-                      Expanded(
-                        flex: 1,
-                        child: Text(
-                          'Title:',
-                          style: TextStyle(color: Colors.white, fontSize: 18.0),
-                        ),
+              //Display Date Field
+              Container(
+                margin: EdgeInsets.only(left: 12.0, right: 10.0),
+                child: Row(
+                  children: [
+                    Expanded(
+                      flex: 1,
+                      child: Text(
+                        'Date:',
+                        style: TextStyle(color: Colors.white, fontSize: 18.0),
                       ),
-                      Expanded(
-                        flex: 3,
-                        child: Container(
-                          height: 50.0,
-                          child: TextFormField(
-                            style: TextStyle(color: Colors.white),
-                            decoration: InputDecoration(
-                              //Remove visible borders
-                              border: InputBorder.none, 
-                              //Enables color fill in the text form field.
-                              filled: true, 
-                              fillColor: Color.fromRGBO(41, 41, 41, 1),   
-                              //Border when it is not focused by user input.              
-                              enabledBorder: OutlineInputBorder( 
-                                borderRadius: BorderRadius.all(Radius.circular(10.0)),
-                                borderSide: BorderSide(color: Colors.transparent),
-                              ),
-                              //Border when it is focused by user input.
-                              focusedBorder: OutlineInputBorder( 
-                                borderRadius: BorderRadius.all(Radius.circular(10.0)),
-                                borderSide: BorderSide(color: Colors.transparent)
-                              ),
-                              contentPadding: EdgeInsets.all(12.0),
+                    ),
+                    Expanded(
+                      flex: 3,
+                      child: Container(
+                        height: 50.0,
+                        child: TextFormField(
+                          validator: (_val) {
+                            if (_val.isEmpty) {
+                              return null;
+                            } else {
+                              return null;
+                            }
+                          },
+                          onChanged: (_val) {
+                            dateTime = DateTime.parse(_val);
+                          },
+                          style: TextStyle(color: Colors.white),
+                          decoration: InputDecoration(
+                            border: InputBorder.none,
+                            filled: true,
+                            fillColor: Color.fromRGBO(41, 41, 41, 1),
+                            enabledBorder: OutlineInputBorder(
+                              borderRadius:
+                                  BorderRadius.all(Radius.circular(10.0)),
+                              borderSide: BorderSide(color: Colors.transparent),
                             ),
+                            focusedBorder: OutlineInputBorder(
+                              borderRadius:
+                                  BorderRadius.all(Radius.circular(10.0)),
+                              borderSide: BorderSide(color: Colors.transparent),
+                            ),
+                            prefixIcon: Icon(
+                              Icons.calendar_today,
+                              color: Color.fromRGBO(101, 101, 101, 1),
+                            ),
+                            contentPadding: EdgeInsets.all(12.0),
                           ),
                         ),
                       ),
-                    ],
-                  ),
+                    ),
+                  ],
                 ),
-              
-                SizedBox(height: 12.0),
+              ),
 
-                //Display Date Field
-                Container(
-                  margin: EdgeInsets.only(left: 12.0, right: 10.0),
-                  child: Row(
-                    children: [
-                      Expanded(
-                        flex: 1,
-                        child: Text(
-                          'Date:',
-                          style: TextStyle(color: Colors.white, fontSize: 18.0),
-                        ),
-                      ),
-                      Expanded(
-                        flex: 3,
-                        child: Container(
-                          height: 50.0,
-                          child: TextFormField(
-                            style: TextStyle(color: Colors.white),
-                            decoration: InputDecoration(
-                              border: InputBorder.none,
-                              filled: true,
-                              fillColor: Color.fromRGBO(41, 41, 41, 1),
-                              enabledBorder: OutlineInputBorder(
-                                borderRadius:BorderRadius.all(Radius.circular(10.0)),
-                                borderSide: BorderSide(color: Colors.transparent),
-                              ),
-                              focusedBorder: OutlineInputBorder(
-                                borderRadius:BorderRadius.all(Radius.circular(10.0)),
-                                borderSide: BorderSide(color: Colors.transparent),
-                              ),
-                              prefixIcon: Icon(
-                                Icons.calendar_today,
-                                color: Color.fromRGBO(101, 101, 101, 1),
-                              ),
-                              contentPadding: EdgeInsets.all(12.0),
-                            ),
-                          ),
-                        ),
-                      ),
-                    ],
-                  ),
-                ),
+              SizedBox(height: 12.0),
 
-                SizedBox(height: 12.0),
-
-                //Display Category DropdownButton Field
-                Container(
-                  margin: EdgeInsets.only(left: 12.0, right: 10.0),
-                  child: Row(
-                    children: [
-                      Expanded(
-                        flex: 4,
-                        child: Text(
-                          'Category:',
-                          style: TextStyle(color: Colors.white, fontSize: 18.0),
-                        ),
+              //Display Category DropdownButton Field
+              Container(
+                margin: EdgeInsets.only(left: 12.0, right: 10.0),
+                child: Row(
+                  children: [
+                    Expanded(
+                      flex: 4,
+                      child: Text(
+                        'Category:',
+                        style: TextStyle(color: Colors.white, fontSize: 18.0),
                       ),
-                      Expanded(
-                        flex: 11,
-                        child: Container(
-                          height: 50.0,
-                          child: FormField(
-                            builder: (FormFieldState<String> state) {
-                              return InputDecorator(
-                                //Style the form field border.
-                                decoration: InputDecoration(
+                    ),
+                    Expanded(
+                      flex: 11,
+                      child: Container(
+                        height: 50.0,
+                        child: FormField(
+                          validator: (newvalue) {
+                            if (newvalue.isEmpty) {
+                              return null;
+                            } else {
+                              return null;
+                            }
+                          },
+                          builder: (FormFieldState<String> state) {
+                            return InputDecorator(
+                              //Style the form field border.
+                              decoration: InputDecoration(
                                   border: InputBorder.none,
                                   filled: true,
                                   fillColor: Color.fromRGBO(41, 41, 41, 1),
                                   enabledBorder: OutlineInputBorder(
-                                    borderRadius:BorderRadius.all(Radius.circular(10.0)),
-                                    borderSide:BorderSide(color: Colors.transparent),
+                                    borderRadius:
+                                        BorderRadius.all(Radius.circular(10.0)),
+                                    borderSide:
+                                        BorderSide(color: Colors.transparent),
                                   ),
                                   focusedBorder: OutlineInputBorder(
-                                    borderRadius:BorderRadius.all(Radius.circular(10.0)),
-                                    borderSide:BorderSide(color: Colors.transparent),
+                                    borderRadius:
+                                        BorderRadius.all(Radius.circular(10.0)),
+                                    borderSide:
+                                        BorderSide(color: Colors.transparent),
                                   ),
                                   //Use less vertical space.
                                   isDense: true),
-                                child: DropdownButtonHideUnderline(
-                                  //Creates DropdownButton Widget.
-                                  child: DropdownButton<String>(
-                                    //Value for the currently selected Dropdown item.
-                                    value: currentSelectedCategory,
-                                    //When user selects a new item, pass newValue into current item value.
-                                    onChanged: (newValue) {
-                                      setState(() {
-                                        currentSelectedCategory = newValue;
-                                      });
-                                    },
-                                    //Map the items from categoryTypes lists into item menu dropdown.
-                                    items: categoryTypes.map((String value) {
-                                      return DropdownMenuItem<String>(
-                                        value: value,
-                                        child: Text(value),
-                                      );
-                                    }).toList(),
-                                    //Style the dropdown items text.
-                                    style: TextStyle(color: Colors.black),
-                                    selectedItemBuilder: (BuildContext context) {
-                                      return categoryTypes.map((String value) {
-                                        return Text(
-                                          currentSelectedCategory,
-                                          style: TextStyle(
+                              child: DropdownButtonHideUnderline(
+                                //Creates DropdownButton Widget.
+                                child: DropdownButton<String>(
+                                  //Value for the currently selected Dropdown item.
+                                  value: currentSelectedCategory,
+                                  //When user selects a new item, pass newValue into current item value.
+                                  onChanged: (newValue) {
+                                    setState(() {
+                                      category = newValue;
+                                    });
+                                  },
+                                  //Map the items from categoryTypes lists into item menu dropdown.
+                                  items: categoryTypes.map((String value) {
+                                    return DropdownMenuItem<String>(
+                                      value: value,
+                                      child: Text(value),
+                                    );
+                                  }).toList(),
+                                  //Style the dropdown items text.
+                                  style: TextStyle(color: Colors.black),
+                                  selectedItemBuilder: (BuildContext context) {
+                                    return categoryTypes.map((String value) {
+                                      return Text(
+                                        currentSelectedCategory,
+                                        style: TextStyle(
                                             color: Colors.white,
                                             fontSize: 15.0),
-                                        );
-                                      }).toList();
-                                    },
-                                  ),
+                                      );
+                                    }).toList();
+                                  },
                                 ),
-                              );
-                            },
+                              ),
+                            );
+                          },
+                        ),
+                      ),
+                    ),
+                    Expanded(
+                        flex: 1,
+                        child: Padding(
+                          padding: const EdgeInsets.only(left: 6.0),
+                          child: Align(
+                            alignment: Alignment.centerRight,
+                            child: Icon(Icons.settings,
+                                color: Color.fromRGBO(101, 101, 101, 1)),
                           ),
-                        ),
-                      ),
-                      Expanded(
-                        flex: 1,
-                          child: Padding(
-                            padding: const EdgeInsets.only(left:6.0),
-                            child: Align(
-                              alignment: Alignment.centerRight,
-                              child: Icon(Icons.settings,
-                                color: Color.fromRGBO(101, 101, 101, 1)
-                            ),
-                        ),
-                          )
-                      ),
-                    ],
-                  ),
+                        )),
+                  ],
                 ),
-          
-                SizedBox(height: 12.0),
+              ),
 
-                //Display Amount DropdownButton Field
-                Container(
-                  margin: EdgeInsets.only(left: 12.0, right: 10.0),
-                  child: Row(
-                    children: [
-                      Expanded(
-                        flex: 1,
-                        child: Text(
-                          'Account:',
-                          style: TextStyle(color: Colors.white, fontSize: 18.0),
-                        ),
+              SizedBox(height: 12.0),
+
+              //Display Amount DropdownButton Field
+              Container(
+                margin: EdgeInsets.only(left: 12.0, right: 10.0),
+                child: Row(
+                  children: [
+                    Expanded(
+                      flex: 1,
+                      child: Text(
+                        'Account:',
+                        style: TextStyle(color: Colors.white, fontSize: 18.0),
                       ),
-                      Expanded(
-                        flex: 3,
-                        child: Container(
-                          height: 50.0,
-                          child: FormField(
-                            builder: (FormFieldState<String> state) {
-                              return InputDecorator(
-                                decoration: InputDecoration(
+                    ),
+                    Expanded(
+                      flex: 3,
+                      child: Container(
+                        height: 50.0,
+                        child: FormField(
+                          builder: (FormFieldState<String> state) {
+                            return InputDecorator(
+                              decoration: InputDecoration(
                                   border: InputBorder.none,
                                   filled: true,
                                   fillColor: Color.fromRGBO(41, 41, 41, 1),
                                   enabledBorder: OutlineInputBorder(
-                                    borderRadius:BorderRadius.all(Radius.circular(10.0)),
-                                    borderSide:BorderSide(color: Colors.transparent),
+                                    borderRadius:
+                                        BorderRadius.all(Radius.circular(10.0)),
+                                    borderSide:
+                                        BorderSide(color: Colors.transparent),
                                   ),
                                   focusedBorder: OutlineInputBorder(
-                                    borderRadius:BorderRadius.all(Radius.circular(10.0)),
-                                    borderSide:BorderSide(color: Colors.transparent),
+                                    borderRadius:
+                                        BorderRadius.all(Radius.circular(10.0)),
+                                    borderSide:
+                                        BorderSide(color: Colors.transparent),
                                   ),
                                   isDense: true),
-                                child: DropdownButtonHideUnderline(
-                                  child: DropdownButton<String>(
-                                    value: currentSelectedAccount,
-                                    onChanged: (newValue) {
-                                      setState(() {
-                                        currentSelectedAccount = newValue;
-                                      });
-                                    },
-                                    items: accountTypes.map((String value) {
-                                      return DropdownMenuItem<String>(
-                                        value: value,
-                                        child: Text(value),
+                              child: DropdownButtonHideUnderline(
+                                child: DropdownButton<String>(
+                                  value: currentSelectedAccount,
+                                  onChanged: (newValue) {
+                                    setState(() {
+                                      account = (newValue);
+                                    });
+                                  },
+                                  items: accountTypes.map((String value) {
+                                    return DropdownMenuItem<String>(
+                                      value: value,
+                                      child: Text(value),
+                                    );
+                                  }).toList(),
+                                  style: TextStyle(color: Colors.black),
+                                  selectedItemBuilder: (BuildContext context) {
+                                    return accountTypes.map((String value) {
+                                      return Text(
+                                        currentSelectedAccount,
+                                        style: TextStyle(
+                                            color: Colors.white,
+                                            fontSize: 15.0),
                                       );
-                                    }).toList(),
-                                    style: TextStyle(color: Colors.black),
-                                    selectedItemBuilder: (BuildContext context) {
-                                      return accountTypes.map((String value) {
-                                        return Text(
-                                          currentSelectedAccount,
-                                          style: TextStyle(
-                                              color: Colors.white,
-                                              fontSize: 15.0),
-                                        );
-                                      }).toList();
-                                    },
-                                  ),
-                                ),
-                              );
-                            },
-                          ),
-                        ),
-                      ),
-                    ],
-                  ),
-                ),
-              
-                SizedBox(height: 12.0),
-
-                //Display Amount Text Field
-                Container(
-                  margin: EdgeInsets.only(left: 12.0, right: 10.0),
-                  child: Row(
-                    children: [
-                      Expanded(
-                        flex: 1,
-                        child: Text(
-                          'Amount:',
-                          style: TextStyle(color: Colors.white, fontSize: 18.0),
-                        ),
-                      ),
-                      Expanded(
-                        flex: 3,
-                        child: Container(
-                          height: 50.0,
-                          child: TextFormField(
-                            style: TextStyle(color: Colors.white),
-                            decoration: InputDecoration(
-                              border: InputBorder.none,
-                              filled: true,
-                              fillColor: Color.fromRGBO(41, 41, 41, 1),
-                              enabledBorder: OutlineInputBorder(
-                                borderRadius:BorderRadius.all(Radius.circular(10.0)),
-                                borderSide: BorderSide(color: Colors.transparent),
-                              ),
-                              focusedBorder: OutlineInputBorder(
-                                borderRadius:BorderRadius.all(Radius.circular(10.0)),
-                                borderSide: BorderSide(color: Colors.transparent),
-                              ),
-                              prefixIcon: Padding(
-                                padding: EdgeInsets.only(left: 15.0, top: 15),
-                                child: Text(
-                                  'RM',
-                                  style: TextStyle(
-                                  color: Color.fromRGBO(101, 101, 101, 1)
-                                  ),
+                                    }).toList();
+                                  },
                                 ),
                               ),
-                              contentPadding: EdgeInsets.all(12.0),
-                            ),
-                          ),
+                            );
+                          },
                         ),
                       ),
-                    ],
-                  ),
+                    ),
+                  ],
                 ),
-              
-                SizedBox(height: 12.0),
+              ),
 
-                //Display Notes Text Field
-                Container(
-                  margin: EdgeInsets.only(left: 12.0, right: 10.0),
-                  child: Row(
-                    children: [
-                      Expanded(
-                        flex: 1,
-                        child: Text(
-                          'Notes:',
-                          style: TextStyle(color: Colors.white, fontSize: 18.0),
-                        ),
-                      ),
-                      Expanded(
-                        flex: 3,
-                        child: Container(
-                          height: 50.0,
-                          child: TextField(
-                            style: TextStyle(color: Colors.white),
-                            decoration: InputDecoration(
-                              border: InputBorder.none,
-                              filled: true,
-                              fillColor: Color.fromRGBO(41, 41, 41, 1),
-                              enabledBorder: OutlineInputBorder(
-                                borderRadius:BorderRadius.all(Radius.circular(10.0)),
-                                borderSide: BorderSide(color: Colors.transparent),
-                              ),
-                              focusedBorder: OutlineInputBorder(
-                                borderRadius:BorderRadius.all(Radius.circular(10.0)),
-                                borderSide: BorderSide(color: Colors.transparent),
-                              ),
-                              contentPadding: EdgeInsets.all(12.0),
-                            ),
-                          ),
-                        ),
-                      ),
-                    ],
-                  ),
-                ),
-              
-                SizedBox(height: 12.0),
+              SizedBox(height: 12.0),
 
-                //Display Attachment Field
-                Container(
-                  margin: EdgeInsets.only(left: 12.0, right: 10.0),
-                  child: Row(
-                    children: [
-                      Expanded(
-                        flex: 1,
-                        child: Text(
-                          'Attachment:',
-                          style: TextStyle(color: Colors.white, fontSize: 18.0),
-                        ),
-                      ),
-                      Expanded(
-                        flex: 2,
-                        child: Container(
-                            height: 40.0,
-                            child: Align(
-                              alignment: Alignment.centerRight,
-                              child: Icon(Icons.attach_file,
-                                color: Color.fromRGBO(101, 101, 101, 1)
-                            ),
-                          )
-                        ),
-                      ),
-                    ],
-                  ),
-                ),
-              
-                SizedBox(height: 20.0),
-
-                //Display Save Button
-                Column(
+              //Display Amount Text Field
+              Container(
+                margin: EdgeInsets.only(left: 12.0, right: 10.0),
+                child: Row(
                   children: [
-                    ButtonTheme(
-                      height: 40.0,
-                      minWidth: 300.0,
-                      child: RaisedButton(
-                        color: Color.fromRGBO(255, 185, 49, 1),
-                        shape: RoundedRectangleBorder(
-                        borderRadius: BorderRadius.circular(18.0)
-                        ),
-                        onPressed: () {},
-                        child: Text(
-                          'Save',
-                          style: TextStyle(
-                            fontSize: 20.0,
-                            color: Color.fromRGBO(41, 41, 41, 1),
+                    Expanded(
+                      flex: 1,
+                      child: Text(
+                        'Amount:',
+                        style: TextStyle(color: Colors.white, fontSize: 18.0),
+                      ),
+                    ),
+                    Expanded(
+                      flex: 3,
+                      child: Container(
+                        height: 50.0,
+                        child: TextFormField(
+                          validator: (_val3) {
+                            if (_val3.isEmpty) {
+                              return null;
+                            } else {
+                              return null;
+                            }
+                          },
+                          onChanged: (_val3) {
+                            amount = double.parse(_val3);
+                          },
+                          style: TextStyle(color: Colors.white),
+                          decoration: InputDecoration(
+                            border: InputBorder.none,
+                            filled: true,
+                            fillColor: Color.fromRGBO(41, 41, 41, 1),
+                            enabledBorder: OutlineInputBorder(
+                              borderRadius:
+                                  BorderRadius.all(Radius.circular(10.0)),
+                              borderSide: BorderSide(color: Colors.transparent),
+                            ),
+                            focusedBorder: OutlineInputBorder(
+                              borderRadius:
+                                  BorderRadius.all(Radius.circular(10.0)),
+                              borderSide: BorderSide(color: Colors.transparent),
+                            ),
+                            prefixIcon: Padding(
+                              padding: EdgeInsets.only(left: 15.0, top: 15),
+                              child: Text(
+                                'RM',
+                                style: TextStyle(
+                                    color: Color.fromRGBO(101, 101, 101, 1)),
+                              ),
+                            ),
+                            contentPadding: EdgeInsets.all(12.0),
                           ),
                         ),
                       ),
                     ),
                   ],
                 ),
-              ]
-            ),
+              ),
+
+              SizedBox(height: 12.0),
+
+              //Display Notes Text Field
+              Container(
+                margin: EdgeInsets.only(left: 12.0, right: 10.0),
+                child: Row(
+                  children: [
+                    Expanded(
+                      flex: 1,
+                      child: Text(
+                        'Notes:',
+                        style: TextStyle(color: Colors.white, fontSize: 18.0),
+                      ),
+                    ),
+                    Expanded(
+                      flex: 3,
+                      child: Container(
+                        height: 50.0,
+                        child: TextField(
+                          style: TextStyle(color: Colors.white),
+                          decoration: InputDecoration(
+                            border: InputBorder.none,
+                            filled: true,
+                            fillColor: Color.fromRGBO(41, 41, 41, 1),
+                            enabledBorder: OutlineInputBorder(
+                              borderRadius:
+                                  BorderRadius.all(Radius.circular(10.0)),
+                              borderSide: BorderSide(color: Colors.transparent),
+                            ),
+                            focusedBorder: OutlineInputBorder(
+                              borderRadius:
+                                  BorderRadius.all(Radius.circular(10.0)),
+                              borderSide: BorderSide(color: Colors.transparent),
+                            ),
+                            contentPadding: EdgeInsets.all(12.0),
+                          ),
+                        ),
+                      ),
+                    ),
+                  ],
+                ),
+              ),
+
+              SizedBox(height: 12.0),
+
+              //Display Attachment Field
+              Container(
+                margin: EdgeInsets.only(left: 12.0, right: 10.0),
+                child: Row(
+                  children: [
+                    Expanded(
+                      flex: 1,
+                      child: Text(
+                        'Attachment:',
+                        style: TextStyle(color: Colors.white, fontSize: 18.0),
+                      ),
+                    ),
+                    Expanded(
+                      flex: 2,
+                      child: Container(
+                          height: 40.0,
+                          child: Align(
+                            alignment: Alignment.centerRight,
+                            child: Icon(Icons.attach_file,
+                                color: Color.fromRGBO(101, 101, 101, 1)),
+                          )),
+                    ),
+                  ],
+                ),
+              ),
+
+              SizedBox(height: 20.0),
+
+              //Display Save Button
+              Column(
+                children: <Widget>[
+                  ButtonTheme(
+                    height: 40.0,
+                    minWidth: 300.0,
+                    child: Column(
+                      children: [
+                        RaisedButton(
+                          color: Color.fromRGBO(255, 185, 49, 1),
+                          shape: RoundedRectangleBorder(
+                              borderRadius: BorderRadius.circular(18.0)),
+                          onPressed: () {
+                            Record(
+                              uid: uid,
+                              type: type,
+                              title: title,
+                              account: account,
+                              amount: amount,
+                              category: category,
+                              dateTime: dateTime,
+                              note: note,
+                              attachment: attachment,
+                              isFav: isFav,
+                            );
+                          },
+                          child: Text(
+                            'Save',
+                            style: TextStyle(
+                              fontSize: 20.0,
+                              color: Color.fromRGBO(41, 41, 41, 1),
+                            ),
+                          ),
+                        ),
+                      ],
+                    ),
+                  ),
+                ],
+              ),
+            ]),
           ),
         ),
       ),

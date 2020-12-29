@@ -24,8 +24,8 @@ class _AddRecordState extends State<AddRecord> {
   String type = 'Income';
   String title = 'Untitled';
   DateTime dateTime = DateTime.utc(0000);
-  String category = Category.list[0].name;
-  String account = Account.list[0].name;
+  Category category = Category.list[0];
+  Account account = Account.list[0];
   double amount = 0;
   String note = '';
   String attachment = '';
@@ -304,7 +304,11 @@ class _AddRecordState extends State<AddRecord> {
                                     setState(() {
                                       // LANDMARK
                                       currentSelectedCategory = newValue;
-                                      category = newValue;
+                                      Category.list.forEach((element) {
+                                        if (element.name == newValue) {
+                                          category = element;
+                                        }
+                                      });
                                     });
                                   },
                                   //Map the items from categoryTypes lists into item menu dropdown.
@@ -393,7 +397,11 @@ class _AddRecordState extends State<AddRecord> {
                                     setState(() {
                                       // LANDMARK
                                       currentSelectedAccount = (newValue);
-                                      account = newValue;
+                                      Account.list.forEach((element) {
+                                        if (element.name == newValue) {
+                                          account = element;
+                                        }
+                                      });
                                     });
                                   },
                                   // LANDMARK

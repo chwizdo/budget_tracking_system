@@ -1,7 +1,7 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:meta/meta.dart';
-// import 'package:budget_tracking_system/services/account.dart';
-// import 'package:budget_tracking_system/services/category.dart';
+import 'package:budget_tracking_system/services/account.dart';
+import 'package:budget_tracking_system/services/category.dart';
 /*
   Add ✅
   Update ✅
@@ -14,8 +14,8 @@ class Record {
   String _type;
   String _title;
   DateTime _dateTime;
-  String _category;
-  String _account;
+  Category _category;
+  Account _account;
   double _amount;
   String _note;
   String _attachment;
@@ -29,12 +29,13 @@ class Record {
     @required String type,
     String title = 'Untitled',
     @required DateTime dateTime,
-    @required String category,
-    @required String account,
+    @required Category category,
+    @required Account account,
     @required double amount,
     String note = '',
     String attachment = '',
     bool isFav = false,
+    bool save = true,
   })  : _uid = uid,
         _type = type,
         _title = title,
@@ -46,22 +47,35 @@ class Record {
         _attachment = attachment,
         _isFav = isFav {
     //add data to database
-    Firestore.instance
-        .collection("users")
-        .document(_uid)
-        .collection("record")
-        .add({
-      'id': '',
-      'type': _type,
-      'title': _title,
-      'datetime': _dateTime,
-      'category': _category, // TODO make it into a map
-      'account': _account, // TODO make it into a map
-      'amount': _amount,
-      'note': _note,
-      'attachment': _attachment,
-      'isFav': _isFav
-    });
+    if (save) {
+      Firestore.instance
+          .collection('users')
+          .document(_uid)
+          .collection('records')
+          .add(
+        {
+          'id': '',
+          'type': _type,
+          'title': _title,
+          'date time': _dateTime,
+          'category': _category.name, // TODO use id
+          'account': _account.name, // TODO use id
+          'amount': _amount,
+          'note': _note,
+          'attachment': _attachment,
+          'is favorite': _isFav,
+        },
+      ).then(
+        (value) => {
+          Firestore.instance
+              .collection('users')
+              .document(_uid)
+              .collection('records')
+              .document(value.documentID)
+              .updateData({'id': value.documentID})
+        },
+      );
+    }
   }
 
   // getters for all private properties
@@ -77,11 +91,11 @@ class Record {
     return _dateTime;
   }
 
-  String get category {
+  Category get category {
     return _category;
   }
 
-  String get account {
+  Account get account {
     return _account;
   }
 
@@ -111,8 +125,8 @@ class Record {
     @required String type,
     String title = 'Untitled',
     @required DateTime dateTime,
-    @required String category,
-    @required String account,
+    @required Category category,
+    @required Account account,
     @required double amount,
     String note = '',
     String attachment = '',
@@ -253,8 +267,49 @@ class Record {
   // Implemented in main page
   void rmRecord() {}
 
-  // TODO retrieve all records from database
   // Does not require to create instance
   // Implemented in main page
-  static List<Record> getRecords() {}
+  static void getRecords({String uid}) {
+    Firestore.instance
+        .collection('users')
+        .document(uid)
+        .collection('records')
+        .getDocuments()
+        .then(
+          (querySnapshot) => {
+            querySnapshot.documents.forEach(
+              (element) {
+                Timestamp timestamp = element.data['date time'];
+                Category category;
+                Category.list.forEach((cat) {
+                  if (cat.name == element.data['category']) {
+                    category = cat;
+                  }
+                });
+                Account account;
+                Account.list.forEach((acc) {
+                  if (acc.name == element.data['account']) {
+                    account = acc;
+                  }
+                });
+                Record.add(Record(
+                  uid: uid,
+                  type: element.data['type'],
+                  title: element.data['title'],
+                  dateTime: DateTime.fromMicrosecondsSinceEpoch(
+                      timestamp.seconds * 1000),
+                  category: category,
+                  account: account,
+                  amount: element.data['amount'],
+                  note: element.data['note'],
+                  attachment: element.data['attachment'],
+                  isFav: element.data['is favorite'],
+                  save: false,
+                ));
+              },
+            ),
+            print('Record retrieved: $_list')
+          },
+        );
+  }
 }

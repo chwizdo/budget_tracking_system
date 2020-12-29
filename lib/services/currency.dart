@@ -14,7 +14,7 @@ class Currency {
   // can only RUN ONCE
   static Future<dynamic> init() async {
     _jsonResponse = await _conn();
-    print(_jsonResponse);
+    print('API connection established');
     Timer.periodic(Duration(hours: 1), (timer) async {
       _jsonResponse = await _conn();
       _refreshRate();

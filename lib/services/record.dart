@@ -129,6 +129,11 @@ class Record {
     _isFav = isFav;
   }
 
+  static List<Record> add(Record record) {
+    _list.add(record);
+    return _list;
+  }
+
   static List<Record> search({
     String type = '',
     String title = '',

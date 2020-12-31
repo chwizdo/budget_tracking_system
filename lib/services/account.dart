@@ -12,6 +12,7 @@ class Account {
   String _name;
   final _currency;
   double _amount;
+  static List<Account> _list;
 
   // constructor to create new account
   Account({
@@ -44,6 +45,10 @@ class Account {
     return _amount;
   }
 
+  static List<Account> get list {
+    return _list;
+  }
+
   // Update account properties
   // user are not allowed to change currency
   // TODO return difference in amount (Need to add new record for settings changes)
@@ -61,5 +66,11 @@ class Account {
   void rmAccount() {}
 
   // TODO retrieve all accounts in database
-  static List<Account> getAccounts() {}
+  static void getAccounts() {
+    _list = [
+      Account(name: 'cash', currency: 'MYR', amount: 500),
+      Account(name: 'maybank', currency: 'MYR', amount: 500),
+      Account(name: 'card', currency: 'MYR', amount: 500),
+    ];
+  }
 }

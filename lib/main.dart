@@ -1,3 +1,4 @@
+import 'package:budget_tracking_system/services/category.dart';
 import 'package:flutter/material.dart';
 // import 'package:budget_tracking_system/pages/mainpage.dart';
 // import 'package:budget_tracking_system/pages/login.dart';
@@ -6,13 +7,18 @@ import 'package:flutter/material.dart';
 // import 'package:budget_tracking_system/pages/editrecord.dart';
 // import 'package:budget_tracking_system/pages/addbudget.dart';
 import 'package:budget_tracking_system/services/currency.dart';
+import 'package:budget_tracking_system/services/account.dart';
 import 'package:provider/provider.dart';
 import 'package:budget_tracking_system/services/user.dart';
 import 'package:budget_tracking_system/services/auth.dart';
 import 'package:budget_tracking_system/pages/wrapper.dart';
 
 void main() async {
+  // initialize API connection
   Currency.init();
+  // retrieve latest data from database
+  Category.getCategories();
+  Account.getAccounts();
   runApp(MyApp(
       //MaterialApp(
       // initialRoute: '/login',

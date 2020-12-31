@@ -1,3 +1,5 @@
+import 'dart:ffi';
+
 import 'package:meta/meta.dart';
 
 /*
@@ -11,6 +13,7 @@ class Category {
   // private variable
   String _name;
   String _type;
+  static List<Category> _list;
 
   // constructor to create new category
   // all fields are mandatory
@@ -30,6 +33,10 @@ class Category {
     return _type;
   }
 
+  static List<Category> get list {
+    return _list;
+  }
+
   // Update category properties
   void setProperties({String name, String type}) {
     _name = name;
@@ -40,5 +47,12 @@ class Category {
   void rmCategory() {}
 
   // TODO retrieve all categories in database
-  static List<Category> getCategories() {}
+  // Temporary placeholder
+  static void getCategories() {
+    _list = [
+      Category(name: 'food', type: 'expense'),
+      Category(name: 'transport', type: 'expense'),
+      Category(name: 'entertainment', type: 'expense'),
+    ];
+  }
 }

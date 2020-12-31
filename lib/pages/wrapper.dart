@@ -1,4 +1,5 @@
 import 'package:budget_tracking_system/bottomNavTabs/record.dart';
+import 'package:budget_tracking_system/services/record.dart' as recServ;
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:budget_tracking_system/pages/switch.dart';
@@ -12,6 +13,7 @@ class Wrapper extends StatelessWidget {
     if (user == null) {
       return Authenticate();
     } else {
+      recServ.Record.getRecords(uid: user.uid);
       return Mainpage(
         uid: user.uid,
       );

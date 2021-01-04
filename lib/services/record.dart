@@ -11,6 +11,7 @@ import 'package:budget_tracking_system/services/category.dart';
 
 class Record {
   String _uid;
+  String _id;
   String _type;
   String _title;
   DateTime _dateTime;
@@ -20,12 +21,14 @@ class Record {
   String _note;
   String _attachment;
   bool _isFav;
-  static final List<Record> _list = [];
+  static List<Record> _list = [];
 
   // constructor to create new record
   // uid, type, date & time, category, account and amount are mandatory
+  // the id parameter must NOT be used
   Record({
     @required String uid,
+    String id = '',
     @required String type,
     String title = 'Untitled',
     @required DateTime dateTime,
@@ -37,6 +40,7 @@ class Record {
     bool isFav = false,
     bool save = true,
   })  : _uid = uid,
+        _id = id,
         _type = type,
         _title = title,
         _dateTime = dateTime,
@@ -66,6 +70,7 @@ class Record {
           'is favorite': _isFav,
         },
       ).then(
+        // TODO save id into _id
         (value) => {
           Firestore.instance
               .collection('users')
@@ -79,6 +84,10 @@ class Record {
   }
 
   // getters for all private properties
+  String get id {
+    return _id;
+  }
+
   String get type {
     return _type;
   }
@@ -269,8 +278,9 @@ class Record {
 
   // Does not require to create instance
   // Implemented in main page
-  static void getRecords({String uid}) {
-    Firestore.instance
+  static Future<void> getRecords({@required String uid}) async {
+    _list = [];
+    await Firestore.instance
         .collection('users')
         .document(uid)
         .collection('records')
@@ -294,6 +304,7 @@ class Record {
                 });
                 Record.add(Record(
                   uid: uid,
+                  id: element.data['id'],
                   type: element.data['type'],
                   title: element.data['title'],
                   dateTime: DateTime.fromMicrosecondsSinceEpoch(
@@ -311,5 +322,6 @@ class Record {
             print('Record retrieved: $_list')
           },
         );
+    return null;
   }
 }

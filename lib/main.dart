@@ -5,7 +5,7 @@ import 'package:flutter/material.dart';
 // import 'package:budget_tracking_system/pages/register.dart';
 // import 'package:budget_tracking_system/pages/addrecord.dart';
 // import 'package:budget_tracking_system/pages/editrecord.dart';
-// import 'package:budget_tracking_system/pages/addbudget.dart';
+import 'package:budget_tracking_system/pages/addbudget.dart';
 import 'package:budget_tracking_system/services/currency.dart';
 import 'package:budget_tracking_system/services/account.dart';
 import 'package:provider/provider.dart';
@@ -20,7 +20,7 @@ void main() async {
   Category.getCategories();
   Account.getAccounts();
   runApp(MyApp(
-      //MaterialApp(
+      // MaterialApp(
       // initialRoute: '/login',
       // routes: {
       //   '/login': (context) => Login(),
@@ -40,6 +40,7 @@ class MyApp extends StatelessWidget {
     return StreamProvider<User>.value(
       value: AuthService().user,
       child: MaterialApp(
+        routes: {'/addbudget': (context) => AddBudget()},
         home: Wrapper(),
       ),
     );

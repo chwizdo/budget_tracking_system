@@ -1,17 +1,14 @@
 import 'category.dart';
 import 'package:meta/meta.dart';
 
-//_allproties to list of object
-
 class OneTimeBudget {
   String _title;
-  String _type;
   Category _category;
   double _amount;
   double _amountUsed;
   DateTime _startDate;
   DateTime _endDate;
-  List _allProperties;
+  static List<OneTimeBudget> _list = [];
   String _budgetStatus;
 
 // Constructor for Add Budget
@@ -19,27 +16,19 @@ class OneTimeBudget {
 // method-refresh when start app
   OneTimeBudget({
     @required String title,
-    @required String type,
     @required Category category,
     @required double amount,
-    double amountUsed,
     @required DateTime startDate,
     @required DateTime endDate,
   })  : _title = title,
-        _type = type,
         _category = category,
         _amount = amount,
-        _amountUsed = amountUsed,
         _startDate = startDate,
         _endDate = endDate;
 
   // getter for each properties
   String get title {
     return _title;
-  }
-
-  String get type {
-    return _type;
   }
 
   Category get category {
@@ -66,53 +55,64 @@ class OneTimeBudget {
     return _budgetStatus;
   }
 
-  // get all properties
-  dynamic get allProperties {
-    return _allProperties = [
-      _title,
-      _type,
-      _category,
-      _amount,
-      _amountUsed,
-      _startDate,
-      _endDate,
-      _budgetStatus
-    ];
+  static List<OneTimeBudget> get list {
+    return _list;
   }
 
   // setter/update budget
   void setBudget({
     @required String title,
-    @required String type,
     @required Category category,
     @required double amount,
-    double amountUsed,
     @required DateTime startDate,
     @required DateTime endDate,
   }) {
     _title = title;
-    _type = type;
     _category = category;
     _amount = amount;
-    _amountUsed = amountUsed;
     _startDate = startDate;
     _endDate = endDate;
   }
 
   //change budget status(upcoming/completed/current) based on start and end date
-  //loop thru all the bdget to change status (loop)
-  void changeStatus() {
-    if (_startDate.isBefore(DateTime.now()) &&
-        _endDate.isBefore(DateTime.now())) {
-      _budgetStatus = "Completed";
-    } else if (_startDate.isAfter(DateTime.now()) &&
-        _endDate.isAfter(DateTime.now())) {
-      _budgetStatus = "Up-coming";
-    } else if (_startDate.isBefore(DateTime.now()) &&
-        _endDate.isAfter(DateTime.now())) {
-      _budgetStatus = "Current";
-    }
+  //loop thru all the budget to change status
+  static void changeStatus() {
+    _list.forEach((element) {
+      if (element._startDate.isBefore(DateTime.now()) &&
+          element._endDate.isBefore(DateTime.now())) {
+        element._budgetStatus = "Completed";
+      } else if (element._startDate.isAfter(DateTime.now()) &&
+          element._endDate.isAfter(DateTime.now())) {
+        element._budgetStatus = "Up-coming";
+      } else if (element._startDate.isBefore(DateTime.now()) &&
+          element._endDate.isAfter(DateTime.now())) {
+        element._budgetStatus = "Current";
+      }
+    });
+  }
+
+  static List<OneTimeBudget> add(OneTimeBudget oneTimeBudget) {
+    _list.add(oneTimeBudget);
+    return _list;
+  }
+
+  static List<OneTimeBudget> delete(OneTimeBudget oneTimeBudget) {
+    _list.remove(oneTimeBudget);
+    return _list;
   }
 
   //return list of active budget at thta time (parameter: that time)
+  static List<OneTimeBudget> returnList(DateTime dateTime) {
+    List<OneTimeBudget> activeList = [];
+    _list.forEach((element) {
+      if (!element.startDate.isAfter(dateTime) &&
+          !element.endDate.isBefore(dateTime)) {
+        activeList.add(element);
+      }
+    });
+    return activeList;
+  }
+
+  // TODO How to calculate amountUsed
+  static void calculateAmountUsed() {}
 }

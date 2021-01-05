@@ -64,8 +64,8 @@ class _LoadingState extends State<Loading> {
           service.Account(uid: uid, name: 'cash', currency: 'MYR', save: true));
       service.Account.add(service.Account(
           uid: uid, name: 'maybank', currency: 'MYR', save: true));
-      service.Account.add(service.Account(
-          uid: uid, name: 'maybank', currency: 'MYR', save: true));
+      service.Account.add(
+          service.Account(uid: uid, name: 'card', currency: 'MYR', save: true));
     }
     await service.Record.getRecords(uid: uid);
     print('system initialized!');

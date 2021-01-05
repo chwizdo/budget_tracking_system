@@ -374,6 +374,13 @@ class _AddRecordState extends State<AddRecord> {
                       child: Container(
                         height: 50.0,
                         child: FormField(
+                          validator: (newvalue) {
+                            if (newvalue.isEmpty) {
+                              return null;
+                            } else {
+                              return null;
+                            }
+                          },
                           builder: (FormFieldState<String> state) {
                             return InputDecorator(
                               decoration: InputDecoration(
@@ -452,6 +459,13 @@ class _AddRecordState extends State<AddRecord> {
                       child: Container(
                         height: 50.0,
                         child: FormField(
+                          validator: (newvalue) {
+                            if (newvalue.isEmpty) {
+                              return null;
+                            } else {
+                              return null;
+                            }
+                          },
                           builder: (FormFieldState<String> state) {
                             return InputDecorator(
                               decoration: InputDecoration(

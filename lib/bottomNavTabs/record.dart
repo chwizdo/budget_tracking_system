@@ -6,7 +6,7 @@ import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
 import 'package:grouped_list/grouped_list.dart';
 import 'package:budget_tracking_system/services/auth.dart';
-// import 'package:budget_tracking_system/services/record.dart' as recordServ;
+import 'package:budget_tracking_system/services/record.dart' as service;
 // import 'package:budget_tracking_system/services/category.dart';
 // import 'package:budget_tracking_system/services/account.dart';
 import 'package:provider/provider.dart';
@@ -68,81 +68,7 @@ class _RecordState extends State<Record> {
 
   final String uid;
   _RecordState(this.uid);
-  // Temporary list to store all the records
-  List recordView = [
-    // recordServ.Record(
-    //   type: 'expense',
-    //   title: 'McD Fried Chicken',
-    //   dateTime: DateTime.utc(2020, 12, 20),
-    //   category: Category(name: 'food', type: 'expenses'),
-    //   account: Account(name: 'Maybank', currency: 'MYR', amount: 500),
-    //   amount: 13.50,
-    // ),
-    // recordServ.Record(
-    //   type: 'expense',
-    //   title: 'Blueberry Waffle',
-    //   dateTime: DateTime.utc(2020, 12, 20),
-    //   category: Category(name: 'food', type: 'expenses'),
-    //   account: Account(name: 'Cash', currency: 'MYR', amount: 500),
-    //   amount: 4.50,
-    // ),
-    // recordServ.Record(
-    //   type: 'expense',
-    //   title: 'Fuel',
-    //   dateTime: DateTime.utc(2020, 12, 20),
-    //   category: Category(name: 'transport', type: 'expenses'),
-    //   account: Account(name: 'Maybank', currency: 'MYR', amount: 500),
-    //   amount: 54.60,
-    // ),
-    // recordServ.Record(
-    //   type: 'expense',
-    //   title: 'Avenger End Game',
-    //   dateTime: DateTime.utc(2020, 12, 19),
-    //   category: Category(name: 'entertainment', type: 'expenses'),
-    //   account: Account(name: 'Maybank', currency: 'MYR', amount: 500),
-    //   amount: 17.50,
-    // ),
-    // recordServ.Record(
-    //   type: 'expense',
-    //   title: 'Starbucks Coffee',
-    //   dateTime: DateTime.utc(2020, 12, 19),
-    //   category: Category(name: 'food', type: 'expenses'),
-    //   account: Account(name: 'Maybank', currency: 'MYR', amount: 500),
-    //   amount: 17.50,
-    // ),
-    // recordServ.Record(
-    //   type: 'expense',
-    //   title: 'Starbucks Coffee',
-    //   dateTime: DateTime.utc(2020, 12, 19),
-    //   category: Category(name: 'food', type: 'expenses'),
-    //   account: Account(name: 'Maybank', currency: 'MYR', amount: 500),
-    //   amount: 17.50,
-    // ),
-    // recordServ.Record(
-    //   type: 'expense',
-    //   title: 'Starbucks Coffee',
-    //   dateTime: DateTime.utc(2020, 12, 19),
-    //   category: Category(name: 'food', type: 'expenses'),
-    //   account: Account(name: 'Maybank', currency: 'MYR', amount: 500),
-    //   amount: 17.50,
-    // ),
-    // recordServ.Record(
-    //   type: 'expense',
-    //   title: 'Chicken Rice',
-    //   dateTime: DateTime.utc(2020, 12, 29),
-    //   category: Category(name: 'food', type: 'expenses'),
-    //   account: Account(name: 'Maybank', currency: 'MYR', amount: 500),
-    //   amount: 17.50,
-    // ),
-    // recordServ.Record(
-    //   type: 'expense',
-    //   title: 'Fried Rice',
-    //   dateTime: DateTime.utc(2020, 12, 29),
-    //   category: Category(name: 'food', type: 'expenses'),
-    //   account: Account(name: 'Maybank', currency: 'MYR', amount: 500),
-    //   amount: 17.50,
-    // ),
-  ];
+
   final AuthService _auth = AuthService();
   @override
   Widget build(BuildContext context) {
@@ -247,7 +173,7 @@ class _RecordState extends State<Record> {
         //DateTime object is explicitly stated so that it can group the records by date
         child: GroupedListView<dynamic, DateTime>(
           //Elements takes in a list of data that needs to be grouped, in this case recordView's data needs to be taken in.
-          elements: recordView,
+          elements: service.Record.list,
           //groupBy is a function that chooses what to group given by an element.
           //In this case, we give an element named record to represent our recordView list, and we want to group by currentDate.
           groupBy: (record) => DateTime(record.dateTime.day),
@@ -306,7 +232,7 @@ class _RecordState extends State<Record> {
                     child: ListTile(
                       //An if else statement is used to check whether it is an expense or income
                       //If it is expenses, add '-' in front of money, else add '+'
-                      trailing: record.type == 'Expenses'
+                      trailing: record.type == 'expenses'
                           ? Text(
                               "- RM " + record.amount.toString(),
                               style: TextStyle(

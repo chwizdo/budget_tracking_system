@@ -1,5 +1,5 @@
-//import 'package:budget_tracking_system/services/account.dart';
-//import 'package:budget_tracking_system/services/category.dart';
+import 'package:budget_tracking_system/services/category.dart';
+import 'package:budget_tracking_system/services/account.dart';
 import 'package:budget_tracking_system/services/record.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
@@ -19,33 +19,31 @@ class _AddRecordState extends State<AddRecord> {
   _AddRecordState(this.uid);
 
   var recordcollections = Firestore.instance.collection('users');
-  String type;
-  String title;
-  DateTime dateTime;
-  String category;
-  String account;
-  double amount;
-  String note;
-  String attachment;
-  bool isFav;
+
+  // Initialized local variables for user input
+  String type = 'Income';
+  String title = 'Untitled';
+  DateTime dateTime = DateTime.utc(0000);
+  Category category = Category.list[0];
+  Account account = Account.list[0];
+  double amount = 0;
+  String note = '';
+  String attachment = '';
+  bool isFav = false;
 
   @override
   void initState() {
     // TODO: implement initState
     super.initState();
-    isFav = false;
-    type = "Income";
-    category = currentSelectedCategory;
-    account = currentSelectedAccount;
   }
 
   //Creates a list of items for DropdownButton category and account.
+  // LANDMARK
+  String currentSelectedCategory = Category.list[0].name;
+  List<Category> categoryTypes = Category.list;
 
-  String currentSelectedCategory = "Food";
-  List<String> categoryTypes = ["Food", "Transport", "Entertainment"];
-
-  String currentSelectedAccount = "Cash";
-  List<String> accountTypes = ["Cash", "maybank", "credit card"];
+  String currentSelectedAccount = Account.list[0].name;
+  List<Account> accountTypes = Account.list;
 
   GlobalKey<FormState> formkey = GlobalKey<FormState>();
 
@@ -168,7 +166,7 @@ class _AddRecordState extends State<AddRecord> {
                             }
                           },
                           onChanged: (_val) {
-                            title = (_val);
+                            title = _val;
                           },
                           style: TextStyle(color: Colors.white),
                           decoration: InputDecoration(
@@ -310,21 +308,27 @@ class _AddRecordState extends State<AddRecord> {
                                   //When user selects a new item, pass newValue into current item value.
                                   onChanged: (newValue) {
                                     setState(() {
+                                      // LANDMARK
                                       currentSelectedCategory = newValue;
-                                      category = newValue;
+                                      Category.list.forEach((element) {
+                                        if (element.name == newValue) {
+                                          category = element;
+                                        }
+                                      });
                                     });
                                   },
                                   //Map the items from categoryTypes lists into item menu dropdown.
-                                  items: categoryTypes.map((String value) {
+                                  items: categoryTypes.map((Category value) {
+                                    // LANDMARK
                                     return DropdownMenuItem<String>(
-                                      value: value,
-                                      child: Text(value),
+                                      value: value.name,
+                                      child: Text(value.name),
                                     );
                                   }).toList(),
                                   //Style the dropdown items text.
                                   style: TextStyle(color: Colors.black),
                                   selectedItemBuilder: (BuildContext context) {
-                                    return categoryTypes.map((String value) {
+                                    return categoryTypes.map((Category value) {
                                       return Text(
                                         currentSelectedCategory,
                                         style: TextStyle(
@@ -471,19 +475,25 @@ class _AddRecordState extends State<AddRecord> {
                                   value: currentSelectedAccount,
                                   onChanged: (newValue) {
                                     setState(() {
-                                      currentSelectedAccount = newValue;
-                                      account = newValue;
+                                      // LANDMARK
+                                      currentSelectedAccount = (newValue);
+                                      Account.list.forEach((element) {
+                                        if (element.name == newValue) {
+                                          account = element;
+                                        }
+                                      });
                                     });
                                   },
-                                  items: accountTypes.map((String value) {
+                                  // LANDMARK
+                                  items: accountTypes.map((Account value) {
                                     return DropdownMenuItem<String>(
-                                      value: value,
-                                      child: Text(value),
+                                      value: value.name,
+                                      child: Text(value.name),
                                     );
                                   }).toList(),
                                   style: TextStyle(color: Colors.black),
                                   selectedItemBuilder: (BuildContext context) {
-                                    return accountTypes.map((String value) {
+                                    return accountTypes.map((Account value) {
                                       return Text(
                                         currentSelectedAccount,
                                         style: TextStyle(
@@ -583,6 +593,9 @@ class _AddRecordState extends State<AddRecord> {
                       child: Container(
                         height: 50.0,
                         child: TextField(
+                          onChanged: (value) {
+                            note = value;
+                          },
                           style: TextStyle(color: Colors.white),
                           decoration: InputDecoration(
                             border: InputBorder.none,
@@ -650,7 +663,7 @@ class _AddRecordState extends State<AddRecord> {
                           shape: RoundedRectangleBorder(
                               borderRadius: BorderRadius.circular(18.0)),
                           onPressed: () {
-                            Record(
+                            Record.add(Record(
                               uid: uid,
                               type: type,
                               title: title,
@@ -661,7 +674,7 @@ class _AddRecordState extends State<AddRecord> {
                               note: note,
                               attachment: attachment,
                               isFav: isFav,
-                            );
+                            ));
                           },
                           child: Text(
                             'Save',

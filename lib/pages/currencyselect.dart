@@ -120,7 +120,7 @@ class _CurrencySelectionState extends State<CurrencySelection> {
                     border: Border.all(
                       color: Colors.white,
                       style: BorderStyle.solid,
-                      width: 0.80),
+                      width: 0.20),
                   ),
                   child: DropdownButtonHideUnderline(
                     child: Theme(

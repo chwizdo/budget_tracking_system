@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:budget_tracking_system/pages/addexpense.dart';
 
 class Expense {
   String expenseTitle;
@@ -64,7 +65,14 @@ class _ExpensesCategoryState extends State<ExpensesCategory> {
       ),
       backgroundColor: Color.fromRGBO(255, 185, 49, 1),
       onPressed: () {
-        //Do something
+        Navigator.push(
+        context,
+        MaterialPageRoute(
+          builder: (context) => AddExpense(
+                //uid: user.uid,
+              ),
+          fullscreenDialog: true),
+        );
       },
       ),
     );

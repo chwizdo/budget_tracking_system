@@ -38,7 +38,7 @@ class Record {
     String note = '',
     String attachment = '',
     bool isFav = false,
-    bool save = true,
+    bool save = false,
   })  : _uid = uid,
         _id = id,
         _type = type,
@@ -308,7 +308,7 @@ class Record {
                   type: element.data['type'],
                   title: element.data['title'],
                   dateTime: DateTime.fromMicrosecondsSinceEpoch(
-                      timestamp.seconds * 1000),
+                      timestamp.microsecondsSinceEpoch),
                   category: category,
                   account: account,
                   amount: element.data['amount'],

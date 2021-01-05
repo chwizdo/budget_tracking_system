@@ -35,7 +35,9 @@ class _MainpageState extends State<Mainpage> {
       Budget(),
       Statistic(),
       Account(),
-      Settings(),
+      Settings(
+        uid: uid,
+      ),
     ];
 
     return Scaffold(

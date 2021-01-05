@@ -48,17 +48,25 @@ class _LoadingState extends State<Loading> {
 
   void initialize() async {
     await service.Currency.init();
-    // service.Category.add(
-    //     service.Category(uid: uid, name: 'food', type: 'expense', save: true));
-    // service.Category.add(service.Category(
-    //     uid: uid, name: 'entertainment', type: 'expense', save: true));
 
-    // service.Account.add(
-    //     service.Account(uid: uid, name: 'cash', currency: 'MYR', save: true));
-    // service.Account.add(service.Account(
-    //     uid: uid, name: 'maybank', currency: 'MYR', save: true));
     await service.Category.getCategories(uid: uid);
+    if (service.Category.list.length < 1) {
+      service.Category.add(service.Category(
+          uid: uid, name: 'food', type: 'expense', save: true));
+      service.Category.add(service.Category(
+          uid: uid, name: 'entertainment', type: 'expense', save: true));
+      service.Category.add(service.Category(
+          uid: uid, name: 'transport', type: 'expense', save: true));
+    }
     await service.Account.getAccounts(uid: uid);
+    if (service.Account.list.length < 1) {
+      service.Account.add(
+          service.Account(uid: uid, name: 'cash', currency: 'MYR', save: true));
+      service.Account.add(service.Account(
+          uid: uid, name: 'maybank', currency: 'MYR', save: true));
+      service.Account.add(service.Account(
+          uid: uid, name: 'maybank', currency: 'MYR', save: true));
+    }
     await service.Record.getRecords(uid: uid);
     print('system initialized!');
     setState(() {

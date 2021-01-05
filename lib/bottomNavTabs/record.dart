@@ -62,7 +62,6 @@ class Record extends StatefulWidget {
 }
 
 class _RecordState extends State<Record> {
-
   String _currentSelectedPeriod = "M";
   List _periodTypes = ["M", "W", "D"];
 
@@ -86,9 +85,9 @@ class _RecordState extends State<Record> {
                 padding: EdgeInsets.symmetric(horizontal: 10.0),
                 decoration: BoxDecoration(
                   border: Border.all(
-                    color: Colors.white,
-                    style: BorderStyle.solid,
-                    width: 0.20),
+                      color: Colors.white,
+                      style: BorderStyle.solid,
+                      width: 0.20),
                 ),
                 child: DropdownButtonHideUnderline(
                   child: Theme(
@@ -120,10 +119,8 @@ class _RecordState extends State<Record> {
                 padding: EdgeInsets.only(left: 16.0),
                 child: Text(
                   '< 2020 Dec >',
-                  style: TextStyle(
-                    fontWeight: FontWeight.normal,
-                    fontSize: 16.0
-                  ),
+                  style:
+                      TextStyle(fontWeight: FontWeight.normal, fontSize: 16.0),
                 ),
               ),
             )
@@ -138,12 +135,12 @@ class _RecordState extends State<Record> {
             ),
             onPressed: () {
               Navigator.push(
-              context,
-              MaterialPageRoute(
-                builder: (context) => SearchRecord(
-                      //uid: user.uid,
-                    ),
-                fullscreenDialog: true),
+                context,
+                MaterialPageRoute(
+                    builder: (context) => SearchRecord(
+                        //uid: user.uid,
+                        ),
+                    fullscreenDialog: true),
               );
             },
           ),
@@ -155,12 +152,12 @@ class _RecordState extends State<Record> {
             //temporary log out function
             onPressed: () {
               Navigator.push(
-              context,
-              MaterialPageRoute(
-                builder: (context) => FavouriteRecord(
-                      //uid: user.uid,
-                    ),
-                fullscreenDialog: true),
+                context,
+                MaterialPageRoute(
+                    builder: (context) => FavouriteRecord(
+                        //uid: user.uid,
+                        ),
+                    fullscreenDialog: true),
               );
             },
           ),
@@ -176,7 +173,13 @@ class _RecordState extends State<Record> {
           elements: service.Record.list,
           //groupBy is a function that chooses what to group given by an element.
           //In this case, we give an element named record to represent our recordView list, and we want to group by currentDate.
-          groupBy: (record) => DateTime(record.dateTime.day),
+          groupBy: (record) {
+            return DateTime(
+              record.dateTime.year,
+              record.dateTime.month,
+              record.dateTime.day,
+            );
+          },
           //This function prepares to separate the lists by date.
           //This can be done by returning a constructor of RecordGroupSeparator() that passes currentDate to date.
           //Hence the RecordGroupSeparator() class can perform its own task which is to generate respective headers for each lists.
@@ -184,7 +187,8 @@ class _RecordState extends State<Record> {
               RecordGroupSeparator(date: dateTime),
           //Arrange the grouped lists in descending order
           order: GroupedListOrder.DESC,
-          itemComparator: (item1,item2) => item1.currentDate.hour.compareTo(item2.currentDate.hour),
+          itemComparator: (item1, item2) =>
+              item1.dateTime.hour.compareTo(item2.dateTime.hour),
           useStickyGroupSeparators: true,
           separator: Divider(
             color: Colors.grey,
@@ -269,7 +273,8 @@ class _RecordState extends State<Record> {
                       uid: user.uid,
                     ),
                 fullscreenDialog: true),
-          );
+            // The Greatest Mystery
+          ).then((value) => setState(() {}));
         },
       ),
     );

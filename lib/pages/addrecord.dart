@@ -58,13 +58,10 @@ class _AddRecordState extends State<AddRecord> {
         actions: [
           IconButton(
             icon: Icon(
-              //If isFav is False, display the favorite_border icon.
-              //Else display the favorite icon.
-              isFav
-                ? Icons.favorite
-                : Icons.favorite_border,
-              color: Colors.white
-            ),
+                //If isFav is False, display the favorite_border icon.
+                //Else display the favorite icon.
+                isFav ? Icons.favorite : Icons.favorite_border,
+                color: Colors.white),
             onPressed: () {
               setState(() {
                 isFav = !isFav;
@@ -400,20 +397,24 @@ class _AddRecordState extends State<AddRecord> {
                                 child: DropdownButton<String>(
                                   value: currentSelectedAccount,
                                   onChanged: (newValue) {
-                                    setState(() {
-                                      currentSelectedAccount = newValue;
-                                      account = newValue;
-                                    });
+                                    // setState(() {
+                                    //   currentSelectedAccount = (newValue);
+                                    //   Account.list.forEach((element) {
+                                    //     if (element.name == newValue) {
+                                    //       account = element;
+                                    //     }
+                                    //   });
+                                    // });
                                   },
-                                  items: accountTypes.map((String value) {
+                                  items: accountTypes.map((Account value) {
                                     return DropdownMenuItem<String>(
-                                      value: value,
-                                      child: Text(value),
+                                      value: value.name,
+                                      child: Text(value.name),
                                     );
                                   }).toList(),
                                   style: TextStyle(color: Colors.black),
                                   selectedItemBuilder: (BuildContext context) {
-                                    return accountTypes.map((String value) {
+                                    return accountTypes.map((Account value) {
                                       return Text(
                                         currentSelectedAccount,
                                         style: TextStyle(
@@ -432,8 +433,8 @@ class _AddRecordState extends State<AddRecord> {
                   ],
                 ),
               ),
-              
-              SizedBox(height: 12.0),  
+
+              SizedBox(height: 12.0),
               //Display Amount DropdownButton Field
               Container(
                 margin: EdgeInsets.only(left: 12.0, right: 10.0),
@@ -674,7 +675,9 @@ class _AddRecordState extends State<AddRecord> {
                               note: note,
                               attachment: attachment,
                               isFav: isFav,
+                              save: true,
                             ));
+                            Navigator.pop(context);
                           },
                           child: Text(
                             'Save',

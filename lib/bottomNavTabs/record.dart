@@ -1,4 +1,6 @@
 import 'package:budget_tracking_system/pages/addrecord.dart';
+import 'package:budget_tracking_system/pages/searchrecord.dart';
+import 'package:budget_tracking_system/pages/favrecord.dart';
 import 'package:budget_tracking_system/services/user.dart';
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
@@ -60,6 +62,10 @@ class Record extends StatefulWidget {
 }
 
 class _RecordState extends State<Record> {
+
+  String _currentSelectedPeriod = "M";
+  List _periodTypes = ["M", "W", "D"];
+
   final String uid;
   _RecordState(this.uid);
   // Temporary list to store all the records
@@ -145,8 +151,58 @@ class _RecordState extends State<Record> {
       backgroundColor: Color.fromRGBO(57, 57, 57, 1),
       appBar: AppBar(
         backgroundColor: Color.fromRGBO(18, 18, 18, 1),
-        title: Text('Hello'),
-        centerTitle: true,
+        title: Row(
+          children: [
+            Expanded(
+              flex: 1,
+              child: Container(
+                height: 40,
+                padding: EdgeInsets.symmetric(horizontal: 10.0),
+                decoration: BoxDecoration(
+                  border: Border.all(
+                    color: Colors.white,
+                    style: BorderStyle.solid,
+                    width: 0.20),
+                ),
+                child: DropdownButtonHideUnderline(
+                  child: Theme(
+                    data: Theme.of(context).copyWith(
+                      canvasColor: Color.fromRGBO(18, 18, 18, 1),
+                    ),
+                    child: DropdownButton(
+                      style: TextStyle(color: Colors.white),
+                      value: _currentSelectedPeriod,
+                      onChanged: (newValue) {
+                        setState(() {
+                          _currentSelectedPeriod = newValue;
+                        });
+                      },
+                      items: _periodTypes.map((value) {
+                        return DropdownMenuItem<String>(
+                          value: value,
+                          child: Text(value),
+                        );
+                      }).toList(),
+                    ),
+                  ),
+                ),
+              ),
+            ),
+            Expanded(
+              flex: 3,
+              child: Padding(
+                padding: EdgeInsets.only(left: 16.0),
+                child: Text(
+                  '< 2020 Dec >',
+                  style: TextStyle(
+                    fontWeight: FontWeight.normal,
+                    fontSize: 16.0
+                  ),
+                ),
+              ),
+            )
+          ],
+        ),
         //Actions Button inside the AppBar widget - Favourite Icon and Search Icon
         actions: [
           IconButton(
@@ -154,7 +210,16 @@ class _RecordState extends State<Record> {
               Icons.search,
               color: Colors.white,
             ),
-            onPressed: () {},
+            onPressed: () {
+              Navigator.push(
+              context,
+              MaterialPageRoute(
+                builder: (context) => SearchRecord(
+                      //uid: user.uid,
+                    ),
+                fullscreenDialog: true),
+              );
+            },
           ),
           IconButton(
             icon: Icon(
@@ -162,8 +227,15 @@ class _RecordState extends State<Record> {
               color: Colors.white,
             ),
             //temporary log out function
-            onPressed: () async {
-              await _auth.signOut();
+            onPressed: () {
+              Navigator.push(
+              context,
+              MaterialPageRoute(
+                builder: (context) => FavouriteRecord(
+                      //uid: user.uid,
+                    ),
+                fullscreenDialog: true),
+              );
             },
           ),
         ],
@@ -178,7 +250,7 @@ class _RecordState extends State<Record> {
           elements: recordView,
           //groupBy is a function that chooses what to group given by an element.
           //In this case, we give an element named record to represent our recordView list, and we want to group by currentDate.
-          groupBy: (record) => record.dateTime,
+          groupBy: (record) => DateTime(record.dateTime.day),
           //This function prepares to separate the lists by date.
           //This can be done by returning a constructor of RecordGroupSeparator() that passes currentDate to date.
           //Hence the RecordGroupSeparator() class can perform its own task which is to generate respective headers for each lists.
@@ -186,6 +258,7 @@ class _RecordState extends State<Record> {
               RecordGroupSeparator(date: dateTime),
           //Arrange the grouped lists in descending order
           order: GroupedListOrder.DESC,
+          itemComparator: (item1,item2) => item1.currentDate.hour.compareTo(item2.currentDate.hour),
           useStickyGroupSeparators: true,
           separator: Divider(
             color: Colors.grey,

@@ -50,13 +50,14 @@ class RecordGroupSeparator extends StatelessWidget {
   }
 }
 
-class OneTime extends StatefulWidget {
+class OneTimeStats extends StatefulWidget {
   @override
-  _OneTimeState createState() => _OneTimeState();
+  _OneTimeStatsState createState() => _OneTimeStatsState();
 }
 
-class _OneTimeState extends State<OneTime> {
-  //A list to store all the BudgetRecords by passing the values through using the constructor from BudgetRecords() Class.
+class _OneTimeStatsState extends State<OneTimeStats> {
+
+   //A list to store all the BudgetRecords by passing the values through using the constructor from BudgetRecords() Class.
   List recordView = [
     OneTimeRecords(
         category: 'Miscellaneuous',
@@ -91,7 +92,7 @@ class _OneTimeState extends State<OneTime> {
   ];
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
+     return Scaffold(
       backgroundColor: Color.fromRGBO(57, 57, 57, 1),
       body: SafeArea(
         //GroupedListView is a widget that can help group the list view by anything

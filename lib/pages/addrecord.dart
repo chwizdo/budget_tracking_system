@@ -34,6 +34,9 @@ class _AddRecordState extends State<AddRecord> {
     // TODO: implement initState
     super.initState();
     isFav = false;
+    type = "Income";
+    category = currentSelectedCategory;
+    account = currentSelectedAccount;
   }
 
   //Creates a list of items for DropdownButton category and account.
@@ -53,15 +56,21 @@ class _AddRecordState extends State<AddRecord> {
       appBar: AppBar(
         backgroundColor: Color.fromRGBO(18, 18, 18, 1),
         title: Text('Add Record'),
-        //Action buttons for delete and favourite icon in appBar.
+        //Action buttons for favourite icon in appBar.
         actions: [
           IconButton(
             icon: Icon(
-              Icons.favorite,
-              color: Colors.white,
+              //If isFav is False, display the favorite_border icon.
+              //Else display the favorite icon.
+              isFav
+                ? Icons.favorite
+                : Icons.favorite_border,
+              color: Colors.white
             ),
             onPressed: () {
-              setState(() {});
+              setState(() {
+                isFav = !isFav;
+              });
             },
           ),
         ],
@@ -301,6 +310,7 @@ class _AddRecordState extends State<AddRecord> {
                                   //When user selects a new item, pass newValue into current item value.
                                   onChanged: (newValue) {
                                     setState(() {
+                                      currentSelectedCategory = newValue;
                                       category = newValue;
                                     });
                                   },
@@ -346,6 +356,80 @@ class _AddRecordState extends State<AddRecord> {
 
               SizedBox(height: 12.0),
 
+              //Display Budget DropdownButton Field
+              Container(
+                margin: EdgeInsets.only(left: 12.0, right: 10.0),
+                child: Row(
+                  children: [
+                    Expanded(
+                      flex: 1,
+                      child: Text(
+                        'Budget:',
+                        style: TextStyle(color: Colors.white, fontSize: 18.0),
+                      ),
+                    ),
+                    Expanded(
+                      flex: 3,
+                      child: Container(
+                        height: 50.0,
+                        child: FormField(
+                          builder: (FormFieldState<String> state) {
+                            return InputDecorator(
+                              decoration: InputDecoration(
+                                  border: InputBorder.none,
+                                  filled: true,
+                                  fillColor: Color.fromRGBO(41, 41, 41, 1),
+                                  enabledBorder: OutlineInputBorder(
+                                    borderRadius:
+                                        BorderRadius.all(Radius.circular(10.0)),
+                                    borderSide:
+                                        BorderSide(color: Colors.transparent),
+                                  ),
+                                  focusedBorder: OutlineInputBorder(
+                                    borderRadius:
+                                        BorderRadius.all(Radius.circular(10.0)),
+                                    borderSide:
+                                        BorderSide(color: Colors.transparent),
+                                  ),
+                                  isDense: true),
+                              child: DropdownButtonHideUnderline(
+                                child: DropdownButton<String>(
+                                  value: currentSelectedAccount,
+                                  onChanged: (newValue) {
+                                    setState(() {
+                                      currentSelectedAccount = newValue;
+                                      account = newValue;
+                                    });
+                                  },
+                                  items: accountTypes.map((String value) {
+                                    return DropdownMenuItem<String>(
+                                      value: value,
+                                      child: Text(value),
+                                    );
+                                  }).toList(),
+                                  style: TextStyle(color: Colors.black),
+                                  selectedItemBuilder: (BuildContext context) {
+                                    return accountTypes.map((String value) {
+                                      return Text(
+                                        currentSelectedAccount,
+                                        style: TextStyle(
+                                            color: Colors.white,
+                                            fontSize: 15.0),
+                                      );
+                                    }).toList();
+                                  },
+                                ),
+                              ),
+                            );
+                          },
+                        ),
+                      ),
+                    ),
+                  ],
+                ),
+              ),
+              
+              SizedBox(height: 12.0),  
               //Display Amount DropdownButton Field
               Container(
                 margin: EdgeInsets.only(left: 12.0, right: 10.0),
@@ -387,7 +471,8 @@ class _AddRecordState extends State<AddRecord> {
                                   value: currentSelectedAccount,
                                   onChanged: (newValue) {
                                     setState(() {
-                                      account = (newValue);
+                                      currentSelectedAccount = newValue;
+                                      account = newValue;
                                     });
                                   },
                                   items: accountTypes.map((String value) {

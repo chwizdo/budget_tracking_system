@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:budget_tracking_system/pages/addaccount.dart';
 
 class AccountRecord {
   String accountName, currency;
@@ -15,7 +16,7 @@ class Account extends StatefulWidget {
 class _AccountState extends State<Account> {
   List accountRecords = [
     AccountRecord(accountName: 'Account Maybank - MYR', amount: 34700.00, currency: 'RM'),
-    AccountRecord(accountName: 'Account Maybank - USD',amount: 13500.00, currency: 'USD'),
+    AccountRecord(accountName: 'Account Maybank - USD',amount: 13500.00,currency: 'USD'),
     AccountRecord(accountName: 'Card', amount: 250.00, currency: 'RM'),
     AccountRecord(accountName: 'Cash - MYR', amount: 1000.00, currency: 'RM'),
   ];
@@ -97,27 +98,22 @@ class _AccountState extends State<Account> {
                   child: Row(
                     children: [
                       Expanded(
-                        flex: 2,
-                        child: ListTile(
-                          title: Text(
-                            accountRecords[index].accountName,
-                            style: TextStyle(
-                              color: Colors.white
+                          flex: 2,
+                          child: ListTile(
+                            title: Text(
+                              accountRecords[index].accountName,
+                              style: TextStyle(color: Colors.white),
                             ),
-                          ),
-                        )
-                      ),
+                          )),
                       Expanded(
-                        flex: 1,
-                        child: ListTile(
-                          trailing: Text(
-                            '${accountRecords[index].currency}'+ ' ${accountRecords[index].amount.toStringAsFixed(2)}',
-                            style: TextStyle(
-                              color: Colors.white
+                          flex: 1,
+                          child: ListTile(
+                            trailing: Text(
+                              '${accountRecords[index].currency}' +
+                                  ' ${accountRecords[index].amount.toStringAsFixed(2)}',
+                              style: TextStyle(color: Colors.white),
                             ),
-                          ),
-                        )
-                      ),
+                          )),
                     ],
                   ),
                 );
@@ -133,7 +129,7 @@ class _AccountState extends State<Account> {
           ],
         ),
       ),
-      //This button can be navigated to add records page.
+      //This button can be navigated to add account page.
       floatingActionButton: FloatingActionButton(
         child: Text(
           "+",
@@ -142,7 +138,14 @@ class _AccountState extends State<Account> {
         ),
         backgroundColor: Color.fromRGBO(255, 185, 49, 1),
         onPressed: () {
-          Navigator.pushNamed(context, '/addaccount');
+          Navigator.push(
+            context,
+            MaterialPageRoute(
+                builder: (context) => AddAccount(
+                    //uid: user.uid,
+                    ),
+                fullscreenDialog: true),
+          );
         },
       ),
     );

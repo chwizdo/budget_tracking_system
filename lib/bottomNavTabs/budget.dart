@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:budget_tracking_system/pages/budgetperiodic.dart';
 import 'package:budget_tracking_system/pages/budgetonetime.dart';
+import 'package:budget_tracking_system/pages/addbudget.dart';
 
 class Budget extends StatelessWidget {
   @override
@@ -44,7 +45,14 @@ class Budget extends StatelessWidget {
           ),
           backgroundColor: Color.fromRGBO(255, 185, 49, 1),
           onPressed: () {
-            Navigator.pushNamed(context, '/addbudget');
+            Navigator.push(
+              context,
+              MaterialPageRoute(
+                builder: (context) => AddBudget(
+                      //uid: user.uid,
+                    ),
+                fullscreenDialog: true),
+              );
           },
         ),
       ),

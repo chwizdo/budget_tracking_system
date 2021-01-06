@@ -402,34 +402,35 @@ class _AddRecordState extends State<AddRecord> {
                                   isDense: true),
                               child: DropdownButtonHideUnderline(
                                 child: DropdownButton<String>(
-                                  value: currentSelectedAccount,
-                                  onChanged: (newValue) {
-                                    // setState(() {
-                                    //   currentSelectedAccount = (newValue);
-                                    //   Account.list.forEach((element) {
-                                    //     if (element.name == newValue) {
-                                    //       account = element;
-                                    //     }
-                                    //   });
-                                    // });
-                                  },
-                                  items: accountTypes.map((Account value) {
-                                    return DropdownMenuItem<String>(
-                                      value: value.name,
-                                      child: Text(value.name),
-                                    );
-                                  }).toList(),
+                                  value: 'Budget',
+                                  // value: currentSelectedAccount,
+                                  // onChanged: (newValue) {
+                                  // setState(() {
+                                  //   currentSelectedAccount = (newValue);
+                                  //   Account.list.forEach((element) {
+                                  //     if (element.name == newValue) {
+                                  //       account = element;
+                                  //     }
+                                  //   });
+                                  // });
+                                  // },
+                                  // items: accountTypes.map((Account value) {
+                                  //   return DropdownMenuItem<String>(
+                                  //     value: value.name,
+                                  //     child: Text(value.name),
+                                  //   );
+                                  // }).toList(),
                                   style: TextStyle(color: Colors.black),
-                                  selectedItemBuilder: (BuildContext context) {
-                                    return accountTypes.map((Account value) {
-                                      return Text(
-                                        currentSelectedAccount,
-                                        style: TextStyle(
-                                            color: Colors.white,
-                                            fontSize: 15.0),
-                                      );
-                                    }).toList();
-                                  },
+                                  // selectedItemBuilder: (BuildContext context) {
+                                  //   return accountTypes.map((Account value) {
+                                  //     return Text(
+                                  //       currentSelectedAccount,
+                                  //       style: TextStyle(
+                                  //           color: Colors.white,
+                                  //           fontSize: 15.0),
+                                  //     );
+                                  //   }).toList();
+                                  // },
                                 ),
                               ),
                             );

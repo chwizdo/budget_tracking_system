@@ -9,6 +9,7 @@ class OneTimeBudget {
   DateTime _startDate;
   DateTime _endDate;
   static List<OneTimeBudget> _list = [];
+  static List<OneTimeBudget> activeList = [];
   String _budgetStatus;
 
 // Constructor for Add Budget
@@ -75,7 +76,7 @@ class OneTimeBudget {
   }
 
   //change budget status(upcoming/completed/current) based on start and end date
-  //loop thru all the budget to change status
+  //loop thru all the one time budget to change status
   static void changeStatus() {
     _list.forEach((element) {
       if (element._startDate.isBefore(DateTime.now()) &&
@@ -91,19 +92,19 @@ class OneTimeBudget {
     });
   }
 
+  // Add all periodic budget into _list
   static List<OneTimeBudget> add(OneTimeBudget oneTimeBudget) {
     _list.add(oneTimeBudget);
     return _list;
   }
 
-  static List<OneTimeBudget> delete(OneTimeBudget oneTimeBudget) {
-    _list.remove(oneTimeBudget);
+  static List<OneTimeBudget> delete(int index) {
+    _list.removeAt(index);
     return _list;
   }
 
   //return list of active budget at thta time (parameter: that time)
   static List<OneTimeBudget> returnList(DateTime dateTime) {
-    List<OneTimeBudget> activeList = [];
     _list.forEach((element) {
       if (!element.startDate.isAfter(dateTime) &&
           !element.endDate.isBefore(dateTime)) {
@@ -114,5 +115,6 @@ class OneTimeBudget {
   }
 
   // TODO How to calculate amountUsed
+  // take all record for that period of time
   static void calculateAmountUsed() {}
 }

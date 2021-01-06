@@ -1,5 +1,6 @@
 import 'package:budget_tracking_system/services/category.dart';
 import 'package:budget_tracking_system/services/onetimebudget.dart';
+import 'package:budget_tracking_system/services/periodicbudget.dart';
 import 'package:flutter/material.dart';
 
 class AddBudget extends StatefulWidget {
@@ -9,14 +10,13 @@ class AddBudget extends StatefulWidget {
 
 class _AddBudgetState extends State<AddBudget> {
   // Initialized local variables for user input
-  DateTime dateTime = DateTime.now();
   String title = "Untitled";
-  String type = "Periodic";
   Category category = Category.list[0];
   double amount = 0;
-  DateTime startDate = DateTime.now();
+  DateTime startDate;
   DateTime endDate;
-  String interval = "Monthly";
+  String interval;
+  String budgetstatus;
 
   //Creates a list of items for DropdownButton category and account.
   String currentSelectedCategory = "Food";
@@ -119,6 +119,9 @@ class _AddBudgetState extends State<AddBudget> {
                   Container(
                     height: 50.0,
                     child: TextFormField(
+                      onChanged: (value) {
+                        startDate = DateTime.parse(value);
+                      },
                       style: TextStyle(color: Colors.white),
                       decoration: InputDecoration(
                         border: InputBorder.none,
@@ -149,6 +152,9 @@ class _AddBudgetState extends State<AddBudget> {
                   Container(
                     height: 50.0,
                     child: TextFormField(
+                      onChanged: (value) {
+                        endDate = DateTime.parse(value);
+                      },
                       style: TextStyle(color: Colors.white),
                       decoration: InputDecoration(
                         border: InputBorder.none,
@@ -214,6 +220,9 @@ class _AddBudgetState extends State<AddBudget> {
                       child: Container(
                         height: 50.0,
                         child: TextFormField(
+                          onChanged: (val) {
+                            title = val;
+                          },
                           style: TextStyle(color: Colors.white),
                           decoration: InputDecoration(
                             //Remove visible borders
@@ -431,6 +440,9 @@ class _AddBudgetState extends State<AddBudget> {
                       child: Container(
                         height: 50.0,
                         child: TextFormField(
+                          onChanged: (value) {
+                            amount = double.parse(value);
+                          },
                           style: TextStyle(color: Colors.white),
                           decoration: InputDecoration(
                             border: InputBorder.none,
@@ -476,14 +488,41 @@ class _AddBudgetState extends State<AddBudget> {
                       shape: RoundedRectangleBorder(
                           borderRadius: BorderRadius.circular(18.0)),
                       onPressed: () {
-                        if (type == "Periodic") {
+                        if (currentSelectedType == "Periodic") {
+                          PeriodicBudget.add(PeriodicBudget(
+                              title: "pb",
+                              category: Category.list[0],
+                              amount: 50,
+                              interval: "Montly",
+                              startDate: DateTime.now()));
                         } else {
                           OneTimeBudget.add(OneTimeBudget(
-                              title: title,
-                              category: category,
-                              amount: amount,
-                              startDate: startDate,
-                              endDate: endDate));
+                              title: "buget1",
+                              category: Category.list[0],
+                              amount: 30,
+                              startDate: DateTime.utc(2021, 1, 1),
+                              endDate: DateTime.utc(2021, 1, 10)));
+                          OneTimeBudget.add(OneTimeBudget(
+                              title: "buget2",
+                              category: Category.list[1],
+                              amount: 21330,
+                              startDate: DateTime.utc(2019, 1, 2),
+                              endDate: DateTime.utc(2021, 1, 4)));
+                          OneTimeBudget.add(OneTimeBudget(
+                              title: "buget3",
+                              category: Category.list[0],
+                              amount: 340,
+                              startDate: DateTime.utc(2021, 2, 1),
+                              endDate: DateTime.utc(2021, 2, 10)));
+                          OneTimeBudget.changeStatus();
+                          print(OneTimeBudget.list[0].budgetStatus);
+                          print(OneTimeBudget.list[1].budgetStatus);
+                          print(OneTimeBudget.list[2].budgetStatus);
+                          OneTimeBudget.returnList(DateTime.utc(2021, 1, 3));
+                          print(OneTimeBudget.activeList);
+                          print(DateTime.now().toUtc().month);
+                          OneTimeBudget.delete(2);
+                          // print(OneTimeBudget.list[2]);
                         }
                       },
                       child: Text(

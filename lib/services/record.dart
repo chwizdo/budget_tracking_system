@@ -38,7 +38,7 @@ class Record {
     String note = '',
     String attachment = '',
     bool isFav = false,
-    bool save = true,
+    bool save = false,
   })  : _uid = uid,
         _id = id,
         _type = type,
@@ -70,8 +70,8 @@ class Record {
           'is favorite': _isFav,
         },
       ).then(
-        // TODO save id into _id
         (value) => {
+          _id = value.documentID,
           Firestore.instance
               .collection('users')
               .document(_uid)
@@ -150,6 +150,23 @@ class Record {
     _note = note;
     _attachment = attachment;
     _isFav = isFav;
+
+    Firestore.instance
+        .collection('users')
+        .document(_uid)
+        .collection('records')
+        .document(_id)
+        .updateData({
+      'type': _type,
+      'title': _title,
+      'date time': _dateTime,
+      'category': _category.name, // TODO use id
+      'account': _account.name, // TODO use id
+      'amount': _amount,
+      'note': _note,
+      'attachment': _attachment,
+      'is favorite': _isFav,
+    });
   }
 
   static List<Record> add(Record record) {
@@ -308,7 +325,7 @@ class Record {
                   type: element.data['type'],
                   title: element.data['title'],
                   dateTime: DateTime.fromMicrosecondsSinceEpoch(
-                      timestamp.seconds * 1000),
+                      timestamp.microsecondsSinceEpoch),
                   category: category,
                   account: account,
                   amount: element.data['amount'],

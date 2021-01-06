@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:budget_tracking_system/pages/addincome.dart';
 
 class Income {
   String incomeTitle;
@@ -63,7 +64,14 @@ class _IncomeCategoryState extends State<IncomeCategory> {
       ),
       backgroundColor: Color.fromRGBO(255, 185, 49, 1),
       onPressed: () {
-        //Do something
+        Navigator.push(
+        context,
+        MaterialPageRoute(
+          builder: (context) => AddIncome(
+                //uid: user.uid,
+              ),
+          fullscreenDialog: true),
+        );
       },
       ),
     );

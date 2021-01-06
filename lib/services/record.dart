@@ -70,8 +70,8 @@ class Record {
           'is favorite': _isFav,
         },
       ).then(
-        // TODO save id into _id
         (value) => {
+          _id = value.documentID,
           Firestore.instance
               .collection('users')
               .document(_uid)
@@ -150,6 +150,23 @@ class Record {
     _note = note;
     _attachment = attachment;
     _isFav = isFav;
+
+    Firestore.instance
+        .collection('users')
+        .document(_uid)
+        .collection('records')
+        .document(_id)
+        .updateData({
+      'type': _type,
+      'title': _title,
+      'date time': _dateTime,
+      'category': _category.name, // TODO use id
+      'account': _account.name, // TODO use id
+      'amount': _amount,
+      'note': _note,
+      'attachment': _attachment,
+      'is favorite': _isFav,
+    });
   }
 
   static List<Record> add(Record record) {

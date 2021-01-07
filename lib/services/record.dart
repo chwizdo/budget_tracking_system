@@ -62,7 +62,7 @@ class Record {
           'type': _type,
           'title': _title,
           'date time': _dateTime,
-          'category': _category.name, // TODO use id
+          'category': _category.id, // TODO use id
           'account': _account.name, // TODO use id
           'amount': _amount,
           'note': _note,
@@ -160,7 +160,7 @@ class Record {
       'type': _type,
       'title': _title,
       'date time': _dateTime,
-      'category': _category.name, // TODO use id
+      'category': _category.id, // TODO use id
       'account': _account.name, // TODO use id
       'amount': _amount,
       'note': _note,
@@ -231,7 +231,7 @@ class Record {
           isMatch++;
           // TODO add .name on both sides
           // TODO change to category id
-          if (value.category == category) {
+          if (value.category.name == category) {
             isMatch--;
           }
         }
@@ -309,7 +309,7 @@ class Record {
                 Timestamp timestamp = element.data['date time'];
                 Category category;
                 Category.list.forEach((cat) {
-                  if (cat.name == element.data['category']) {
+                  if (cat.id == element.data['category']) {
                     category = cat;
                   }
                 });
@@ -336,7 +336,7 @@ class Record {
                 ));
               },
             ),
-            print('Record retrieved: $_list')
+            print('Record retrieved: ${_list}')
           },
         );
     return null;

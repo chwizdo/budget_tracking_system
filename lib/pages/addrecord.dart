@@ -38,7 +38,6 @@ class _AddRecordState extends State<AddRecord> {
   }
 
   //Creates a list of items for DropdownButton category and account.
-  // LANDMARK
   String currentSelectedCategory = Category.incomeList[0].name;
   List<Category> categoryTypes = Category.incomeList;
 

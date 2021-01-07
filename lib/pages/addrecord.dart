@@ -24,7 +24,7 @@ class _AddRecordState extends State<AddRecord> {
   String type = 'Income';
   String title = 'Untitled';
   DateTime dateTime = DateTime.utc(0000);
-  Category category = Category.list[0];
+  Category category = Category.incomeList[0];
   Account account = Account.list[0];
   double amount = 0;
   String note = '';
@@ -39,8 +39,8 @@ class _AddRecordState extends State<AddRecord> {
 
   //Creates a list of items for DropdownButton category and account.
   // LANDMARK
-  String currentSelectedCategory = Category.list[0].name;
-  List<Category> categoryTypes = Category.list;
+  String currentSelectedCategory = Category.incomeList[0].name;
+  List<Category> categoryTypes = Category.incomeList;
 
   String currentSelectedAccount = Account.list[0].name;
   List<Account> accountTypes = Account.list;
@@ -119,12 +119,17 @@ class _AddRecordState extends State<AddRecord> {
                       if (value == 'INCOME') {
                         setState(() {
                           type = 'Income';
+                          category = Category.incomeList[0];
+                          currentSelectedCategory = Category.incomeList[0].name;
+                          categoryTypes = Category.incomeList;
                         });
-                        //Do something
-                        //Use another if else statement to indicate what action to perform for each value.
                       } else if (value == 'EXPENSES') {
                         setState(() {
                           type = 'Expenses';
+                          category = Category.expenseList[0];
+                          currentSelectedCategory =
+                              Category.expenseList[0].name;
+                          categoryTypes = Category.expenseList;
                         });
                       } else if (value == 'TRANSFER') {
                         setState(() {
@@ -307,7 +312,7 @@ class _AddRecordState extends State<AddRecord> {
                                     setState(() {
                                       // LANDMARK
                                       currentSelectedCategory = newValue;
-                                      Category.list.forEach((element) {
+                                      categoryTypes.forEach((element) {
                                         if (element.name == newValue) {
                                           category = element;
                                         }

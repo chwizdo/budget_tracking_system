@@ -68,7 +68,7 @@ class _EditRecordState extends State<EditRecord> {
   String type = 'Income';
   String title = 'Untitled';
   DateTime dateTime = DateTime.utc(0000);
-  Category category = Category.list[0];
+  Category category = Category.incomeList[0];
   Account account = Account.list[0];
   double amount = 0;
   String note = '';
@@ -82,14 +82,22 @@ class _EditRecordState extends State<EditRecord> {
   }
 
   //Creates a list of items for DropdownButton category and account.
-  String currentSelectedCategory = Category.list[0].name;
-  List<Category> categoryTypes = Category.list;
+  String currentSelectedCategory = Category.incomeList[0].name;
+  List<Category> categoryTypes = Category.incomeList;
 
   String currentSelectedAccount = Account.list[0].name;
   List<Account> accountTypes = Account.list;
 
   @override
   Widget build(BuildContext context) {
+    if (type == 'Income') {
+      currentSelectedCategory = Category.incomeList[0].name;
+      categoryTypes = Category.incomeList;
+    } else {
+      currentSelectedCategory = Category.expenseList[0].name;
+      categoryTypes = Category.expenseList;
+    }
+
     currentSelectedCategory = category.name;
     currentSelectedAccount = account.name;
 
@@ -161,12 +169,19 @@ class _EditRecordState extends State<EditRecord> {
                       if (value == 'INCOME') {
                         setState(() {
                           type = 'Income';
+                          category = Category.incomeList[0];
+                          currentSelectedCategory = Category.incomeList[0].name;
+                          categoryTypes = Category.incomeList;
                         });
                         //Do something
                         //Use another if else statement to indicate what action to perform for each value.
                       } else if (value == 'EXPENSES') {
                         setState(() {
                           type = 'Expenses';
+                          category = Category.expenseList[0];
+                          currentSelectedCategory =
+                              Category.expenseList[0].name;
+                          categoryTypes = Category.expenseList;
                         });
                       } else if (value == 'TRANSFER') {
                         setState(() {
@@ -350,7 +365,7 @@ class _EditRecordState extends State<EditRecord> {
                                   onChanged: (newValue) {
                                     setState(() {
                                       currentSelectedCategory = newValue;
-                                      Category.list.forEach((element) {
+                                      categoryTypes.forEach((element) {
                                         if (element.name == newValue) {
                                           category = element;
                                         }

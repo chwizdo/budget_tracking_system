@@ -1,3 +1,5 @@
+import 'package:budget_tracking_system/services/record.dart';
+
 import 'category.dart';
 import 'package:meta/meta.dart';
 
@@ -9,8 +11,9 @@ class OneTimeBudget {
   DateTime _startDate;
   DateTime _endDate;
   static List<OneTimeBudget> _list = [];
-  static List<OneTimeBudget> activeList = [];
+  static List<OneTimeBudget> _activeList = [];
   String _budgetStatus;
+  static List<Record> _budgetRecordList = [];
 
 // Constructor for Add Budget
 // interval (refresh), onetime (change state)
@@ -58,6 +61,10 @@ class OneTimeBudget {
 
   static List<OneTimeBudget> get list {
     return _list;
+  }
+
+  static List<OneTimeBudget> get activeList {
+    return _activeList;
   }
 
   // setter/update budget
@@ -114,7 +121,44 @@ class OneTimeBudget {
     return activeList;
   }
 
+  // Add all RELATED record into budget specific list
+  static List<Record> budgetRecordList(
+      Category category, DateTime startDate, DateTime endDate) {
+    Record.list.forEach((record) {
+      if (!record.dateTime.isBefore(startDate) &&
+          !record.dateTime.isAfter(endDate) &&
+          record.type == "Expenses" &&
+          record.category == category) {
+        print(record.title);
+        _budgetRecordList.add(record);
+      }
+    });
+    return _budgetRecordList;
+  }
+
   // TODO How to calculate amountUsed
-  // take all record for that period of time
-  static void calculateAmountUsed() {}
+  // take all record for that period of time (between start and end date)
+  // is budget's record only come from user selection? if user no choose, will it count into budget?
+  // if yes (only come from choose) {amountused can get from a list of record in that budget (no need condition)}
+  // if no (can both user choose and auto)
+  static void calculateAmountUsed() {
+    _list.forEach((onetimebudget) {
+      print(onetimebudget._title);
+      List<Record> recordList = [];
+      double sum = 0;
+      Record.list.forEach((record) {
+        if (!record.dateTime.isBefore(onetimebudget._startDate) &&
+            !record.dateTime.isAfter(onetimebudget._endDate) &&
+            record.type == "Expenses" &&
+            record.category == onetimebudget._category) {
+          recordList.add(record);
+        }
+      }); // Record loop
+      recordList.forEach((element) {
+        sum += element.amount;
+      }); // recordList loop
+      onetimebudget._amountUsed = sum;
+      print(onetimebudget._amountUsed);
+    }); // _list loop
+  }
 }

@@ -1,3 +1,4 @@
+import 'package:budget_tracking_system/services/record.dart';
 import 'package:budget_tracking_system/services/category.dart';
 import 'package:meta/meta.dart';
 
@@ -9,6 +10,7 @@ class PeriodicBudget {
   double _amountUsed;
   static List<PeriodicBudget> _list = [];
   DateTime _startDate;
+  static List<PeriodicBudget> _activeList = [];
 
   // Constructor for Add Budget
   // interval (refresh), onetime (change state)
@@ -54,19 +56,21 @@ class PeriodicBudget {
     return _startDate;
   }
 
+  static List<PeriodicBudget> get activeList {
+    return _activeList;
+  }
+
   // setter/update budget
   void setBudget({
     @required String title,
     @required Category category,
     @required double amount,
     @required String interval,
-    DateTime startDate,
   }) {
     _title = title;
     _category = category;
     _amount = amount;
     _interval = interval;
-    _startDate = startDate;
   }
 
   // Add all periodic budget into _list
@@ -96,10 +100,52 @@ class PeriodicBudget {
     });
   }
 
-  //TODO calculate amountUsed
+  //TODO calculate amountUsed (Weekly cannot do)
   // take all record for that period of time
-  static void calculateAmountUsed() {}
+  static void calculateAmountUsed(DateTime yearmonth) {
+    _list.forEach((periodicbudget) {
+      double sum = 0;
+      double sum2 = 0;
+      if (periodicbudget._interval == "Monthly") {
+        List<Record> monthlyRecordList = [];
+        Record.list.forEach((record) {
+          if (!record.dateTime.isBefore(periodicbudget._startDate) &&
+              record.type == "Expenses" &&
+              record.category == periodicbudget._category &&
+              record.dateTime.year == yearmonth.year &&
+              record.dateTime.month == yearmonth.month) {
+            monthlyRecordList.add(record);
+          }
+        });
+        monthlyRecordList.forEach((element) {
+          sum += element.amount;
+        });
+        periodicbudget._amountUsed = sum;
+      } else if (periodicbudget._interval == "Weekly") {
+        List<Record> weeklyRecordList = [];
+        Record.list.forEach((record) {
+          if (!record.dateTime.isBefore(periodicbudget._startDate) &&
+              record.type == "Expenses" &&
+              record.category == periodicbudget._category) {
+            weeklyRecordList.add(record);
+          }
+        });
+        weeklyRecordList.forEach((element) {
+          sum2 += element.amount;
+        });
+        periodicbudget._amountUsed = sum2;
+      }
+      print(periodicbudget._amountUsed);
+    });
+  }
 
   // Need to return active budget list???
-  static List<PeriodicBudget> returnList(DateTime dateTime) {}
+  static List<PeriodicBudget> returnList(DateTime dateTime) {
+    _list.forEach((element) {
+      if (!element.startDate.isBefore(dateTime)) {
+        _activeList.add(element);
+      }
+    });
+    return _activeList;
+  }
 }

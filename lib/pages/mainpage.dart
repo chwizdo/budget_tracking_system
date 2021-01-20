@@ -34,7 +34,7 @@ class _MainpageState extends State<Mainpage> {
       //put (uid:user.uid) afterwards
       Budget(),
       Statistic(),
-      Account(),
+      Account(uid: user.uid),
       Settings(
         uid: uid,
       ),

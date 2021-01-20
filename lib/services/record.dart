@@ -62,7 +62,7 @@ class Record {
           'type': _type,
           'title': _title,
           'date time': _dateTime,
-          'category': _category.name, // TODO use id
+          'category': _category.id, // TODO use id
           'account': _account.name, // TODO use id
           'amount': _amount,
           'note': _note,
@@ -70,8 +70,8 @@ class Record {
           'is favorite': _isFav,
         },
       ).then(
-        // TODO save id into _id
         (value) => {
+          _id = value.documentID,
           Firestore.instance
               .collection('users')
               .document(_uid)
@@ -150,6 +150,23 @@ class Record {
     _note = note;
     _attachment = attachment;
     _isFav = isFav;
+
+    Firestore.instance
+        .collection('users')
+        .document(_uid)
+        .collection('records')
+        .document(_id)
+        .updateData({
+      'type': _type,
+      'title': _title,
+      'date time': _dateTime,
+      'category': _category.id, // TODO use id
+      'account': _account.name, // TODO use id
+      'amount': _amount,
+      'note': _note,
+      'attachment': _attachment,
+      'is favorite': _isFav,
+    });
   }
 
   static List<Record> add(Record record) {
@@ -214,7 +231,7 @@ class Record {
           isMatch++;
           // TODO add .name on both sides
           // TODO change to category id
-          if (value.category == category) {
+          if (value.category.name == category) {
             isMatch--;
           }
         }
@@ -292,7 +309,7 @@ class Record {
                 Timestamp timestamp = element.data['date time'];
                 Category category;
                 Category.list.forEach((cat) {
-                  if (cat.name == element.data['category']) {
+                  if (cat.id == element.data['category']) {
                     category = cat;
                   }
                 });
@@ -319,7 +336,7 @@ class Record {
                 ));
               },
             ),
-            print('Record retrieved: $_list')
+            print('Record retrieved: ${_list}')
           },
         );
     return null;

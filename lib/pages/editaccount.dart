@@ -24,7 +24,7 @@ class EditAccount extends StatefulWidget {
         uid: uid,
         name: name,
         amount: amount,
-        currency: currency,
+        //currency: currency,
       );
 }
 
@@ -35,15 +35,15 @@ class _EditAccountState extends State<EditAccount> {
     this.uid,
     this.name,
     this.amount,
-    this.currency,
+    //this.currency,
   });
 
   var accountcollections = Firestore.instance.collection('users');
 
   int index;
-  String name;
-  String currency;
-  double amount;
+  String name = 'Untitled';
+  //String currency;
+  double amount = 0;
 
   String _currentSelectedCurrency = "RM";
   List _currencyTypes = ["RM", "USD", "EUR"];
@@ -93,15 +93,15 @@ class _EditAccountState extends State<EditAccount> {
                         height: 50.0,
                         child: TextFormField(
                           initialValue: name,
-                          validator: (_val3) {
-                            if (_val3.isEmpty) {
+                          validator: (_val) {
+                            if (_val.isEmpty) {
                               return null;
                             } else {
                               return null;
                             }
                           },
-                          onChanged: (_val3) {
-                            name = _val3;
+                          onChanged: (_val) {
+                            name = _val;
                           },
                           style: TextStyle(color: Colors.white),
                           decoration: InputDecoration(
@@ -186,15 +186,15 @@ class _EditAccountState extends State<EditAccount> {
                         height: 50.0,
                         child: TextFormField(
                           initialValue: amount.toString(),
-                          validator: (_val3) {
-                            if (_val3.isEmpty) {
+                          validator: (_val1) {
+                            if (_val1.isEmpty) {
                               return null;
                             } else {
                               return null;
                             }
                           },
-                          onChanged: (_val3) {
-                            amount = double.parse(_val3);
+                          onChanged: (_val1) {
+                            amount = double.parse(_val1);
                           },
                           style: TextStyle(color: Colors.white),
                           decoration: InputDecoration(

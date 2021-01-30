@@ -203,14 +203,33 @@ class _AddAccountState extends State<AddAccount> {
                         shape: RoundedRectangleBorder(
                             borderRadius: BorderRadius.circular(18.0)),
                         onPressed: () {
-                          Account.add(Account(
-                            uid: uid,
-                            name: name,
-                            currency: currency,
-                            amount: amount,
-                            save: true,
-                          ));
-                          Navigator.pop(context);
+                          if (name == null || amount == null) {
+                            showDialog(
+                                context: context,
+                                builder: (BuildContext context) {
+                                  return AlertDialog(
+                                    title: Text("Error Message"),
+                                    content: Text("Please Try Again"),
+                                    actions: [
+                                      FlatButton(
+                                        child: Text("Close"),
+                                        onPressed: () {
+                                          Navigator.of(context).pop();
+                                        },
+                                      )
+                                    ],
+                                  );
+                                });
+                          } else {
+                            Account.add(Account(
+                              uid: uid,
+                              name: name,
+                              currency: currency,
+                              amount: amount,
+                              save: true,
+                            ));
+                            Navigator.pop(context);
+                          }
                         },
                         child: Text(
                           'Save',

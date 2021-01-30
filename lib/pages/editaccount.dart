@@ -236,11 +236,31 @@ class _EditAccountState extends State<EditAccount> {
                       shape: RoundedRectangleBorder(
                           borderRadius: BorderRadius.circular(18.0)),
                       onPressed: () {
-                        service.Account.list[index].setProperties(
-                          name: name,
-                          amount: amount,
-                        );
-                        Navigator.pop(context);
+                        if (name == null || amount == null) {
+                          showDialog(
+                              context: context,
+                              builder: (BuildContext context) {
+                                return AlertDialog(
+                                  title: Text("Error Message"),
+                                  content: Text(
+                                      "Invalid Data Detected, Please Try Again"),
+                                  actions: [
+                                    FlatButton(
+                                      child: Text("Close"),
+                                      onPressed: () {
+                                        Navigator.of(context).pop();
+                                      },
+                                    )
+                                  ],
+                                );
+                              });
+                        } else {
+                          service.Account.list[index].setProperties(
+                            name: name,
+                            amount: amount,
+                          );
+                          Navigator.pop(context);
+                        }
                       },
                       child: Text(
                         'Save',

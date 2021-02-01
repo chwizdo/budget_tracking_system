@@ -14,7 +14,9 @@ class Account {
   String _id;
   String _name;
   final _currency;
+
   double _amount;
+
   static List<Account> _list = [];
 
   // constructor to create new account
@@ -24,6 +26,7 @@ class Account {
     @required String name,
     @required String currency,
     double amount = 0,
+    DateTime dateTime,
     bool save = false,
   })  : _uid = uid,
         _id = id,
@@ -93,7 +96,39 @@ class Account {
     var difference = amount - _amount;
     _name = name;
     _amount = amount;
+    print(name);
+    print(amount);
+    print(_id);
+    print(_uid);
+
+    Firestore.instance
+        .collection('users')
+        .document(_uid)
+        .collection('accounts')
+        .document(_id)
+        .updateData({
+      'name': _name,
+      'amount': _amount,
+    });
     return difference;
+  }
+
+  void setProperties1({
+    @required String name,
+    double amount = 0,
+  }) {
+    _name = name;
+    _amount = amount;
+
+    Firestore.instance
+        .collection('users')
+        .document(_uid)
+        .collection('accounts')
+        .document(_id)
+        .updateData({
+      'name': _name,
+      'amount': _amount,
+    });
   }
 
   static List<Account> add(Account account) {
@@ -115,11 +150,16 @@ class Account {
         .then((querySnapshot) => {
               querySnapshot.documents.forEach((element) {
                 _list.add(Account(
-                    uid: uid,
-                    name: element.data['name'],
-                    currency: element.data['currency']));
+                  uid: uid,
+                  id: element.data['id'],
+                  name: element.data['name'],
+                  currency: element.data['currency'],
+                  amount: element.data['amount'],
+                  //dateTime: element.data['dateTime'],
+                ));
               }),
-              print('Account retrieved: $_list')
+              //print('Account retrieved: ${_list[3]._name}'),
+              //print(_list[3]._amount)
             });
   }
 }

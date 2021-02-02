@@ -83,9 +83,17 @@ class Category {
   }
 
   // Update category properties
-  void setProperties({String name, String type}) {
+  void setProperties({String name}) {
     _name = name;
-    _type = type;
+
+    Firestore.instance
+        .collection('users')
+        .document(_uid)
+        .collection('categories')
+        .document(_id)
+        .updateData({
+      'name': _name,
+    });
   }
 
   static List<Category> add(Category category) {

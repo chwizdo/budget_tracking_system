@@ -1,5 +1,9 @@
+import 'package:budget_tracking_system/pages/editexpense.dart';
+import 'package:budget_tracking_system/services/category.dart';
 import 'package:flutter/material.dart';
 import 'package:budget_tracking_system/pages/addexpense.dart';
+import 'package:budget_tracking_system/services/user.dart';
+import 'package:provider/provider.dart';
 
 class Expense {
   String expenseTitle;
@@ -8,20 +12,24 @@ class Expense {
 }
 
 class ExpensesCategory extends StatefulWidget {
+  final String uid;
+
+  ExpensesCategory({Key key, @required this.uid}) : super(key: key);
+
   @override
-  _ExpensesCategoryState createState() => _ExpensesCategoryState();
+  _ExpensesCategoryState createState() => _ExpensesCategoryState(uid);
 }
 
 class _ExpensesCategoryState extends State<ExpensesCategory> {
-  List expenseRecords = [
-    Expense(expenseTitle: 'Food'),
-    Expense(expenseTitle: 'Entertainment'),
-    Expense(expenseTitle: 'Transport'),
-    Expense(expenseTitle: 'Grocery'),
-  ];
+  List expenseRecords = Category.expenseList;
+
+  final String uid;
+  _ExpensesCategoryState(this.uid);
 
   @override
   Widget build(BuildContext context) {
+    final user = Provider.of<User>(context);
+
     return Scaffold(
       backgroundColor: Color.fromRGBO(57, 57, 57, 1),
       appBar: AppBar(
@@ -36,11 +44,21 @@ class _ExpensesCategoryState extends State<ExpensesCategory> {
             return Container(
               height: 50,
               child: ListTile(
+                onTap: () {
+                  Navigator.push(
+                    context,
+                    MaterialPageRoute(
+                        builder: (context) => EditExpense(
+                              index: index,
+                              uid: user.uid,
+                              name: expenseRecords[index].name,
+                            ),
+                        fullscreenDialog: true),
+                  ).then((value) => setState(() {}));
+                },
                 title: Text(
-                  expenseRecords[index].expenseTitle,
-                  style: TextStyle(
-                    color: Colors.white
-                  ),
+                  expenseRecords[index].name,
+                  style: TextStyle(color: Colors.white),
                 ),
               ),
             );
@@ -55,25 +73,23 @@ class _ExpensesCategoryState extends State<ExpensesCategory> {
         ),
       ),
       //This button can be navigated to add records page.
-     floatingActionButton: FloatingActionButton(
-      child: Text(
-        "+",
-        style: TextStyle(
-          fontSize: 25.0,
-          color: Color.fromRGBO(41, 41, 41, 1)
+      floatingActionButton: FloatingActionButton(
+        child: Text(
+          "+",
+          style:
+              TextStyle(fontSize: 25.0, color: Color.fromRGBO(41, 41, 41, 1)),
         ),
-      ),
-      backgroundColor: Color.fromRGBO(255, 185, 49, 1),
-      onPressed: () {
-        Navigator.push(
-        context,
-        MaterialPageRoute(
-          builder: (context) => AddExpense(
-                //uid: user.uid,
-              ),
-          fullscreenDialog: true),
-        );
-      },
+        backgroundColor: Color.fromRGBO(255, 185, 49, 1),
+        onPressed: () {
+          Navigator.push(
+            context,
+            MaterialPageRoute(
+                builder: (context) => AddExpense(
+                      uid: user.uid,
+                    ),
+                fullscreenDialog: true),
+          ).then((value) => setState(() {}));
+        },
       ),
     );
   }

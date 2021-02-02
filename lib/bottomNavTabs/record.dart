@@ -80,50 +80,12 @@ class _RecordState extends State<Record> {
         title: Row(
           children: [
             Expanded(
-              flex: 1,
-              child: Container(
-                height: 40,
-                padding: EdgeInsets.symmetric(horizontal: 10.0),
-                decoration: BoxDecoration(
-                  border: Border.all(
-                      color: Colors.white,
-                      style: BorderStyle.solid,
-                      width: 0.20),
-                ),
-                child: DropdownButtonHideUnderline(
-                  child: Theme(
-                    data: Theme.of(context).copyWith(
-                      canvasColor: Color.fromRGBO(18, 18, 18, 1),
-                    ),
-                    child: DropdownButton(
-                      style: TextStyle(color: Colors.white),
-                      value: _currentSelectedPeriod,
-                      onChanged: (newValue) {
-                        setState(() {
-                          _currentSelectedPeriod = newValue;
-                        });
-                      },
-                      items: _periodTypes.map((value) {
-                        return DropdownMenuItem<String>(
-                          value: value,
-                          child: Text(value),
-                        );
-                      }).toList(),
-                    ),
-                  ),
-                ),
-              ),
-            ),
-            Expanded(
-              flex: 3,
-              child: Padding(
-                padding: EdgeInsets.only(left: 16.0),
                 child: Text(
-                  '< 2020 Dec >',
+                  '<  2020 Dec  >',
                   style:
                       TextStyle(fontWeight: FontWeight.normal, fontSize: 16.0),
                 ),
-              ),
+             
             )
           ],
         ),

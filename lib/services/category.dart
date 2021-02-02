@@ -15,6 +15,8 @@ class Category {
   String _name;
   String _type;
   static List<Category> _list = [];
+  static List<Category> _incomeList = [];
+  static List<Category> _expenseList = [];
 
   // constructor to create new category
   // all fields are mandatory
@@ -72,14 +74,35 @@ class Category {
     return _list;
   }
 
+  static List<Category> get incomeList {
+    return _incomeList;
+  }
+
+  static List<Category> get expenseList {
+    return _expenseList;
+  }
+
   // Update category properties
-  void setProperties({String name, String type}) {
+  void setProperties({String name}) {
     _name = name;
-    _type = type;
+
+    Firestore.instance
+        .collection('users')
+        .document(_uid)
+        .collection('categories')
+        .document(_id)
+        .updateData({
+      'name': _name,
+    });
   }
 
   static List<Category> add(Category category) {
     _list.add(category);
+    if (category._type == 'income') {
+      _incomeList.add(category);
+    } else {
+      _expenseList.add(category);
+    }
     return _list;
   }
 
@@ -105,7 +128,7 @@ class Category {
                   ),
                 );
               }),
-              print('Category retrieved: $_list')
+              print('Category retrieved: $_list'),
             });
     return null;
   }

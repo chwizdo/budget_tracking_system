@@ -26,11 +26,28 @@ class _EditExpenseState extends State<EditExpense> {
   final String uid;
   String name;
 
+  List<Category> expenseRecords = List.from(Category.expenseList);
+
   _EditExpenseState({
     this.index,
     this.uid,
     this.name,
   });
+
+  @override
+  void initState() {
+    // TODO: implement initState
+    super.initState();
+
+    // Remove "No Category"
+    Category rmCategory;
+    expenseRecords.forEach((Category category) {
+      if (category == Category.getNoCat('expense')) {
+        rmCategory = category;
+      }
+    });
+    expenseRecords.remove(rmCategory);
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -45,7 +62,10 @@ class _EditExpenseState extends State<EditExpense> {
               Icons.delete,
               color: Colors.white,
             ),
-            onPressed: () {},
+            onPressed: () {
+              expenseRecords[index].remove();
+              Navigator.pop(context);
+            },
           ),
         ],
       ),
@@ -114,7 +134,7 @@ class _EditExpenseState extends State<EditExpense> {
                       shape: RoundedRectangleBorder(
                           borderRadius: BorderRadius.circular(18.0)),
                       onPressed: () {
-                        Category.expenseList[index].setProperties(name: name);
+                        expenseRecords[index].setProperties(name: name);
                         Navigator.pop(context);
                       },
                       child: Text(

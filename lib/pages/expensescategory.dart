@@ -21,10 +21,25 @@ class ExpensesCategory extends StatefulWidget {
 }
 
 class _ExpensesCategoryState extends State<ExpensesCategory> {
-  List expenseRecords = Category.expenseList;
+  List<Category> expenseRecords = List.from(Category.expenseList);
 
   final String uid;
   _ExpensesCategoryState(this.uid);
+
+  @override
+  void initState() {
+    // TODO: implement initState
+    super.initState();
+
+    // Remove "No Category"
+    Category rmCategory;
+    expenseRecords.forEach((Category category) {
+      if (category == Category.getNoCat('expense')) {
+        rmCategory = category;
+      }
+    });
+    expenseRecords.remove(rmCategory);
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -54,7 +69,16 @@ class _ExpensesCategoryState extends State<ExpensesCategory> {
                               name: expenseRecords[index].name,
                             ),
                         fullscreenDialog: true),
-                  ).then((value) => setState(() {}));
+                  ).then((value) => setState(() {
+                        expenseRecords = List.from(Category.expenseList);
+                        Category rmCategory;
+                        expenseRecords.forEach((Category category) {
+                          if (category == Category.getNoCat('expense')) {
+                            rmCategory = category;
+                          }
+                        });
+                        expenseRecords.remove(rmCategory);
+                      }));
                 },
                 title: Text(
                   expenseRecords[index].name,
@@ -88,7 +112,16 @@ class _ExpensesCategoryState extends State<ExpensesCategory> {
                       uid: user.uid,
                     ),
                 fullscreenDialog: true),
-          ).then((value) => setState(() {}));
+          ).then((value) => setState(() {
+                expenseRecords = List.from(Category.expenseList);
+                Category rmCategory;
+                expenseRecords.forEach((Category category) {
+                  if (category == Category.getNoCat('expense')) {
+                    rmCategory = category;
+                  }
+                });
+                expenseRecords.remove(rmCategory);
+              }));
         },
       ),
     );

@@ -60,14 +60,17 @@ class _EditAccountState extends State<EditAccount> {
       backgroundColor: Color.fromRGBO(57, 57, 57, 1),
       appBar: AppBar(
         backgroundColor: Color.fromRGBO(18, 18, 18, 1),
-        title: Text('Add Account'),
+        title: Text('Edit Account'),
         actions: [
           IconButton(
             icon: Icon(
               Icons.delete,
               color: Colors.white,
             ),
-            onPressed: () {},
+            onPressed: () {
+              service.Account.list[index].remove();
+              Navigator.pop(context);
+            },
           ),
         ],
       ),

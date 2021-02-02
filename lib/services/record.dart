@@ -104,6 +104,17 @@ class Record {
     return _category;
   }
 
+  set category(Category category) {
+    _category = category;
+
+    Firestore.instance
+        .collection('users')
+        .document(_uid)
+        .collection('records')
+        .document(_id)
+        .updateData({'category': _category.id});
+  }
+
   Account get account {
     return _account;
   }
@@ -231,7 +242,7 @@ class Record {
           isMatch++;
           // TODO add .name on both sides
           // TODO change to category id
-          if (value.category.name == category) {
+          if (value._category.name == category) {
             isMatch--;
           }
         }
@@ -291,7 +302,17 @@ class Record {
 
   // TODO delete record
   // Implemented in main page
-  void rmRecord() {}
+  void remove() {
+    _list.remove(this);
+
+    // delete category in firebase
+    Firestore.instance
+        .collection('users')
+        .document(_uid)
+        .collection('records')
+        .document(_id)
+        .delete();
+  }
 
   // Does not require to create instance
   // Implemented in main page

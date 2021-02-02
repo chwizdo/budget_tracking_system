@@ -21,10 +21,25 @@ class IncomeCategory extends StatefulWidget {
 }
 
 class _IncomeCategoryState extends State<IncomeCategory> {
-  List incomeRecords = Category.incomeList;
+  List<Category> incomeRecords = List.from(Category.incomeList);
 
   final String uid;
   _IncomeCategoryState(this.uid);
+
+  @override
+  void initState() {
+    // TODO: implement initState
+    super.initState();
+
+    // Remove "No Category"
+    Category rmCategory;
+    incomeRecords.forEach((Category category) {
+      if (category == Category.getNoCat('income')) {
+        rmCategory = category;
+      }
+    });
+    incomeRecords.remove(rmCategory);
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -54,7 +69,16 @@ class _IncomeCategoryState extends State<IncomeCategory> {
                               name: incomeRecords[index].name,
                             ),
                         fullscreenDialog: true),
-                  ).then((value) => setState(() {}));
+                  ).then((value) => setState(() {
+                        incomeRecords = List.from(Category.incomeList);
+                        Category rmCategory;
+                        incomeRecords.forEach((Category category) {
+                          if (category == Category.getNoCat('income')) {
+                            rmCategory = category;
+                          }
+                        });
+                        incomeRecords.remove(rmCategory);
+                      }));
                 },
                 title: Text(
                   incomeRecords[index].name,
@@ -88,7 +112,16 @@ class _IncomeCategoryState extends State<IncomeCategory> {
                       uid: user.uid,
                     ),
                 fullscreenDialog: true),
-          ).then((value) => setState(() {}));
+          ).then((value) => setState(() {
+                incomeRecords = List.from(Category.incomeList);
+                Category rmCategory;
+                incomeRecords.forEach((Category category) {
+                  if (category == Category.getNoCat('income')) {
+                    rmCategory = category;
+                  }
+                });
+                incomeRecords.remove(rmCategory);
+              }));
         },
       ),
     );

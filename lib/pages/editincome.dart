@@ -26,11 +26,28 @@ class _EditIncomeState extends State<EditIncome> {
   final String uid;
   String name;
 
+  List<Category> incomeRecords = List.from(Category.incomeList);
+
   _EditIncomeState({
     this.index,
     this.uid,
     this.name,
   });
+
+  @override
+  void initState() {
+    // TODO: implement initState
+    super.initState();
+
+    // Remove "No Category"
+    Category rmCategory;
+    incomeRecords.forEach((Category category) {
+      if (category == Category.getNoCat('income')) {
+        rmCategory = category;
+      }
+    });
+    incomeRecords.remove(rmCategory);
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -45,7 +62,10 @@ class _EditIncomeState extends State<EditIncome> {
               Icons.delete,
               color: Colors.white,
             ),
-            onPressed: () {},
+            onPressed: () {
+              incomeRecords[index].remove();
+              Navigator.pop(context);
+            },
           ),
         ],
       ),
@@ -114,7 +134,7 @@ class _EditIncomeState extends State<EditIncome> {
                       shape: RoundedRectangleBorder(
                           borderRadius: BorderRadius.circular(18.0)),
                       onPressed: () {
-                        Category.incomeList[index].setProperties(name: name);
+                        incomeRecords[index].setProperties(name: name);
                         Navigator.pop(context);
                       },
                       child: Text(

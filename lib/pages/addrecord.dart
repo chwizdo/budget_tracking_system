@@ -1,9 +1,21 @@
+
+
 import 'package:budget_tracking_system/services/category.dart';
 import 'package:budget_tracking_system/services/account.dart';
 import 'package:budget_tracking_system/services/record.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:custom_radio_grouped_button/custom_radio_grouped_button.dart';
+import 'package:file_picker/file_picker.dart';
+import 'package:flutter/services.dart';
+import 'package:budget_tracking_system/services/image_data.dart';
+import 'package:budget_tracking_system/pages/image.dart';
+import 'package:intl/intl.dart';
+
+class DisableFocusNode extends FocusNode {
+  @override
+  bool get hasFocus => false;
+}
 
 class AddRecord extends StatefulWidget {
   final String uid;
@@ -15,6 +27,7 @@ class AddRecord extends StatefulWidget {
 }
 
 class _AddRecordState extends State<AddRecord> {
+  ImageData imageData = ImageData();
   final String uid;
   _AddRecordState(this.uid);
 
@@ -31,11 +44,38 @@ class _AddRecordState extends State<AddRecord> {
   String attachment = '';
   bool isFav = false;
 
+  //Initialize current date
+  DateTime _pickedDate;
+
+  //Initialize controller
+  TextEditingController _dateEditingController = TextEditingController();
+
   @override
   void initState() {
     // TODO: implement initState
     super.initState();
+
+    //Set current date on init
+    _pickedDate = DateTime.now();
+     DateFormat df = new DateFormat("dd-MM-yyyy HH:mm:ss");
+    _dateEditingController.text = df.format(_pickedDate);
   }
+
+  void selectAttachment() async {
+    try {
+      imageData.path =
+          await FilePicker.getFilePath(type: imageData.pickingType);
+    } on PlatformException catch (e) {
+      print("Unsupported operation" + e.toString());
+    }
+    setState(() {
+      imageData.fileName =
+          imageData.path != null ? imageData.path.split('/').last : '';
+      imageData.filePath = imageData.path;
+    });
+  }
+
+   
 
   //Creates a list of items for DropdownButton category and account.
   String currentSelectedCategory = Category.incomeList[0].name;
@@ -123,6 +163,8 @@ class _AddRecordState extends State<AddRecord> {
                   child: Container(
                     height: 50.0,
                     child: TextFormField(
+                      focusNode: DisableFocusNode(),
+                      controller: _dateEditingController,
                       validator: (_val) {
                         if (_val.isEmpty) {
                           return null;
@@ -546,21 +588,48 @@ class _AddRecordState extends State<AddRecord> {
             margin: EdgeInsets.only(left: 12.0, right: 10.0),
             child: Row(
               children: [
-                Expanded(
-                  flex: 1,
+                Flexible(
+                  //flex: 1,
                   child: Text(
                     'Attachment:',
                     style: TextStyle(color: Colors.white, fontSize: 18.0),
                   ),
                 ),
-                Expanded(
-                  flex: 2,
+                Flexible(
+                  child: Padding(
+                    padding: EdgeInsets.only(left: 8.0),
+                    child: Container(
+                        height: 40.0,
+                        child: Align(
+                          alignment: Alignment.centerLeft,
+                          child: GestureDetector(
+                            onTap: () {
+                              showDialog(
+                                  context: context,
+                                  child: Dialog(
+                                    child: ViewImage(filepath: imageData.path),
+                                  ));
+                            },
+                            child: Text(
+                              imageData.fileName,
+                              style: TextStyle(color: Colors.white),
+                            ),
+                          ),
+                        )),
+                  ),
+                ),
+                Flexible(
                   child: Container(
                       height: 40.0,
                       child: Align(
                         alignment: Alignment.centerRight,
-                        child: Icon(Icons.attach_file,
-                            color: Color.fromRGBO(101, 101, 101, 1)),
+                        child: IconButton(
+                          icon: Icon(Icons.attach_file,
+                              color: Color.fromRGBO(101, 101, 101, 1)),
+                          onPressed: () {
+                            selectAttachment();
+                          },
+                        ),
                       )),
                 ),
               ],

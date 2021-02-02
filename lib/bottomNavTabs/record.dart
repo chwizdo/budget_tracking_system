@@ -11,6 +11,7 @@ import 'package:budget_tracking_system/services/record.dart' as service;
 // import 'package:budget_tracking_system/services/category.dart';
 // import 'package:budget_tracking_system/services/account.dart';
 import 'package:provider/provider.dart';
+import 'package:month_picker_dialog/month_picker_dialog.dart';
 
 //A separator class that is responsible for grouping the list based on day by creating a new container/header for each list.
 class RecordGroupSeparator extends StatelessWidget {
@@ -63,13 +64,37 @@ class Record extends StatefulWidget {
 }
 
 class _RecordState extends State<Record> {
-  String _currentSelectedPeriod = "M";
-  List _periodTypes = ["M", "W", "D"];
+  //Initialize current date and date format
+  DateTime pickedDate;
+  DateFormat df = new DateFormat('yyyy MMM');
 
   final String uid;
   _RecordState(this.uid);
 
   final AuthService _auth = AuthService();
+
+  pickDate() async {
+    DateTime date = await showMonthPicker(
+        context: context,
+        firstDate: DateTime(DateTime.now().year - 5),
+        lastDate: DateTime(DateTime.now().year + 5),
+        initialDate: pickedDate
+        
+        );
+
+    if (date != null) {
+      setState(() {
+        pickedDate = date;
+      });
+    }
+  }
+
+  @override
+  void initState() {
+    // TODO: implement initState
+    pickedDate = DateTime.now();
+  }
+
   @override
   Widget build(BuildContext context) {
     final user = Provider.of<User>(context);
@@ -80,12 +105,16 @@ class _RecordState extends State<Record> {
         title: Row(
           children: [
             Expanded(
+              child: GestureDetector(
+                onTap: () {
+                  pickDate();
+                },
                 child: Text(
-                  '<  2020 Dec  >',
+                  "< ${df.format(pickedDate)} >",
                   style:
-                      TextStyle(fontWeight: FontWeight.normal, fontSize: 16.0),
+                      TextStyle(fontWeight: FontWeight.normal, fontSize: 16.0, color: Colors.white),
                 ),
-             
+              ),
             )
           ],
         ),

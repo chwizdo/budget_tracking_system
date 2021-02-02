@@ -50,6 +50,9 @@ class _AddRecordState extends State<AddRecord> {
   //Initialize controller
   TextEditingController _dateEditingController = TextEditingController();
 
+  //Initialize Date Format
+  DateFormat df = new DateFormat("dd-MM-yyyy");
+
   @override
   void initState() {
     // TODO: implement initState
@@ -57,8 +60,25 @@ class _AddRecordState extends State<AddRecord> {
 
     //Set current date on init
     _pickedDate = DateTime.now();
-     DateFormat df = new DateFormat("dd-MM-yyyy HH:mm:ss");
     _dateEditingController.text = df.format(_pickedDate);
+    dateTime = _pickedDate;
+  }
+
+   pickDate() async{
+    DateTime date = await showDatePicker(
+      context: context,
+      firstDate: DateTime(DateTime.now().year-5),
+      lastDate: DateTime(DateTime.now().year+5),
+      initialDate: DateTime.now(),
+    );
+
+    if (date != null) {
+      setState(() {
+        _pickedDate = date;
+        _dateEditingController.text = df.format(_pickedDate);
+        dateTime = _pickedDate;
+      });
+    }
   }
 
   void selectAttachment() async {
@@ -165,6 +185,9 @@ class _AddRecordState extends State<AddRecord> {
                     child: TextFormField(
                       focusNode: DisableFocusNode(),
                       controller: _dateEditingController,
+                      onTap: () {
+                        pickDate();
+                      },
                       validator: (_val) {
                         if (_val.isEmpty) {
                           return null;
@@ -172,9 +195,10 @@ class _AddRecordState extends State<AddRecord> {
                           return null;
                         }
                       },
-                      onChanged: (_val) {
-                        dateTime = DateTime.parse(_val);
-                      },
+                      // onChanged: (_val) {
+                      //   dateTime = _pickedDate;
+                      //   print(dateTime);
+                      // },
                       style: TextStyle(color: Colors.white),
                       decoration: InputDecoration(
                         border: InputBorder.none,

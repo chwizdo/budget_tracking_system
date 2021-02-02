@@ -1,6 +1,6 @@
+import 'package:budget_tracking_system/pages/expensescategory.dart';
 import 'package:flutter/material.dart';
 import 'package:budget_tracking_system/pages/incomecategory.dart';
-import 'package:budget_tracking_system/pages/expensescategory.dart';
 import 'package:budget_tracking_system/pages/currencyselect.dart';
 import 'package:budget_tracking_system/pages/conversionrate.dart';
 import 'package:budget_tracking_system/pages/theme.dart';
@@ -9,9 +9,9 @@ import 'package:provider/provider.dart';
 import 'package:budget_tracking_system/services/user.dart';
 
 class Settings extends StatefulWidget {
-   final String uid;
+  final String uid;
 
-   Settings({Key key, @required this.uid}) : super(key: key);
+  Settings({Key key, @required this.uid}) : super(key: key);
   @override
   _SettingsState createState() => _SettingsState(uid);
 }
@@ -19,9 +19,11 @@ class Settings extends StatefulWidget {
 class _SettingsState extends State<Settings> {
   final String uid;
   _SettingsState(this.uid);
+
   final AuthService _auth = AuthService();
   @override
   Widget build(BuildContext context) {
+    final user = Provider.of<User>(context);
     return Scaffold(
         backgroundColor: Color.fromRGBO(57, 57, 57, 1),
         body: SafeArea(
@@ -50,7 +52,7 @@ class _SettingsState extends State<Settings> {
                   context,
                   MaterialPageRoute(
                       builder: (context) => IncomeCategory(
-                          //uid: user.uid,
+                            uid: user.uid,
                           ),
                       fullscreenDialog: true),
                 );
@@ -84,10 +86,11 @@ class _SettingsState extends State<Settings> {
                   context,
                   MaterialPageRoute(
                       builder: (context) => ExpensesCategory(
-                          //uid: user.uid,
+                            uid: user.uid,
                           ),
                       fullscreenDialog: true),
-                );
+                  // The Greatest Mystery
+                ).then((value) => setState(() {}));
               },
               child: Container(
                 height: 50,

@@ -1,13 +1,34 @@
+import 'package:budget_tracking_system/services/category.dart';
 import 'package:flutter/material.dart';
+import 'package:cloud_firestore/cloud_firestore.dart';
 
 class AddIncome extends StatefulWidget {
+  final String uid;
+
+  AddIncome({Key key, @required this.uid}) : super(key: key);
   @override
-  _AddIncomeState createState() => _AddIncomeState();
+  _AddIncomeState createState() => _AddIncomeState(uid);
 }
 
 class _AddIncomeState extends State<AddIncome> {
+  String name;
+
+  final String uid;
+  _AddIncomeState(this.uid);
+
+  var recordcollections = Firestore.instance.collection('users');
+
+  @override
+  void initState() {
+    // TODO: implement initState
+    super.initState();
+  }
+
+  GlobalKey<FormState> formkey = GlobalKey<FormState>();
+
   @override
   Widget build(BuildContext context) {
+    print(uid);
     return Scaffold(
       backgroundColor: Color.fromRGBO(57, 57, 57, 1),
       appBar: AppBar(
@@ -35,6 +56,9 @@ class _AddIncomeState extends State<AddIncome> {
                       child: Container(
                         height: 50.0,
                         child: TextFormField(
+                          onChanged: (value) {
+                            name = value;
+                          },
                           style: TextStyle(color: Colors.white),
                           decoration: InputDecoration(
                             //Remove visible borders
@@ -44,14 +68,17 @@ class _AddIncomeState extends State<AddIncome> {
                             fillColor: Color.fromRGBO(41, 41, 41, 1),
                             //Border when it is not focused by user input.
                             enabledBorder: OutlineInputBorder(
-                              borderRadius:BorderRadius.all(Radius.circular(10.0)),
+                              borderRadius:
+                                  BorderRadius.all(Radius.circular(10.0)),
                               borderSide: BorderSide(color: Colors.transparent),
                             ),
                             //Border when it is focused by user input.
                             focusedBorder: OutlineInputBorder(
-                              borderRadius:BorderRadius.all(Radius.circular(10.0)),
-                              borderSide:BorderSide(color: Colors.transparent)),
-                              contentPadding: EdgeInsets.all(12.0),
+                                borderRadius:
+                                    BorderRadius.all(Radius.circular(10.0)),
+                                borderSide:
+                                    BorderSide(color: Colors.transparent)),
+                            contentPadding: EdgeInsets.all(12.0),
                           ),
                         ),
                       ),
@@ -61,7 +88,7 @@ class _AddIncomeState extends State<AddIncome> {
               ),
 
               SizedBox(height: 30.0),
-               //Display Save Button
+              //Display Save Button
               Column(
                 children: [
                   ButtonTheme(
@@ -70,9 +97,12 @@ class _AddIncomeState extends State<AddIncome> {
                     child: RaisedButton(
                       color: Color.fromRGBO(255, 185, 49, 1),
                       shape: RoundedRectangleBorder(
-                      borderRadius: BorderRadius.circular(18.0)
-                      ),
-                      onPressed: () {},
+                          borderRadius: BorderRadius.circular(18.0)),
+                      onPressed: () {
+                        Category.add(Category(
+                            uid: uid, name: name, type: 'income', save: true));
+                        Navigator.pop(context);
+                      },
                       child: Text(
                         'Save',
                         style: TextStyle(

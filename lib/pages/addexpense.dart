@@ -1,11 +1,29 @@
+import 'package:budget_tracking_system/services/category.dart';
 import 'package:flutter/material.dart';
+import 'package:cloud_firestore/cloud_firestore.dart';
 
 class AddExpense extends StatefulWidget {
+  final String uid;
+
+  AddExpense({Key key, @required this.uid}) : super(key: key);
   @override
-  _AddExpenseState createState() => _AddExpenseState();
+  _AddExpenseState createState() => _AddExpenseState(uid);
 }
 
 class _AddExpenseState extends State<AddExpense> {
+  String name;
+
+  final String uid;
+  _AddExpenseState(this.uid);
+
+  var recordcollections = Firestore.instance.collection('users');
+
+  @override
+  void initState() {
+    // TODO: implement initState
+    super.initState();
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -35,6 +53,9 @@ class _AddExpenseState extends State<AddExpense> {
                       child: Container(
                         height: 50.0,
                         child: TextFormField(
+                          onChanged: (value) {
+                            name = value;
+                          },
                           style: TextStyle(color: Colors.white),
                           decoration: InputDecoration(
                             //Remove visible borders
@@ -44,14 +65,17 @@ class _AddExpenseState extends State<AddExpense> {
                             fillColor: Color.fromRGBO(41, 41, 41, 1),
                             //Border when it is not focused by user input.
                             enabledBorder: OutlineInputBorder(
-                              borderRadius:BorderRadius.all(Radius.circular(10.0)),
+                              borderRadius:
+                                  BorderRadius.all(Radius.circular(10.0)),
                               borderSide: BorderSide(color: Colors.transparent),
                             ),
                             //Border when it is focused by user input.
                             focusedBorder: OutlineInputBorder(
-                              borderRadius:BorderRadius.all(Radius.circular(10.0)),
-                              borderSide:BorderSide(color: Colors.transparent)),
-                              contentPadding: EdgeInsets.all(12.0),
+                                borderRadius:
+                                    BorderRadius.all(Radius.circular(10.0)),
+                                borderSide:
+                                    BorderSide(color: Colors.transparent)),
+                            contentPadding: EdgeInsets.all(12.0),
                           ),
                         ),
                       ),
@@ -61,7 +85,7 @@ class _AddExpenseState extends State<AddExpense> {
               ),
 
               SizedBox(height: 30.0),
-               //Display Save Button
+              //Display Save Button
               Column(
                 children: [
                   ButtonTheme(
@@ -70,9 +94,12 @@ class _AddExpenseState extends State<AddExpense> {
                     child: RaisedButton(
                       color: Color.fromRGBO(255, 185, 49, 1),
                       shape: RoundedRectangleBorder(
-                      borderRadius: BorderRadius.circular(18.0)
-                      ),
-                      onPressed: () {},
+                          borderRadius: BorderRadius.circular(18.0)),
+                      onPressed: () {
+                        Category.add(Category(
+                            uid: uid, name: name, type: 'expense', save: true));
+                        Navigator.pop(context);
+                      },
                       child: Text(
                         'Save',
                         style: TextStyle(

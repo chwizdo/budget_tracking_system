@@ -1,3 +1,4 @@
+import 'package:budget_tracking_system/services/record.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:meta/meta.dart';
 
@@ -137,7 +138,24 @@ class Account {
   }
 
   // TODO delete account
-  void rmAccount() {}
+  void remove() {
+    bool canDel = true;
+    Record.list.forEach((Record record) {
+      if (record.account == this) {
+        canDel = false;
+      }
+    });
+    if (canDel) {
+      _list.remove(this);
+
+      Firestore.instance
+          .collection('users')
+          .document(_uid)
+          .collection('accounts')
+          .document(_id)
+          .delete();
+    }
+  }
 
   // TODO retrieve all accounts in database
   static Future<void> getAccounts({@required String uid}) async {

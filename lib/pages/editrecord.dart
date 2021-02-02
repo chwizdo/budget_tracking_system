@@ -110,6 +110,16 @@ class _EditRecordState extends State<EditRecord> {
         actions: [
           IconButton(
             icon: Icon(
+              Icons.delete,
+              color: Colors.white,
+            ),
+            onPressed: () {
+              service.Record.list[index].remove();
+              Navigator.pop(context);
+            },
+          ),
+          IconButton(
+            icon: Icon(
                 //If isFav is False, display the favorite_border icon.
                 //Else display the favorite icon.
                 isFav ? Icons.favorite : Icons.favorite_border,

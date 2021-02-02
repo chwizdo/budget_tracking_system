@@ -180,4 +180,32 @@ class Account {
               //print(_list[3]._amount)
             });
   }
+
+  static double calAsset() {
+    double total = 0;
+    _list.forEach((Account account) {
+      if (account._amount >= 0) {
+        total += account._amount;
+      }
+    });
+    return total;
+  }
+
+  static double calLiability() {
+    double total = 0;
+    _list.forEach((Account account) {
+      if (account._amount < 0) {
+        total += account._amount;
+      }
+    });
+    return total;
+  }
+
+  static double calNet() {
+    double total = 0;
+    _list.forEach((Account account) {
+      total += account._amount;
+    });
+    return total;
+  }
 }

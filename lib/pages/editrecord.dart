@@ -4,6 +4,12 @@ import 'package:budget_tracking_system/services/record.dart' as service;
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:custom_radio_grouped_button/custom_radio_grouped_button.dart';
+import 'package:intl/intl.dart';
+
+class DisableFocusNode extends FocusNode {
+  @override
+  bool get hasFocus => false;
+}
 
 class EditRecord extends StatefulWidget {
   final int index;
@@ -75,10 +81,40 @@ class _EditRecordState extends State<EditRecord> {
   String attachment = '';
   bool isFav = false;
 
+  //Initialize current date
+  DateTime _pickedDate = DateTime.now();
+
+  //Initialize Date Format
+  DateFormat df = new DateFormat("dd-MM-yyyy");
+
+  //Initialize controller
+  TextEditingController _dateEditingController;
+
   @override
   void initState() {
     // TODO: implement initState
     super.initState();
+    _pickedDate = dateTime;
+    //Initialize controller
+    _dateEditingController =
+        TextEditingController(text: "${df.format(_pickedDate)}");
+  }
+
+  pickDate() async {
+    DateTime date = await showDatePicker(
+      context: context,
+      firstDate: DateTime(DateTime.now().year - 5),
+      lastDate: DateTime(DateTime.now().year + 5),
+      initialDate: DateTime.now(),
+    );
+
+    if (date != null) {
+      setState(() {
+        _pickedDate = date;
+        _dateEditingController.text = df.format(_pickedDate);
+        dateTime = _pickedDate;
+      });
+    }
   }
 
   //Creates a list of items for DropdownButton category and account.
@@ -280,7 +316,11 @@ class _EditRecordState extends State<EditRecord> {
                       child: Container(
                         height: 50.0,
                         child: TextFormField(
-                          initialValue: dateTime.toString(),
+                          focusNode: DisableFocusNode(),
+                          controller: _dateEditingController,
+                          onTap: () {
+                            pickDate();
+                          },
                           validator: (_val) {
                             if (_val.isEmpty) {
                               return null;
@@ -288,9 +328,9 @@ class _EditRecordState extends State<EditRecord> {
                               return null;
                             }
                           },
-                          onChanged: (_val) {
-                            dateTime = DateTime.parse(_val);
-                          },
+                          // onChanged: (_val) {
+                          //   dateTime = DateTime.parse(_val);
+                          // },
                           style: TextStyle(color: Colors.white),
                           decoration: InputDecoration(
                             border: InputBorder.none,
@@ -615,7 +655,7 @@ class _EditRecordState extends State<EditRecord> {
                       child: Container(
                         height: 50.0,
                         child: TextFormField(
-                          initialValue: amount.toString(),
+                          initialValue: amount.toStringAsFixed(2),
                           validator: (_val3) {
                             if (_val3.isEmpty) {
                               return null;

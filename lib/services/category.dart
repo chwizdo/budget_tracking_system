@@ -185,7 +185,7 @@ class Category {
                   ),
                 );
               }),
-              print('Category retrieved: $_list'),
+              print('Category retrieved: ${_list.length}'),
             });
     return null;
   }

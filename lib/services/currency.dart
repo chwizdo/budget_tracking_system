@@ -8,15 +8,28 @@ class Currency {
   static final _apiEndpoint = 'latest';
   static var _jsonResponse;
   static var _main = 'USD';
-  static final _sub = <String, double>{};
+  static final _fullMap = <String, double>{};
+  static var _fullList = [];
+  static final _list = <String, double>{};
 
   // initialize API connection and refresh connection every 1 hour
   // can only RUN ONCE
   static Future<dynamic> init() async {
     _jsonResponse = await _conn();
     print('API connection established');
+    _fullList = [];
+    _jsonResponse['rates'].forEach((key, value) {
+      _fullMap[key] = getRate(base: _main, target: key);
+      _fullList.add(key);
+    });
     Timer.periodic(Duration(hours: 1), (timer) async {
       _jsonResponse = await _conn();
+      print('API connection refreshed');
+      _fullList = [];
+      _jsonResponse['rates'].forEach((key, value) {
+        _fullMap[key] = getRate(base: _main, target: key);
+        _fullList.add(key);
+      });
       _refreshRate();
     });
   }
@@ -47,20 +60,24 @@ class Currency {
   }
 
   // add sub currency
-  static Map<String, double> addSub({String sub}) {
-    _sub[sub] = getRate(base: _main, target: sub);
-    return _sub;
+  static Map<String, double> addSub({String currency}) {
+    _list[currency] = getRate(base: _main, target: currency);
+    return _list;
   }
 
   // remove sub currency
-  static Map<String, double> rmSub({String sub}) {
-    _sub.remove(sub);
-    return _sub;
+  static Map<String, double> rmSub({String currency}) {
+    _list.remove(currency);
+    return _list;
   }
 
   // obtain current sub currencies with currency rate relative to main currency
-  static Map<String, double> get sub {
-    return _sub;
+  static Map<String, double> get list {
+    return _list;
+  }
+
+  static List get fullList {
+    return List.from(_fullList);
   }
 
   // convert base currency to target currency based on base value
@@ -98,8 +115,8 @@ class Currency {
 
   // Update the currency rates of all sub currencies
   static void _refreshRate() {
-    _sub.forEach((key, value) {
-      _sub[key] = getRate(base: _main, target: key);
+    _list.forEach((key, value) {
+      _list[key] = getRate(base: _main, target: key);
     });
   }
 }

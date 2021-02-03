@@ -78,9 +78,7 @@ class _RecordState extends State<Record> {
         context: context,
         firstDate: DateTime(DateTime.now().year - 5),
         lastDate: DateTime(DateTime.now().year + 5),
-        initialDate: pickedDate
-        
-        );
+        initialDate: pickedDate);
 
     if (date != null) {
       setState(() {
@@ -111,8 +109,10 @@ class _RecordState extends State<Record> {
                 },
                 child: Text(
                   "< ${df.format(pickedDate)} >",
-                  style:
-                      TextStyle(fontWeight: FontWeight.normal, fontSize: 16.0, color: Colors.white),
+                  style: TextStyle(
+                      fontWeight: FontWeight.normal,
+                      fontSize: 16.0,
+                      color: Colors.white),
                 ),
               ),
             )
@@ -259,12 +259,21 @@ class _RecordState extends State<Record> {
                               fullscreenDialog: true),
                         ).then((value) => setState(() {}));
                       },
-                      leading: Text(
-                        record.category.name,
-                        //Used to wrap long texts
-                        overflow: TextOverflow.ellipsis,
-                        style: TextStyle(color: Colors.grey, fontSize: 14),
-                      ),
+                      leading: record.type != 'Transfer'
+                          ? Text(
+                              record.category.name,
+                              //Used to wrap long texts
+                              overflow: TextOverflow.ellipsis,
+                              style:
+                                  TextStyle(color: Colors.grey, fontSize: 14),
+                            )
+                          : Text(
+                              'Transfer',
+                              //Used to wrap long texts
+                              overflow: TextOverflow.ellipsis,
+                              style:
+                                  TextStyle(color: Colors.grey, fontSize: 14),
+                            ),
                     ),
                   ),
                   //Second part is to display the title.
@@ -336,10 +345,15 @@ class _RecordState extends State<Record> {
                         overflow: TextOverflow.ellipsis,
                         style: TextStyle(color: Colors.white),
                       ),
-                      subtitle: Text(
-                        record.account.name,
-                        style: TextStyle(color: Colors.grey),
-                      ),
+                      subtitle: record.type != 'Transfer'
+                          ? Text(
+                              record.account.name,
+                              style: TextStyle(color: Colors.grey),
+                            )
+                          : Text(
+                              '${record.account.name} - ${record.toAccount.name}',
+                              style: TextStyle(color: Colors.grey),
+                            ),
                     ),
                   ),
                   //Third part is to display the money.
@@ -410,12 +424,14 @@ class _RecordState extends State<Record> {
                       //If it is expenses, add '-' in front of money, else add '+'
                       trailing: record.type == 'Expenses'
                           ? Text(
-                              "- RM " + record.amount.toString(),
+                              "- ${record.account.currency} " +
+                                  record.amount.toString(),
                               style: TextStyle(
                                   color: Colors.white, fontSize: 14.0),
                             )
                           : Text(
-                              "+ RM " + record.amount.toString(),
+                              "+ ${record.account.currency} " +
+                                  record.amount.toString(),
                               style: TextStyle(
                                   color: Colors.white, fontSize: 14.0),
                             ),

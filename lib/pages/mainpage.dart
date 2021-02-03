@@ -36,7 +36,7 @@ class _MainpageState extends State<Mainpage> {
       Statistic(),
       Account(uid: user.uid),
       Settings(
-        uid: uid,
+        uid: user.uid,
       ),
     ];
 

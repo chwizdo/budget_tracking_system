@@ -1,14 +1,57 @@
 import 'package:flutter/material.dart';
+import 'package:budget_tracking_system/services/category.dart';
 
 class EditIncome extends StatefulWidget {
+  final int index;
+  final String uid;
+  String name;
+
+  EditIncome({
+    Key key,
+    @required this.index,
+    @required this.uid,
+    @required this.name,
+  }) : super(key: key);
+
   @override
-  _EditIncomeState createState() => _EditIncomeState();
+  _EditIncomeState createState() => _EditIncomeState(
+        index: index,
+        uid: uid,
+        name: name,
+      );
 }
 
 class _EditIncomeState extends State<EditIncome> {
+  final int index;
+  final String uid;
+  String name;
+
+  List<Category> incomeRecords = List.from(Category.incomeList);
+
+  _EditIncomeState({
+    this.index,
+    this.uid,
+    this.name,
+  });
+
+  @override
+  void initState() {
+    // TODO: implement initState
+    super.initState();
+
+    // Remove "No Category"
+    Category rmCategory;
+    incomeRecords.forEach((Category category) {
+      if (category == Category.getNoCat('income')) {
+        rmCategory = category;
+      }
+    });
+    incomeRecords.remove(rmCategory);
+  }
+
   @override
   Widget build(BuildContext context) {
-     return Scaffold(
+    return Scaffold(
       backgroundColor: Color.fromRGBO(57, 57, 57, 1),
       appBar: AppBar(
         title: Text('Edit Income Category'),
@@ -17,9 +60,12 @@ class _EditIncomeState extends State<EditIncome> {
           IconButton(
             icon: Icon(
               Icons.delete,
-              color:Colors.white,
+              color: Colors.white,
             ),
-            onPressed: () {},
+            onPressed: () {
+              incomeRecords[index].remove();
+              Navigator.pop(context);
+            },
           ),
         ],
       ),
@@ -44,6 +90,10 @@ class _EditIncomeState extends State<EditIncome> {
                       child: Container(
                         height: 50.0,
                         child: TextFormField(
+                          initialValue: name,
+                          onChanged: (String value) {
+                            name = value;
+                          },
                           style: TextStyle(color: Colors.white),
                           decoration: InputDecoration(
                             //Remove visible borders
@@ -53,14 +103,17 @@ class _EditIncomeState extends State<EditIncome> {
                             fillColor: Color.fromRGBO(41, 41, 41, 1),
                             //Border when it is not focused by user input.
                             enabledBorder: OutlineInputBorder(
-                              borderRadius:BorderRadius.all(Radius.circular(10.0)),
+                              borderRadius:
+                                  BorderRadius.all(Radius.circular(10.0)),
                               borderSide: BorderSide(color: Colors.transparent),
                             ),
                             //Border when it is focused by user input.
                             focusedBorder: OutlineInputBorder(
-                              borderRadius:BorderRadius.all(Radius.circular(10.0)),
-                              borderSide:BorderSide(color: Colors.transparent)),
-                              contentPadding: EdgeInsets.all(12.0),
+                                borderRadius:
+                                    BorderRadius.all(Radius.circular(10.0)),
+                                borderSide:
+                                    BorderSide(color: Colors.transparent)),
+                            contentPadding: EdgeInsets.all(12.0),
                           ),
                         ),
                       ),
@@ -70,7 +123,7 @@ class _EditIncomeState extends State<EditIncome> {
               ),
 
               SizedBox(height: 30.0),
-               //Display Save Button
+              //Display Save Button
               Column(
                 children: [
                   ButtonTheme(
@@ -79,9 +132,11 @@ class _EditIncomeState extends State<EditIncome> {
                     child: RaisedButton(
                       color: Color.fromRGBO(255, 185, 49, 1),
                       shape: RoundedRectangleBorder(
-                      borderRadius: BorderRadius.circular(18.0)
-                      ),
-                      onPressed: () {},
+                          borderRadius: BorderRadius.circular(18.0)),
+                      onPressed: () {
+                        incomeRecords[index].setProperties(name: name);
+                        Navigator.pop(context);
+                      },
                       child: Text(
                         'Save',
                         style: TextStyle(

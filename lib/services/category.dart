@@ -1,3 +1,5 @@
+import 'package:budget_tracking_system/bottomNavTabs/record.dart';
+import 'package:budget_tracking_system/services/record.dart' as service;
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:meta/meta.dart';
 
@@ -83,9 +85,17 @@ class Category {
   }
 
   // Update category properties
-  void setProperties({String name, String type}) {
+  void setProperties({String name}) {
     _name = name;
-    _type = type;
+
+    Firestore.instance
+        .collection('users')
+        .document(_uid)
+        .collection('categories')
+        .document(_id)
+        .updateData({
+      'name': _name,
+    });
   }
 
   static List<Category> add(Category category) {
@@ -99,7 +109,62 @@ class Category {
   }
 
   // TODO delete category
-  void rmCategory() {}
+  void remove() {
+    print('remove');
+    Category expense;
+    Category income;
+
+    // retrieve object of "No Category" in expense categories
+    expense = getNoCat('expense');
+
+    // retrieve object of "No Category" in income categories
+    income = getNoCat('income');
+
+    // delete category from list
+    if (this._type == "income") {
+      service.Record.list.forEach((service.Record record) {
+        if (record.category == this) {
+          record.category = income;
+        }
+      });
+      _incomeList.remove(this);
+    } else if (this._type == "expense") {
+      service.Record.list.forEach((service.Record record) {
+        if (record.category == this) {
+          record.category = expense;
+        }
+      });
+      _expenseList.remove(this);
+    }
+    _list.remove(this);
+
+    // delete category in firebase
+    Firestore.instance
+        .collection('users')
+        .document(_uid)
+        .collection('categories')
+        .document(_id)
+        .delete();
+  }
+
+  // retrieve object of "No Category" in income or expense
+  static Category getNoCat(String type) {
+    Category returnCat;
+    if (type == 'expense') {
+      _expenseList.forEach((Category category) {
+        if (category._name == "No Category") {
+          returnCat = category;
+        }
+      });
+    } else {
+      _incomeList.forEach((Category category) {
+        if (category._name == "No Category") {
+          returnCat = category;
+        }
+      });
+    }
+    return returnCat;
+  }
 
   // retrieve all categories in database
   static Future<void> getCategories({@required String uid}) async {
@@ -120,7 +185,7 @@ class Category {
                   ),
                 );
               }),
-              print('Category retrieved: $_list'),
+              print('Category retrieved: ${_list.length}'),
             });
     return null;
   }

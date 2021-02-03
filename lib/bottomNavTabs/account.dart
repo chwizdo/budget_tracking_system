@@ -51,7 +51,7 @@ class _AccountState extends State<Account> {
                           ),
                           subtitle: Center(
                             child: Text(
-                              '93332.20',
+                              service.Account.calAsset().toString(),
                               style: TextStyle(color: Colors.white),
                             ),
                           ),
@@ -67,7 +67,7 @@ class _AccountState extends State<Account> {
                           ),
                           subtitle: Center(
                             child: Text(
-                              '655.00',
+                              service.Account.calLiability().toString(),
                               style: TextStyle(color: Colors.white),
                             ),
                           ),
@@ -83,7 +83,7 @@ class _AccountState extends State<Account> {
                           ),
                           subtitle: Center(
                             child: Text(
-                              '9267730.50',
+                              service.Account.calNet().toString(),
                               style: TextStyle(color: Colors.white),
                             ),
                           ),
@@ -151,8 +151,7 @@ class _AccountState extends State<Account> {
                               ).then((value) => setState(() {}));
                             },
                             trailing: Text(
-                              accountRecords[index].currency +
-                                  accountRecords[index].amount.toString(),
+                              '${accountRecords[index].currency} ${accountRecords[index].amount.toString()}',
                               style: TextStyle(color: Colors.white),
                             ),
                           )),

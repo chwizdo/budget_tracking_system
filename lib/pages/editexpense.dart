@@ -1,11 +1,54 @@
 import 'package:flutter/material.dart';
+import 'package:budget_tracking_system/services/category.dart';
 
 class EditExpense extends StatefulWidget {
+  final int index;
+  final String uid;
+  String name;
+
+  EditExpense({
+    Key key,
+    @required this.index,
+    @required this.uid,
+    @required this.name,
+  }) : super(key: key);
+
   @override
-  _EditExpenseState createState() => _EditExpenseState();
+  _EditExpenseState createState() => _EditExpenseState(
+        index: index,
+        uid: uid,
+        name: name,
+      );
 }
 
 class _EditExpenseState extends State<EditExpense> {
+  final int index;
+  final String uid;
+  String name;
+
+  List<Category> expenseRecords = List.from(Category.expenseList);
+
+  _EditExpenseState({
+    this.index,
+    this.uid,
+    this.name,
+  });
+
+  @override
+  void initState() {
+    // TODO: implement initState
+    super.initState();
+
+    // Remove "No Category"
+    Category rmCategory;
+    expenseRecords.forEach((Category category) {
+      if (category == Category.getNoCat('expense')) {
+        rmCategory = category;
+      }
+    });
+    expenseRecords.remove(rmCategory);
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -17,9 +60,12 @@ class _EditExpenseState extends State<EditExpense> {
           IconButton(
             icon: Icon(
               Icons.delete,
-              color:Colors.white,
+              color: Colors.white,
             ),
-            onPressed: () {},
+            onPressed: () {
+              expenseRecords[index].remove();
+              Navigator.pop(context);
+            },
           ),
         ],
       ),
@@ -44,6 +90,10 @@ class _EditExpenseState extends State<EditExpense> {
                       child: Container(
                         height: 50.0,
                         child: TextFormField(
+                          initialValue: name,
+                          onChanged: (String value) {
+                            name = value;
+                          },
                           style: TextStyle(color: Colors.white),
                           decoration: InputDecoration(
                             //Remove visible borders
@@ -53,14 +103,17 @@ class _EditExpenseState extends State<EditExpense> {
                             fillColor: Color.fromRGBO(41, 41, 41, 1),
                             //Border when it is not focused by user input.
                             enabledBorder: OutlineInputBorder(
-                              borderRadius:BorderRadius.all(Radius.circular(10.0)),
+                              borderRadius:
+                                  BorderRadius.all(Radius.circular(10.0)),
                               borderSide: BorderSide(color: Colors.transparent),
                             ),
                             //Border when it is focused by user input.
                             focusedBorder: OutlineInputBorder(
-                              borderRadius:BorderRadius.all(Radius.circular(10.0)),
-                              borderSide:BorderSide(color: Colors.transparent)),
-                              contentPadding: EdgeInsets.all(12.0),
+                                borderRadius:
+                                    BorderRadius.all(Radius.circular(10.0)),
+                                borderSide:
+                                    BorderSide(color: Colors.transparent)),
+                            contentPadding: EdgeInsets.all(12.0),
                           ),
                         ),
                       ),
@@ -70,7 +123,7 @@ class _EditExpenseState extends State<EditExpense> {
               ),
 
               SizedBox(height: 30.0),
-               //Display Save Button
+              //Display Save Button
               Column(
                 children: [
                   ButtonTheme(
@@ -79,9 +132,11 @@ class _EditExpenseState extends State<EditExpense> {
                     child: RaisedButton(
                       color: Color.fromRGBO(255, 185, 49, 1),
                       shape: RoundedRectangleBorder(
-                      borderRadius: BorderRadius.circular(18.0)
-                      ),
-                      onPressed: () {},
+                          borderRadius: BorderRadius.circular(18.0)),
+                      onPressed: () {
+                        expenseRecords[index].setProperties(name: name);
+                        Navigator.pop(context);
+                      },
                       child: Text(
                         'Save',
                         style: TextStyle(

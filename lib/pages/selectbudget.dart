@@ -10,7 +10,7 @@ class SelectBudget extends StatefulWidget {
 class _SelectBudgetState extends State<SelectBudget> {
   @override
   Widget build(BuildContext context) {
-   return DefaultTabController(
+    return DefaultTabController(
       length: 2,
       child: Scaffold(
         appBar: AppBar(
@@ -23,8 +23,12 @@ class _SelectBudgetState extends State<SelectBudget> {
                 indicatorColor: Color.fromRGBO(255, 185, 49, 1),
                 unselectedLabelColor: Colors.grey,
                 tabs: [
-                  Tab(text: "Periodic",),
-                  Tab(text: "One-Time",),
+                  Tab(
+                    text: "Periodic",
+                  ),
+                  Tab(
+                    text: "One-Time",
+                  ),
                 ],
               ),
             ],
@@ -34,11 +38,11 @@ class _SelectBudgetState extends State<SelectBudget> {
           child: TabBarView(
             children: [
               PeriodicStats(),
-              OneTimeStats(),          
+              OneTimeStats(),
             ],
           ),
         ),
       ),
-   );
+    );
   }
 }

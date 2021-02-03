@@ -83,6 +83,7 @@ class _EditRecordState extends State<EditRecord> {
   DateTime dateTime = DateTime.utc(0000);
   Category category = Category.incomeList[0];
   Account account = Account.list[0];
+  String currency = Account.list[0].currency;
   double amount = 0;
   String note = '';
   String attachment = '';
@@ -155,8 +156,10 @@ class _EditRecordState extends State<EditRecord> {
       categoryTypes = Category.expenseList;
     }
 
-    currentSelectedCategory = category.name;
+    currentSelectedCategory =
+        category != null ? category.name : categoryTypes[0].name;
     currentSelectedAccount = account.name;
+    currency = account.currency;
 
     displayWidget() {
       if (type == "Income" || type == "Expenses") {
@@ -1283,6 +1286,16 @@ class _EditRecordState extends State<EditRecord> {
         actions: [
           IconButton(
             icon: Icon(
+              Icons.delete,
+              color: Colors.white,
+            ),
+            onPressed: () {
+              service.Record.list[index].remove();
+              Navigator.pop(context);
+            },
+          ),
+          IconButton(
+            icon: Icon(
                 //If isFav is False, display the favorite_border icon.
                 //Else display the favorite icon.
                 isFav ? Icons.favorite : Icons.favorite_border,
@@ -1367,7 +1380,6 @@ class _EditRecordState extends State<EditRecord> {
               ),
 
               SizedBox(height: 30.0),
-
               displayWidget(),
             ]),
           ),

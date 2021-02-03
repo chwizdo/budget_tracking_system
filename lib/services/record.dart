@@ -1,3 +1,4 @@
+import 'package:budget_tracking_system/services/currency.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:meta/meta.dart';
 import 'package:budget_tracking_system/services/account.dart';
@@ -17,6 +18,7 @@ class Record {
   DateTime _dateTime;
   Category _category;
   Account _account;
+  Account _toAccount;
   double _amount;
   String _note;
   String _attachment;
@@ -32,8 +34,9 @@ class Record {
     @required String type,
     String title = 'Untitled',
     @required DateTime dateTime,
-    @required Category category,
+    Category category,
     @required Account account,
+    Account toAccount,
     @required double amount,
     String note = '',
     String attachment = '',
@@ -46,10 +49,31 @@ class Record {
         _dateTime = dateTime,
         _category = category,
         _account = account,
+        _toAccount = toAccount,
         _amount = amount,
         _note = note,
         _attachment = attachment,
         _isFav = isFav {
+    if (_type == 'Transfer' && save) {
+      double newCurrAmount = _amount;
+      if (_account.currency != _toAccount.currency) {
+        newCurrAmount = Currency.convertCurrency(
+            base: _account.currency,
+            target: _toAccount.currency,
+            value: _amount);
+      }
+      toAccount.setProperties(
+          name: toAccount.name, amount: toAccount.amount + newCurrAmount);
+      account.setProperties(
+          name: account.name, amount: account.amount - _amount);
+    } else if (_type == 'Income' && save) {
+      account.setProperties(
+          name: account.name, amount: account.amount + _amount);
+    } else if (_type == 'Expenses' && save) {
+      account.setProperties(
+          name: account.name, amount: account.amount - _amount);
+    }
+
     //add data to database
     if (save) {
       Firestore.instance
@@ -62,8 +86,9 @@ class Record {
           'type': _type,
           'title': _title,
           'date time': _dateTime,
-          'category': _category.id, // TODO use id
-          'account': _account.name, // TODO use id
+          'category': _category != null ? _category.id : null,
+          'account': _account.id,
+          'To Account': _toAccount != null ? _toAccount.id : null,
           'amount': _amount,
           'note': _note,
           'attachment': _attachment,
@@ -104,8 +129,23 @@ class Record {
     return _category;
   }
 
+  set category(Category category) {
+    _category = category;
+
+    Firestore.instance
+        .collection('users')
+        .document(_uid)
+        .collection('records')
+        .document(_id)
+        .updateData({'category': _category.id});
+  }
+
   Account get account {
     return _account;
+  }
+
+  Account get toAccount {
+    return _toAccount;
   }
 
   double get amount {
@@ -141,6 +181,8 @@ class Record {
     String attachment = '',
     bool isFav = false,
   }) {
+    double oldAmount = _amount;
+
     _type = type;
     _title = title;
     _dateTime = dateTime;
@@ -150,6 +192,27 @@ class Record {
     _note = note;
     _attachment = attachment;
     _isFav = isFav;
+
+    if (_type == 'Transfer') {
+      // double newCurrAmount = _amount;
+      // if (_account.currency != _toAccount.currency) {
+      //   newCurrAmount = Currency.convertCurrency(
+      //       base: _account.currency,
+      //       target: _toAccount.currency,
+      //       value: _amount);
+      // }
+      // toAccount.setProperties(
+      //     name: toAccount.name, amount: toAccount.amount + newCurrAmount);
+      // account.setProperties(
+      //     name: account.name, amount: account.amount - _amount);
+      print('Transfer code for edit rercord not implemented yet');
+    } else if (_type == 'Income') {
+      account.setProperties(
+          name: account.name, amount: account.amount + (_amount - oldAmount));
+    } else if (_type == 'Expenses') {
+      account.setProperties(
+          name: account.name, amount: account.amount - (_amount - oldAmount));
+    }
 
     Firestore.instance
         .collection('users')
@@ -231,7 +294,7 @@ class Record {
           isMatch++;
           // TODO add .name on both sides
           // TODO change to category id
-          if (value.category.name == category) {
+          if (value._category.name == category) {
             isMatch--;
           }
         }
@@ -291,7 +354,38 @@ class Record {
 
   // TODO delete record
   // Implemented in main page
-  void rmRecord() {}
+  void remove() {
+    if (_type == 'Transfer') {
+      // double newCurrAmount = _amount;
+      // if (_account.currency != _toAccount.currency) {
+      //   newCurrAmount = Currency.convertCurrency(
+      //       base: _account.currency,
+      //       target: _toAccount.currency,
+      //       value: _amount);
+      // }
+      // toAccount.setProperties(
+      //     name: toAccount.name, amount: toAccount.amount + newCurrAmount);
+      // account.setProperties(
+      //     name: account.name, amount: account.amount - _amount);
+      print('Transfer code for delete rercord not implemented yet');
+    } else if (_type == 'Income') {
+      account.setProperties(
+          name: account.name, amount: account.amount - _amount);
+    } else if (_type == 'Expenses') {
+      account.setProperties(
+          name: account.name, amount: account.amount + _amount);
+    }
+
+    _list.remove(this);
+
+    // delete category in firebase
+    Firestore.instance
+        .collection('users')
+        .document(_uid)
+        .collection('records')
+        .document(_id)
+        .delete();
+  }
 
   // Does not require to create instance
   // Implemented in main page
@@ -315,8 +409,14 @@ class Record {
                 });
                 Account account;
                 Account.list.forEach((acc) {
-                  if (acc.name == element.data['account']) {
+                  if (acc.id == element.data['account']) {
                     account = acc;
+                  }
+                });
+                Account toAccount;
+                Account.list.forEach((acc) {
+                  if (acc.id == element.data['account']) {
+                    toAccount = acc;
                   }
                 });
                 Record.add(Record(
@@ -328,6 +428,7 @@ class Record {
                       timestamp.microsecondsSinceEpoch),
                   category: category,
                   account: account,
+                  toAccount: toAccount,
                   amount: element.data['amount'],
                   note: element.data['note'],
                   attachment: element.data['attachment'],
@@ -336,7 +437,7 @@ class Record {
                 ));
               },
             ),
-            print('Record retrieved: ${_list}')
+            print('Record retrieved: ${_list.length}')
           },
         );
     return null;

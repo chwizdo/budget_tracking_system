@@ -87,6 +87,8 @@ class _RecordState extends State<Record> {
     }
   }
 
+  void filterList() {}
+
   @override
   void initState() {
     // TODO: implement initState
@@ -436,12 +438,10 @@ class _RecordState extends State<Record> {
                                   color: Colors.white, fontSize: 14.0),
                             ),
                     ),
-                  ),
-                ],
-              ),
-            );
-          },
-        ),
+                  ],
+                ),
+              );
+            }),
       ),
 
       //This button can be navigated to add records page.

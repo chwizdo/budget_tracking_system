@@ -1,5 +1,3 @@
-
-
 import 'package:budget_tracking_system/services/category.dart';
 import 'package:budget_tracking_system/services/account.dart';
 import 'package:budget_tracking_system/services/record.dart';
@@ -39,6 +37,8 @@ class _AddRecordState extends State<AddRecord> {
   DateTime dateTime = DateTime.utc(0000);
   Category category = Category.incomeList[0];
   Account account = Account.list[0];
+  Account toAccount = Account.list[1];
+  String currency = Account.list[0].currency;
   double amount = 0;
   String note = '';
   String attachment = '';
@@ -95,14 +95,12 @@ class _AddRecordState extends State<AddRecord> {
     });
   }
 
-   
-
   //Creates a list of items for DropdownButton category and account.
   String currentSelectedCategory = Category.incomeList[0].name;
   List<Category> categoryTypes = Category.incomeList;
 
   String currentSelectedAccount = Account.list[0].name;
-  String currentSelectedTransferAccount = Account.list[0].name;
+  String currentSelectedTransferAccount = Account.list[1].name;
   List<Account> accountTypes = Account.list;
 
   GlobalKey<FormState> formkey = GlobalKey<FormState>();
@@ -466,10 +464,11 @@ class _AddRecordState extends State<AddRecord> {
                               onChanged: (newValue) {
                                 setState(() {
                                   // LANDMARK
-                                  currentSelectedAccount = (newValue);
+                                  currentSelectedAccount = newValue;
                                   Account.list.forEach((element) {
                                     if (element.name == newValue) {
                                       account = element;
+                                      currency = element.currency;
                                     }
                                   });
                                 });
@@ -547,7 +546,7 @@ class _AddRecordState extends State<AddRecord> {
                         prefixIcon: Padding(
                           padding: EdgeInsets.only(left: 15.0, top: 15),
                           child: Text(
-                            'RM',
+                            currency,
                             style: TextStyle(
                                 color: Color.fromRGBO(101, 101, 101, 1)),
                           ),
@@ -867,7 +866,7 @@ class _AddRecordState extends State<AddRecord> {
                               onChanged: (newValue) {
                                 setState(() {
                                   // LANDMARK
-                                  currentSelectedAccount = (newValue);
+                                  currentSelectedAccount = newValue;
                                   Account.list.forEach((element) {
                                     if (element.name == newValue) {
                                       account = element;
@@ -954,10 +953,10 @@ class _AddRecordState extends State<AddRecord> {
                               onChanged: (newValue) {
                                 setState(() {
                                   // LANDMARK
-                                  currentSelectedTransferAccount = (newValue);
+                                  currentSelectedTransferAccount = newValue;
                                   Account.list.forEach((element) {
                                     if (element.name == newValue) {
-                                      account = element;
+                                      toAccount = element;
                                     }
                                   });
                                 });
@@ -1135,14 +1134,30 @@ class _AddRecordState extends State<AddRecord> {
                       color: Color.fromRGBO(255, 185, 49, 1),
                       shape: RoundedRectangleBorder(
                           borderRadius: BorderRadius.circular(18.0)),
+                      // onPressed: () {
+                      //   Record.add(Record(
+                      //     uid: uid,
+                      //     type: type,
+                      //     title: title,
+                      //     account: account,
+                      //     amount: amount,
+                      //     category: category,
+                      //     dateTime: dateTime,
+                      //     note: note,
+                      //     attachment: attachment,
+                      //     isFav: isFav,
+                      //     save: true,
+                      //   ));
+                      //   Navigator.pop(context);
+                      // },
                       onPressed: () {
                         Record.add(Record(
                           uid: uid,
                           type: type,
                           title: title,
                           account: account,
+                          toAccount: toAccount,
                           amount: amount,
-                          category: category,
                           dateTime: dateTime,
                           note: note,
                           attachment: attachment,

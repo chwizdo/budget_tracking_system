@@ -69,11 +69,23 @@ class _LoadingState extends State<Loading> {
     await service.Account.getAccounts(uid: uid);
     if (service.Account.list.length < 1) {
       service.Account.add(service.Account(
-          uid: uid, name: 'Cash', currency: service.Currency.main, save: true));
+          uid: uid,
+          name: 'Cash',
+          currency: service.Currency.main,
+          amount: 500,
+          save: true));
       service.Account.add(service.Account(
-          uid: uid, name: 'Bank', currency: service.Currency.main, save: true));
+          uid: uid,
+          name: 'Bank',
+          currency: service.Currency.main,
+          amount: 4500,
+          save: true));
       service.Account.add(service.Account(
-          uid: uid, name: 'Card', currency: service.Currency.main, save: true));
+          uid: uid,
+          name: 'Card',
+          currency: service.Currency.main,
+          amount: 0,
+          save: true));
     }
     await service.Record.getRecords(uid: uid);
     print('system initialized!');

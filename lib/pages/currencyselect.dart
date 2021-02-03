@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:budget_tracking_system/services/currency.dart';
 
 class CurrencyList {
   String name, value;
@@ -15,11 +16,7 @@ class _CurrencySelectionState extends State<CurrencySelection> {
   String _currentSelectedCurrency = "Main";
   List _currencyTypes = ["Main", "Sub"];
 
-  List currencyList = [
-    CurrencyList(name: 'MYR', value: 'myr'),
-    CurrencyList(name: 'USD', value: 'usd'),
-    CurrencyList(name: 'EUR', value: 'eur'),
-  ];
+  List currencyList = Currency.fullList;
 
   String selectedMainCurrency = 'myr';
   String selectedSubCurrency = 'usd';
@@ -27,9 +24,7 @@ class _CurrencySelectionState extends State<CurrencySelection> {
   displayCurrency() {
     if (_currentSelectedCurrency == 'Main') {
       return Theme(
-        data: ThemeData(
-          unselectedWidgetColor:Colors.grey
-        ),
+        data: ThemeData(unselectedWidgetColor: Colors.grey),
         child: ListView.separated(
           itemCount: currencyList.length,
           itemBuilder: (BuildContext context, int index) {
@@ -38,12 +33,10 @@ class _CurrencySelectionState extends State<CurrencySelection> {
               controlAffinity: ListTileControlAffinity.trailing,
               activeColor: Color.fromRGBO(255, 185, 49, 1),
               title: Text(
-                currencyList[index].name,
-                style: TextStyle(
-                  color: Colors.white
-                ),
+                currencyList[index],
+                style: TextStyle(color: Colors.white),
               ),
-              value: currencyList[index].value,
+              value: currencyList[index],
               groupValue: selectedMainCurrency,
               onChanged: (value) {
                 setState(() {
@@ -63,9 +56,7 @@ class _CurrencySelectionState extends State<CurrencySelection> {
       );
     } else {
       return Theme(
-        data: ThemeData(
-          unselectedWidgetColor:Colors.grey
-        ),
+        data: ThemeData(unselectedWidgetColor: Colors.grey),
         child: ListView.separated(
           itemCount: currencyList.length,
           itemBuilder: (BuildContext context, int index) {
@@ -74,12 +65,10 @@ class _CurrencySelectionState extends State<CurrencySelection> {
               controlAffinity: ListTileControlAffinity.trailing,
               activeColor: Color.fromRGBO(255, 185, 49, 1),
               title: Text(
-                currencyList[index].name,
-                style: TextStyle(
-                  color: Colors.white
-                ),
+                currencyList[index],
+                style: TextStyle(color: Colors.white),
               ),
-              value: currencyList[index].value,
+              value: currencyList[index],
               groupValue: selectedSubCurrency,
               onChanged: (value) {
                 setState(() {
@@ -118,9 +107,9 @@ class _CurrencySelectionState extends State<CurrencySelection> {
                   padding: EdgeInsets.symmetric(horizontal: 10.0),
                   decoration: BoxDecoration(
                     border: Border.all(
-                      color: Colors.white,
-                      style: BorderStyle.solid,
-                      width: 0.20),
+                        color: Colors.white,
+                        style: BorderStyle.solid,
+                        width: 0.20),
                   ),
                   child: DropdownButtonHideUnderline(
                     child: Theme(

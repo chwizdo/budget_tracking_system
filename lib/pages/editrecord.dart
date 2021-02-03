@@ -76,6 +76,7 @@ class _EditRecordState extends State<EditRecord> {
   DateTime dateTime = DateTime.utc(0000);
   Category category = Category.incomeList[0];
   Account account = Account.list[0];
+  String currency = Account.list[0].currency;
   double amount = 0;
   String note = '';
   String attachment = '';
@@ -134,8 +135,10 @@ class _EditRecordState extends State<EditRecord> {
       categoryTypes = Category.expenseList;
     }
 
-    currentSelectedCategory = category.name;
+    currentSelectedCategory =
+        category != null ? category.name : categoryTypes[0].name;
     currentSelectedAccount = account.name;
+    currency = account.currency;
 
     return Scaffold(
       backgroundColor: Color.fromRGBO(57, 57, 57, 1),
@@ -604,6 +607,7 @@ class _EditRecordState extends State<EditRecord> {
                                       Account.list.forEach((element) {
                                         if (element.name == newValue) {
                                           account = element;
+                                          currency = element.currency;
                                         }
                                       });
                                     });
@@ -684,7 +688,7 @@ class _EditRecordState extends State<EditRecord> {
                             prefixIcon: Padding(
                               padding: EdgeInsets.only(left: 15.0, top: 15),
                               child: Text(
-                                'RM',
+                                currency,
                                 style: TextStyle(
                                     color: Color.fromRGBO(101, 101, 101, 1)),
                               ),

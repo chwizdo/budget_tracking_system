@@ -19,11 +19,11 @@ class _AddAccountState extends State<AddAccount> {
   //local variables for user input
   String name;
   //not sure what data type suits currency
-  String currency = "RM";
+  String currency = "MYR";
   double amount;
   DateTime dateTime;
-  String _currentSelectedCurrency = "RM";
-  List _currencyTypes = ["RM", "USD", "EUR"];
+  String _currentSelectedCurrency = "MYR";
+  List _currencyTypes = Currency.fullList;
 
   GlobalKey<FormState> formkey = GlobalKey<FormState>();
 

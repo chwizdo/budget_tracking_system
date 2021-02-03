@@ -1,3 +1,4 @@
+import 'package:budget_tracking_system/services/currency.dart';
 import 'package:budget_tracking_system/services/record.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:meta/meta.dart';
@@ -97,10 +98,6 @@ class Account {
     var difference = amount - _amount;
     _name = name;
     _amount = amount;
-    print(name);
-    print(amount);
-    print(_id);
-    print(_uid);
 
     Firestore.instance
         .collection('users')
@@ -112,24 +109,6 @@ class Account {
       'amount': _amount,
     });
     return difference;
-  }
-
-  void setProperties1({
-    @required String name,
-    double amount = 0,
-  }) {
-    _name = name;
-    _amount = amount;
-
-    Firestore.instance
-        .collection('users')
-        .document(_uid)
-        .collection('accounts')
-        .document(_id)
-        .updateData({
-      'name': _name,
-      'amount': _amount,
-    });
   }
 
   static List<Account> add(Account account) {
@@ -176,8 +155,7 @@ class Account {
                   //dateTime: element.data['dateTime'],
                 ));
               }),
-              //print('Account retrieved: ${_list[3]._name}'),
-              //print(_list[3]._amount)
+              print('Account retrieved: ${_list.length}'),
             });
   }
 
@@ -185,7 +163,14 @@ class Account {
     double total = 0;
     _list.forEach((Account account) {
       if (account._amount >= 0) {
-        total += account._amount;
+        if (account._currency == 'USD') {
+          total += account._amount;
+        } else {
+          total += Currency.convertCurrency(
+              base: account._currency,
+              target: Currency.main,
+              value: account._amount);
+        }
       }
     });
     return total;
@@ -195,7 +180,14 @@ class Account {
     double total = 0;
     _list.forEach((Account account) {
       if (account._amount < 0) {
-        total += account._amount;
+        if (account._currency == 'USD') {
+          total += account._amount;
+        } else {
+          total += Currency.convertCurrency(
+              base: account._currency,
+              target: Currency.main,
+              value: account._amount);
+        }
       }
     });
     return total;
@@ -204,7 +196,14 @@ class Account {
   static double calNet() {
     double total = 0;
     _list.forEach((Account account) {
-      total += account._amount;
+      if (account._currency == 'USD') {
+        total += account._amount;
+      } else {
+        total += Currency.convertCurrency(
+            base: account._currency,
+            target: Currency.main,
+            value: account._amount);
+      }
     });
     return total;
   }

@@ -11,18 +11,7 @@ import 'package:budget_tracking_system/services/auth.dart';
 import 'package:budget_tracking_system/pages/wrapper.dart';
 
 void main() {
-  runApp(MyApp(
-      // MaterialApp(
-      // initialRoute: '/login',
-      // routes: {
-      //   '/login': (context) => Login(),
-      //   '/mainpage': (context) => Mainpage(),
-      //   '/register': (context) => Register(),
-      //   '/addrecord': (context) => AddRecord(),
-      //   '/editrecord': (context) => EditRecord(),
-      //   '/addbudget': (context) => AddBudget()
-      // },
-      ));
+  runApp(MyApp());
 }
 
 class MyApp extends StatelessWidget {

@@ -1,9 +1,12 @@
 import 'package:budget_tracking_system/services/record.dart';
+import 'package:cloud_firestore/cloud_firestore.dart';
 
 import 'category.dart';
 import 'package:meta/meta.dart';
 
 class OneTimeBudget {
+  String _uid;
+  String _id;
   String _title;
   Category _category;
   double _amount;
@@ -19,16 +22,46 @@ class OneTimeBudget {
 // interval (refresh), onetime (change state)
 // method-refresh when start app
   OneTimeBudget({
+    @required String uid,
+    String id = " ",
     @required String title,
     @required Category category,
     @required double amount,
     @required DateTime startDate,
     @required DateTime endDate,
+    bool save = false,
   })  : _title = title,
+        _uid = uid,
+        _id = id,
         _category = category,
         _amount = amount,
         _startDate = startDate,
-        _endDate = endDate;
+        _endDate = endDate {
+    if (save == true) {
+      Firestore.instance
+          .collection("users")
+          .document(_uid)
+          .collection("one time budget")
+          .add({
+        "id": _id,
+        "title": _title,
+        "category": _category.id,
+        "amount": _amount,
+        "amount used": 0,
+        "start date": _startDate,
+        "end date": _endDate,
+        "budget status": "no status",
+      }).then((value) => {
+                _id = value.documentID,
+                Firestore.instance
+                    .collection("users")
+                    .document(_uid)
+                    .collection("one time budget")
+                    .document(value.documentID)
+                    .updateData({"id": value.documentID})
+              });
+    }
+  }
 
   // getter for each properties
   String get title {
@@ -80,6 +113,19 @@ class OneTimeBudget {
     _amount = amount;
     _startDate = startDate;
     _endDate = endDate;
+
+    Firestore.instance
+        .collection("users")
+        .document(_uid)
+        .collection("one time budget")
+        .document("id")
+        .updateData({
+      "title": title,
+      "category": category.id,
+      "amount": amount,
+      "start date": startDate,
+      "end date": endDate,
+    });
   }
 
   //change budget status(upcoming/completed/current) based on start and end date
@@ -159,6 +205,51 @@ class OneTimeBudget {
       }); // recordList loop
       onetimebudget._amountUsed = sum;
       print(onetimebudget._amountUsed);
+      Firestore.instance
+          .collection("users")
+          .document(onetimebudget._uid)
+          .collection("one time budget")
+          .document(onetimebudget._id)
+          .updateData({"amount used": onetimebudget._amountUsed});
     }); // _list loop
+  }
+
+  static Future<void> getOneTimeBudget({@required String uid}) async {
+    _list = [];
+    await Firestore.instance
+        .collection('users')
+        .document(uid)
+        .collection('one time budget')
+        .getDocuments()
+        .then(
+          (querySnapshot) => {
+            querySnapshot.documents.forEach(
+              (element) {
+                Timestamp startDate = element.data['start date'];
+                Timestamp endDate = element.data['end date'];
+                Category category;
+                Category.list.forEach((cat) {
+                  if (cat.id == element.data['category']) {
+                    category = cat;
+                  }
+                });
+                OneTimeBudget.add(OneTimeBudget(
+                  uid: uid,
+                  id: element.data['id'],
+                  title: element.data['title'],
+                  endDate: DateTime.fromMicrosecondsSinceEpoch(
+                      endDate.microsecondsSinceEpoch),
+                  startDate: DateTime.fromMicrosecondsSinceEpoch(
+                      startDate.microsecondsSinceEpoch),
+                  category: category,
+                  amount: element.data['amount'],
+                  save: false,
+                ));
+              },
+            ),
+            print('One Time Budget retrieved: ${_list}')
+          },
+        );
+    return null;
   }
 }

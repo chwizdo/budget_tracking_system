@@ -32,7 +32,7 @@ class _MainpageState extends State<Mainpage> {
     List tabIndex = [
       Record(uid: user.uid),
       //put (uid:user.uid) afterwards
-      Budget(),
+      Budget(uid: user.uid),
       Statistic(),
       Account(uid: user.uid),
       Settings(

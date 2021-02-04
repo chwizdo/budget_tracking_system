@@ -151,7 +151,7 @@ class _AccountState extends State<Account> {
                               ).then((value) => setState(() {}));
                             },
                             trailing: Text(
-                              '${accountRecords[index].currency} ${accountRecords[index].amount.toString()}',
+                              '${accountRecords[index].currency} ${accountRecords[index].amount.toStringAsFixed(2)}',
                               style: TextStyle(color: Colors.white),
                             ),
                           )),

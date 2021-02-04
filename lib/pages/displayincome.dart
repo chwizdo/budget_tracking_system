@@ -1,3 +1,4 @@
+import 'package:budget_tracking_system/services/record.dart';
 import 'package:budget_tracking_system/services/piechart_section.dart';
 import 'package:budget_tracking_system/services/piechart_label.dart';
 import 'package:flutter/material.dart';
@@ -11,9 +12,13 @@ class DisplayIncome extends StatefulWidget {
 class _DisplayIncomeState extends State<DisplayIncome> {
   String _currentSelectedPeriod = "M";
   List _periodTypes = ["M", "W", "D"];
+  String currency = 'USD';
+  List statistics;
 
   @override
   Widget build(BuildContext context) {
+    statistics = Record.calculate(currency: currency);
+
     return Scaffold(
       backgroundColor: Color.fromRGBO(57, 57, 57, 1),
       body: SafeArea(
@@ -82,8 +87,7 @@ class _DisplayIncomeState extends State<DisplayIncome> {
                 child: Row(
                   children: [
                     Expanded(
-                      child: PieChart(
-                        PieChartData(
+                      child: PieChart(PieChartData(
                           borderData: FlBorderData(show: false),
                           centerSpaceRadius: 60,
                           sections: getIncomeSections())),
@@ -109,7 +113,7 @@ class _DisplayIncomeState extends State<DisplayIncome> {
                             ),
                             subtitle: Center(
                               child: Text(
-                                'RM 9332.20',
+                                '$currency ${statistics[0].toString()}',
                                 style: TextStyle(color: Colors.white),
                               ),
                             ),
@@ -119,13 +123,13 @@ class _DisplayIncomeState extends State<DisplayIncome> {
                           child: ListTile(
                             title: Center(
                               child: Text(
-                                'Expenses',
+                                'Expense',
                                 style: TextStyle(color: Colors.white),
                               ),
                             ),
                             subtitle: Center(
                               child: Text(
-                                'RM 6555.00',
+                                '$currency ${statistics[1].toString()}',
                                 style: TextStyle(color: Colors.white),
                               ),
                             ),
@@ -141,7 +145,7 @@ class _DisplayIncomeState extends State<DisplayIncome> {
                             ),
                             subtitle: Center(
                               child: Text(
-                                '- RM 730.50',
+                                '$currency ${statistics[2].toString()}',
                                 style: TextStyle(color: Colors.white),
                               ),
                             ),

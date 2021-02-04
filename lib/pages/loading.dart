@@ -1,4 +1,7 @@
 import 'package:budget_tracking_system/pages/mainpage.dart';
+import 'package:budget_tracking_system/services/onetimebudget.dart';
+import 'package:budget_tracking_system/services/periodicbudget.dart';
+import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_spinkit/flutter_spinkit.dart';
 import 'package:budget_tracking_system/services/record.dart' as service;
@@ -87,7 +90,10 @@ class _LoadingState extends State<Loading> {
           amount: 0,
           save: true));
     }
+    await PeriodicBudget.getPeriodicBudget(uid: uid);
+    await OneTimeBudget.getOneTimeBudget(uid: uid);
     await service.Record.getRecords(uid: uid);
+    await PeriodicBudget.calculateAmountUsed(uid: uid);
     print('system initialized!');
     setState(() {
       isLoading = false;

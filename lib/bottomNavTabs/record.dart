@@ -240,6 +240,12 @@ class _RecordState extends State<Record> {
                                               1 -
                                               index]
                                           .account,
+                                      toAccount: service
+                                          .Record
+                                          .list[service.Record.list.length -
+                                              1 -
+                                              index]
+                                          .toAccount,
                                       amount: service
                                           .Record
                                           .list[service.Record.list.length -
@@ -322,6 +328,12 @@ class _RecordState extends State<Record> {
                                               1 -
                                               index]
                                           .account,
+                                      toAccount: service
+                                          .Record
+                                          .list[service.Record.list.length -
+                                              1 -
+                                              index]
+                                          .toAccount,
                                       amount: service
                                           .Record
                                           .list[service.Record.list.length -
@@ -403,6 +415,12 @@ class _RecordState extends State<Record> {
                                               1 -
                                               index]
                                           .account,
+                                      toAccount: service
+                                          .Record
+                                          .list[service.Record.list.length -
+                                              1 -
+                                              index]
+                                          .toAccount,
                                       amount: service
                                           .Record
                                           .list[service.Record.list.length -

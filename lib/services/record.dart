@@ -1,5 +1,9 @@
+import 'dart:math';
+
 import 'package:budget_tracking_system/services/currency.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:flutter/cupertino.dart';
+import 'package:flutter/material.dart';
 import 'package:meta/meta.dart';
 import 'package:budget_tracking_system/services/account.dart';
 import 'package:budget_tracking_system/services/category.dart';
@@ -174,44 +178,94 @@ class Record {
     @required String type,
     String title = 'Untitled',
     @required DateTime dateTime,
-    @required Category category,
+    Category category,
     @required Account account,
+    Account toAccount,
     @required double amount,
     String note = '',
     String attachment = '',
     bool isFav = false,
   }) {
-    double oldAmount = _amount;
+    // to remember account and amount information before edit
+    Account oldFromAccount = _account;
+    Account oldToAccount = _toAccount;
+    double oldFromAmount = _amount;
+    double oldToAmount;
+    if (oldToAccount != null) {
+      oldToAmount = Currency.convertCurrency(
+          base: oldFromAccount.currency,
+          target: oldToAccount.currency,
+          value: oldFromAmount);
+    }
 
     _type = type;
     _title = title;
     _dateTime = dateTime;
     _category = category;
     _account = account;
+    _toAccount = toAccount;
     _amount = amount;
     _note = note;
     _attachment = attachment;
     _isFav = isFav;
 
     if (_type == 'Transfer') {
-      // double newCurrAmount = _amount;
-      // if (_account.currency != _toAccount.currency) {
-      //   newCurrAmount = Currency.convertCurrency(
-      //       base: _account.currency,
-      //       target: _toAccount.currency,
-      //       value: _amount);
-      // }
-      // toAccount.setProperties(
-      //     name: toAccount.name, amount: toAccount.amount + newCurrAmount);
-      // account.setProperties(
-      //     name: account.name, amount: account.amount - _amount);
-      print('Transfer code for edit rercord not implemented yet');
+      // convert amount to new currency
+      double convertedToAmount = _amount;
+      convertedToAmount = Currency.convertCurrency(
+          base: _account.currency, target: _toAccount.currency, value: _amount);
+
+      if (oldFromAccount == _account && oldToAccount == _toAccount) {
+        // if user doesn't select different from or to account
+        _account.setProperties(
+            name: _account.name,
+            amount: _account.amount - (_amount - oldFromAmount));
+        _toAccount.setProperties(
+            name: _toAccount.name,
+            amount: _toAccount.amount + (convertedToAmount - oldToAmount));
+      } else if (oldFromAccount == _account && oldToAccount != _toAccount) {
+        // if user select different to account
+        _account.setProperties(
+            name: _account.name,
+            amount: _account.amount - (_amount - oldFromAmount));
+        oldToAccount.setProperties(
+            name: oldToAccount.name, amount: oldToAccount.amount - oldToAmount);
+        _toAccount.setProperties(
+            name: _toAccount.name,
+            amount: _toAccount.amount + convertedToAmount);
+      } else if (oldFromAccount != _account && oldToAccount == _toAccount) {
+        // If user select different from account
+        oldFromAccount.setProperties(
+            name: oldFromAccount.name,
+            amount: oldFromAccount.amount + oldFromAmount);
+        _account.setProperties(
+            name: _account.name, amount: _account.amount - oldFromAmount);
+        _toAccount.setProperties(
+            name: _toAccount.name,
+            amount: _toAccount.amount + (convertedToAmount - oldToAmount));
+      } else {
+        // if user select different account for both from and to
+        oldFromAccount.setProperties(
+            name: oldFromAccount.name,
+            amount: oldFromAccount.amount + oldFromAmount);
+        _account.setProperties(
+            name: _account.name, amount: _account.amount - oldFromAmount);
+        oldToAccount.setProperties(
+            name: oldToAccount.name, amount: oldToAccount.amount - oldToAmount);
+        _toAccount.setProperties(
+            name: _toAccount.name,
+            amount: _toAccount.amount + convertedToAmount);
+      }
     } else if (_type == 'Income') {
+      _toAccount = null;
       account.setProperties(
-          name: account.name, amount: account.amount + (_amount - oldAmount));
+          name: account.name,
+          amount: account.amount + (_amount - oldFromAmount));
     } else if (_type == 'Expenses') {
+      _toAccount = null;
       account.setProperties(
-          name: account.name, amount: account.amount - (_amount - oldAmount));
+          name: account.name,
+          amount: account.amount - (_amount - oldFromAmount));
     }
 
     Firestore.instance
@@ -223,8 +277,9 @@ class Record {
       'type': _type,
       'title': _title,
       'date time': _dateTime,
-      'category': _category.id, // TODO use id
-      'account': _account.name, // TODO use id
+      'category': _category != null ? _category.id : null,
+      'account': _account.id,
+      'To Account': _toAccount != null ? _toAccount.id : null,
       'amount': _amount,
       'note': _note,
       'attachment': _attachment,
@@ -356,18 +411,17 @@ class Record {
   // Implemented in main page
   void remove() {
     if (_type == 'Transfer') {
-      // double newCurrAmount = _amount;
-      // if (_account.currency != _toAccount.currency) {
-      //   newCurrAmount = Currency.convertCurrency(
-      //       base: _account.currency,
-      //       target: _toAccount.currency,
-      //       value: _amount);
-      // }
-      // toAccount.setProperties(
-      //     name: toAccount.name, amount: toAccount.amount + newCurrAmount);
-      // account.setProperties(
-      //     name: account.name, amount: account.amount - _amount);
-      print('Transfer code for delete rercord not implemented yet');
+      double newCurrAmount = _amount;
+      if (_account.currency != _toAccount.currency) {
+        newCurrAmount = Currency.convertCurrency(
+            base: _account.currency,
+            target: _toAccount.currency,
+            value: _amount);
+      }
+      toAccount.setProperties(
+          name: toAccount.name, amount: toAccount.amount - newCurrAmount);
+      account.setProperties(
+          name: account.name, amount: account.amount + _amount);
     } else if (_type == 'Income') {
       account.setProperties(
           name: account.name, amount: account.amount - _amount);
@@ -415,7 +469,7 @@ class Record {
                 });
                 Account toAccount;
                 Account.list.forEach((acc) {
-                  if (acc.id == element.data['account']) {
+                  if (acc.id == element.data['To Account']) {
                     toAccount = acc;
                   }
                 });
@@ -441,5 +495,21 @@ class Record {
           },
         );
     return null;
+  }
+
+  static List calculate({String currency}) {
+    double totalIncome = 0;
+    double totalExpense = 0;
+    _list.forEach((Record record) {
+      if (record._account.currency == currency) {
+        if (record._type == 'Income') {
+          totalIncome += record._amount;
+        } else if (record._type == 'Expenses') {
+          totalExpense += record._amount;
+        }
+      }
+    });
+    double balance = totalIncome - totalExpense;
+    return [totalIncome, totalExpense, balance];
   }
 }

@@ -149,10 +149,10 @@ class _RecordState extends State<Record> {
                 context,
                 MaterialPageRoute(
                     builder: (context) => FavouriteRecord(
-                        //uid: user.uid,
+                          uid: user.uid,
                         ),
                     fullscreenDialog: true),
-              );
+              ).then((value) => setState(() {}));
             },
           ),
         ],

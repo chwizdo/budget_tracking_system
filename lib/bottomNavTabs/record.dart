@@ -87,6 +87,8 @@ class _RecordState extends State<Record> {
     }
   }
 
+  void filterList() {}
+
   @override
   void initState() {
     // TODO: implement initState
@@ -238,14 +240,12 @@ class _RecordState extends State<Record> {
                                               1 -
                                               index]
                                           .account,
-
                                       toAccount: service
                                           .Record
                                           .list[service.Record.list.length -
                                               1 -
                                               index]
                                           .toAccount,
-
                                       amount: service
                                           .Record
                                           .list[service.Record.list.length -
@@ -283,7 +283,6 @@ class _RecordState extends State<Record> {
                                 style:
                                     TextStyle(color: Colors.grey, fontSize: 14),
                               ),
-                        
                       ),
                     ),
                     //Second part is to display the title.
@@ -444,21 +443,6 @@ class _RecordState extends State<Record> {
                                 fullscreenDialog: true),
                           ).then((value) => setState(() {}));
                         },
-
-                        title: Text(
-                          record.title,
-                          overflow: TextOverflow.ellipsis,
-                          style: TextStyle(color: Colors.white),
-                        ),
-                        subtitle: record.type != 'Transfer'
-                            ? Text(
-                                record.account.name,
-                                style: TextStyle(color: Colors.grey),
-                              )
-                            : Text(
-                                '${record.account.name} - ${record.toAccount.name}',
-                                style: TextStyle(color: Colors.grey),
-
                         //An if else statement is used to check whether it is an expense or income
                         //If it is expenses, add '-' in front of money, else add '+'
                         trailing: record.type == 'Expenses'
@@ -471,94 +455,11 @@ class _RecordState extends State<Record> {
                             : Text(
                                 "+ ${record.account.currency} " +
                                     record.amount.toString(),
-                                style: TextStyle(
-                                    color: Colors.white, fontSize: 14.0),
-
-                              ),
-                      ),
-                    ),
-                    //Third part is to display the money.
-                    Expanded(
-                      flex: 7,
-                      child: ListTile(
-                        onTap: () {
-                          Navigator.push(
-                            context,
-                            MaterialPageRoute(
-                                builder: (context) => EditRecord(
-                                      uid: user.uid,
-                                      index: service.Record.list.length -
-                                          1 -
-                                          index,
-                                      type: service
-                                          .Record
-                                          .list[service.Record.list.length -
-                                              1 -
-                                              index]
-                                          .type,
-                                      title: service
-                                          .Record
-                                          .list[service.Record.list.length -
-                                              1 -
-                                              index]
-                                          .title,
-                                      dateTime: service
-                                          .Record
-                                          .list[service.Record.list.length -
-                                              1 -
-                                              index]
-                                          .dateTime,
-                                      category: service
-                                          .Record
-                                          .list[service.Record.list.length -
-                                              1 -
-                                              index]
-                                          .category,
-                                      account: service
-                                          .Record
-                                          .list[service.Record.list.length -
-                                              1 -
-                                              index]
-                                          .account,
-                                      amount: service
-                                          .Record
-                                          .list[service.Record.list.length -
-                                              1 -
-                                              index]
-                                          .amount,
-                                      note: service
-                                          .Record
-                                          .list[service.Record.list.length -
-                                              1 -
-                                              index]
-                                          .note,
-                                      isFav: service
-                                          .Record
-                                          .list[service.Record.list.length -
-                                              1 -
-                                              index]
-                                          .isFav,
-                                    ),
-                                fullscreenDialog: true),
-                          ).then((value) => setState(() {}));
-                        },
-                        //An if else statement is used to check whether it is an expense or income
-                        //If it is expenses, add '-' in front of money, else add '+'
-                        trailing: record.type == 'Expenses'
-                            ? Text(
-                                "- ${record.account.currency} " +
-                                    record.amount.toStringAsFixed(2),
-                                style: TextStyle(
-                                    color: Colors.white, fontSize: 14.0),
-                              )
-                            : Text(
-                                "+ ${record.account.currency} " +
-                                    record.amount.toStringAsFixed(2),
                                 style: TextStyle(
                                     color: Colors.white, fontSize: 14.0),
                               ),
                       ),
-                    )
+                    ),
                   ],
                 ),
               );

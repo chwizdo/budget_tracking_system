@@ -19,11 +19,11 @@ class _AddAccountState extends State<AddAccount> {
   //local variables for user input
   String name;
   //not sure what data type suits currency
-  String currency = "RM";
+  String currency = "MYR";
   double amount;
   DateTime dateTime;
-  String _currentSelectedCurrency = "RM";
-  List _currencyTypes = ["RM", "USD", "EUR"];
+  String _currentSelectedCurrency = "MYR";
+  List _currencyTypes = Currency.fullList;
 
   GlobalKey<FormState> formkey = GlobalKey<FormState>();
 
@@ -102,87 +102,46 @@ class _AddAccountState extends State<AddAccount> {
                   margin: EdgeInsets.only(left: 20.0, right: 20.0),
                   child: Row(
                     children: [
-                      Expanded(
-                        flex: 2,
+                      Flexible(
                         child: Text(
-                          'Amount:',
+                          'Currency:',
                           style: TextStyle(color: Colors.white, fontSize: 18.0),
                         ),
                       ),
-                      Expanded(
-                        flex: 2,
-                        child: Container(
-                          //padding: EdgeInsets.only(left: 8.0),
-                          height: 40,
-                          padding: EdgeInsets.symmetric(horizontal: 10.0),
-                          decoration: BoxDecoration(
-                            border: Border.all(
-                                color: Colors.white,
-                                style: BorderStyle.solid,
-                                width: 0.80),
-                          ),
-                          child: DropdownButtonHideUnderline(
-                            child: Theme(
-                              data: Theme.of(context).copyWith(
-                                canvasColor: Color.fromRGBO(18, 18, 18, 1),
-                              ),
-                              child: DropdownButton(
-                                style: TextStyle(color: Colors.white),
-                                value: _currentSelectedCurrency,
-                                onChanged: (newValue) {
-                                  setState(() {
-                                    _currentSelectedCurrency = newValue;
-                                    currency = newValue;
-                                  });
-                                },
-                                items: _currencyTypes.map((value) {
-                                  return DropdownMenuItem<String>(
-                                    value: value,
-                                    child: Text(value),
-                                  );
-                                }).toList(),
-                              ),
+                      Flexible(
+                        child: Padding(
+                          padding: const EdgeInsets.only(left: 16.0),
+                          child: Container(
+                            height: 40,
+                            padding: EdgeInsets.symmetric(horizontal: 10.0),
+                            decoration: BoxDecoration(
+                              border: Border.all(
+                                  color: Colors.white,
+                                  style: BorderStyle.solid,
+                                  width: 0.80),
                             ),
-                          ),
-                        ),
-                      ),
-                      Expanded(
-                        flex: 4,
-                        child: Container(
-                          padding: EdgeInsets.only(left: 12.0),
-                          height: 50.0,
-                          child: TextFormField(
-                            validator: (_val) {
-                              if (_val.isEmpty) {
-                                return null;
-                              } else {
-                                return null;
-                              }
-                            },
-                            onChanged: (_val) {
-                              amount = double.parse(_val);
-                            },
-                            style: TextStyle(color: Colors.white),
-                            decoration: InputDecoration(
-                              //Remove visible borders
-                              border: InputBorder.none,
-                              //Enables color fill in the text form field.
-                              filled: true,
-                              fillColor: Color.fromRGBO(41, 41, 41, 1),
-                              //Border when it is not focused by user input.
-                              enabledBorder: OutlineInputBorder(
-                                borderRadius:
-                                    BorderRadius.all(Radius.circular(10.0)),
-                                borderSide:
-                                    BorderSide(color: Colors.transparent),
+                            child: DropdownButtonHideUnderline(
+                              child: Theme(
+                                data: Theme.of(context).copyWith(
+                                  canvasColor: Color.fromRGBO(18, 18, 18, 1),
+                                ),
+                                child: DropdownButton(
+                                  style: TextStyle(color: Colors.white),
+                                  value: _currentSelectedCurrency,
+                                  onChanged: (newValue) {
+                                    setState(() {
+                                      _currentSelectedCurrency = newValue;
+                                      currency = newValue;
+                                    });
+                                  },
+                                  items: _currencyTypes.map((value) {
+                                    return DropdownMenuItem<String>(
+                                      value: value,
+                                      child: Text(value),
+                                    );
+                                  }).toList(),
+                                ),
                               ),
-                              //Border when it is focused by user input.
-                              focusedBorder: OutlineInputBorder(
-                                  borderRadius:
-                                      BorderRadius.all(Radius.circular(10.0)),
-                                  borderSide:
-                                      BorderSide(color: Colors.transparent)),
-                              contentPadding: EdgeInsets.all(12.0),
                             ),
                           ),
                         ),
@@ -203,7 +162,7 @@ class _AddAccountState extends State<AddAccount> {
                         shape: RoundedRectangleBorder(
                             borderRadius: BorderRadius.circular(18.0)),
                         onPressed: () {
-                          if (name == null || amount == null) {
+                          if (name == null) {
                             showDialog(
                                 context: context,
                                 builder: (BuildContext context) {
@@ -225,7 +184,6 @@ class _AddAccountState extends State<AddAccount> {
                               uid: uid,
                               name: name,
                               currency: currency,
-                              amount: amount,
                               save: true,
                             ));
                             Navigator.pop(context);

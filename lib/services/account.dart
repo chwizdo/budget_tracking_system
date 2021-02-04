@@ -1,3 +1,5 @@
+import 'package:budget_tracking_system/services/currency.dart';
+import 'package:budget_tracking_system/services/record.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:meta/meta.dart';
 
@@ -96,10 +98,6 @@ class Account {
     var difference = amount - _amount;
     _name = name;
     _amount = amount;
-    print(name);
-    print(amount);
-    print(_id);
-    print(_uid);
 
     Firestore.instance
         .collection('users')
@@ -113,31 +111,30 @@ class Account {
     return difference;
   }
 
-  void setProperties1({
-    @required String name,
-    double amount = 0,
-  }) {
-    _name = name;
-    _amount = amount;
-
-    Firestore.instance
-        .collection('users')
-        .document(_uid)
-        .collection('accounts')
-        .document(_id)
-        .updateData({
-      'name': _name,
-      'amount': _amount,
-    });
-  }
-
   static List<Account> add(Account account) {
     _list.add(account);
     return _list;
   }
 
   // TODO delete account
-  void rmAccount() {}
+  void remove() {
+    bool canDel = true;
+    Record.list.forEach((Record record) {
+      if (record.account == this) {
+        canDel = false;
+      }
+    });
+    if (canDel) {
+      _list.remove(this);
+
+      Firestore.instance
+          .collection('users')
+          .document(_uid)
+          .collection('accounts')
+          .document(_id)
+          .delete();
+    }
+  }
 
   // TODO retrieve all accounts in database
   static Future<void> getAccounts({@required String uid}) async {
@@ -158,8 +155,56 @@ class Account {
                   //dateTime: element.data['dateTime'],
                 ));
               }),
-              //print('Account retrieved: ${_list[3]._name}'),
-              //print(_list[3]._amount)
+              print('Account retrieved: ${_list.length}'),
             });
+  }
+
+  static double calAsset() {
+    double total = 0;
+    _list.forEach((Account account) {
+      if (account._amount >= 0) {
+        if (account._currency == 'USD') {
+          total += account._amount;
+        } else {
+          total += Currency.convertCurrency(
+              base: account._currency,
+              target: Currency.main,
+              value: account._amount);
+        }
+      }
+    });
+    return total;
+  }
+
+  static double calLiability() {
+    double total = 0;
+    _list.forEach((Account account) {
+      if (account._amount < 0) {
+        if (account._currency == 'USD') {
+          total += account._amount;
+        } else {
+          total += Currency.convertCurrency(
+              base: account._currency,
+              target: Currency.main,
+              value: account._amount);
+        }
+      }
+    });
+    return total;
+  }
+
+  static double calNet() {
+    double total = 0;
+    _list.forEach((Account account) {
+      if (account._currency == 'USD') {
+        total += account._amount;
+      } else {
+        total += Currency.convertCurrency(
+            base: account._currency,
+            target: Currency.main,
+            value: account._amount);
+      }
+    });
+    return total;
   }
 }

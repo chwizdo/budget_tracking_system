@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:budget_tracking_system/services/currency.dart';
 
 class CurrencyList {
   String name, value;
@@ -15,89 +16,44 @@ class _CurrencySelectionState extends State<CurrencySelection> {
   String _currentSelectedCurrency = "Main";
   List _currencyTypes = ["Main", "Sub"];
 
-  List currencyList = [
-    CurrencyList(name: 'MYR', value: 'myr'),
-    CurrencyList(name: 'USD', value: 'usd'),
-    CurrencyList(name: 'EUR', value: 'eur'),
-  ];
+  List currencyList = Currency.fullList;
 
-  String selectedMainCurrency = 'myr';
-  String selectedSubCurrency = 'usd';
+  // String selectedMainCurrency = 'myr';
+  // String selectedSubCurrency = 'usd';
+  
+  bool _isSelected = false;
 
   displayCurrency() {
-    if (_currentSelectedCurrency == 'Main') {
-      return Theme(
-        data: ThemeData(
-          unselectedWidgetColor:Colors.grey
-        ),
-        child: ListView.separated(
-          itemCount: currencyList.length,
-          itemBuilder: (BuildContext context, int index) {
-            return RadioListTile(
-              //ListTileControlAffinity.trailing will place the radio at the trailing
-              controlAffinity: ListTileControlAffinity.trailing,
-              activeColor: Color.fromRGBO(255, 185, 49, 1),
-              title: Text(
-                currencyList[index].name,
-                style: TextStyle(
-                  color: Colors.white
-                ),
-              ),
-              value: currencyList[index].value,
-              groupValue: selectedMainCurrency,
-              onChanged: (value) {
-                setState(() {
-                  selectedMainCurrency = value;
-                });
-              },
-            );
-          },
-          separatorBuilder: (context, index) {
-            return Divider(
-              color: Colors.grey,
-              indent: 15.0,
-              endIndent: 15.0,
-            );
-          },
-        ),
-      );
-    } else {
-      return Theme(
-        data: ThemeData(
-          unselectedWidgetColor:Colors.grey
-        ),
-        child: ListView.separated(
-          itemCount: currencyList.length,
-          itemBuilder: (BuildContext context, int index) {
-            return RadioListTile(
-              //ListTileControlAffinity.trailing will place the radio at the trailing
-              controlAffinity: ListTileControlAffinity.trailing,
-              activeColor: Color.fromRGBO(255, 185, 49, 1),
-              title: Text(
-                currencyList[index].name,
-                style: TextStyle(
-                  color: Colors.white
-                ),
-              ),
-              value: currencyList[index].value,
-              groupValue: selectedSubCurrency,
-              onChanged: (value) {
-                setState(() {
-                  selectedSubCurrency = value;
-                });
-              },
-            );
-          },
-          separatorBuilder: (context, index) {
-            return Divider(
-              color: Colors.grey,
-              indent: 15.0,
-              endIndent: 15.0,
-            );
-          },
-        ),
-      );
-    }
+    return Theme(
+      data: ThemeData(unselectedWidgetColor: Colors.grey),
+      child: ListView.separated(
+        itemCount: currencyList.length,
+        itemBuilder: (BuildContext context, int index) {
+          return CheckboxListTile(          
+            //ListTileControlAffinity.trailing will place the checkbox at the trailing
+            controlAffinity: ListTileControlAffinity.trailing,
+            activeColor: Color.fromRGBO(255, 185, 49, 1),
+            title: Text(
+              currencyList[index],
+              style: TextStyle(color: Colors.white),
+            ),
+            value: _isSelected,
+            onChanged: (bool value) {
+              setState(() {
+                _isSelected = value;
+              });
+            },
+          );
+        },
+        separatorBuilder: (context, index) {
+          return Divider(
+            color: Colors.grey,
+            indent: 15.0,
+            endIndent: 15.0,
+          );
+        },
+      ),
+    );
   }
 
   @override
@@ -108,44 +64,43 @@ class _CurrencySelectionState extends State<CurrencySelection> {
           backgroundColor: Color.fromRGBO(18, 18, 18, 1),
           title: Row(
             children: [
-              Expanded(
-                flex: 3,
+              Flexible(
                 child: Text('Currency Selection'),
               ),
-              Expanded(
-                child: Container(
-                  height: 40,
-                  padding: EdgeInsets.symmetric(horizontal: 10.0),
-                  decoration: BoxDecoration(
-                    border: Border.all(
-                      color: Colors.white,
-                      style: BorderStyle.solid,
-                      width: 0.20),
-                  ),
-                  child: DropdownButtonHideUnderline(
-                    child: Theme(
-                      data: Theme.of(context).copyWith(
-                        canvasColor: Color.fromRGBO(18, 18, 18, 1),
-                      ),
-                      child: DropdownButton(
-                        style: TextStyle(color: Colors.white),
-                        value: _currentSelectedCurrency,
-                        onChanged: (newValue) {
-                          setState(() {
-                            _currentSelectedCurrency = newValue;
-                          });
-                        },
-                        items: _currencyTypes.map((value) {
-                          return DropdownMenuItem<String>(
-                            value: value,
-                            child: Text(value),
-                          );
-                        }).toList(),
-                      ),
-                    ),
-                  ),
-                ),
-              ),
+              // Expanded(
+              //   child: Container(
+              //     height: 40,
+              //     padding: EdgeInsets.symmetric(horizontal: 10.0),
+              //     decoration: BoxDecoration(
+              //       border: Border.all(
+              //           color: Colors.white,
+              //           style: BorderStyle.solid,
+              //           width: 0.20),
+              //     ),
+              //     child: DropdownButtonHideUnderline(
+              //       child: Theme(
+              //         data: Theme.of(context).copyWith(
+              //           canvasColor: Color.fromRGBO(18, 18, 18, 1),
+              //         ),
+              //         child: DropdownButton(
+              //           style: TextStyle(color: Colors.white),
+              //           value: _currentSelectedCurrency,
+              //           onChanged: (newValue) {
+              //             setState(() {
+              //               _currentSelectedCurrency = newValue;
+              //             });
+              //           },
+              //           items: _currencyTypes.map((value) {
+              //             return DropdownMenuItem<String>(
+              //               value: value,
+              //               child: Text(value),
+              //             );
+              //           }).toList(),
+              //         ),
+              //       ),
+              //     ),
+              //   ),
+              // ),
             ],
           ),
         ),

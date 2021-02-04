@@ -4,6 +4,12 @@ import 'package:budget_tracking_system/services/periodicbudget.dart';
 import 'package:budget_tracking_system/services/record.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
+import 'package:intl/intl.dart';
+
+class DisableFocusNode extends FocusNode {
+  @override
+  bool get hasFocus => false;
+}
 
 class AddBudget extends StatefulWidget {
   final String uid;
@@ -36,6 +42,47 @@ class _AddBudgetState extends State<AddBudget> {
 
   String currentSelectedInterval = "Weekly";
   List<String> intervalTypes = ["Weekly", "Monthly"];
+
+  //Initialize start date, end date and date format
+  DateTime _pickedStartDate;
+  DateTime _pickedEndDate;
+  DateFormat df = new DateFormat("dd-MM-yyyy");
+
+  //Initialize controller
+  TextEditingController _startDateEditingController = TextEditingController();
+  TextEditingController _endDateEditingController = TextEditingController();
+
+   pickStartDate() async{
+    DateTime date = await showDatePicker(
+      context: context,
+      firstDate: DateTime(DateTime.now().year-5),
+      lastDate: DateTime(DateTime.now().year+5),
+      initialDate: DateTime.now(),
+    );
+
+    if (date != null) {
+      setState(() {
+        _pickedStartDate = date;
+        _startDateEditingController.text = df.format(_pickedStartDate);
+      });
+    }
+  }
+
+     pickEndDate() async{
+    DateTime date = await showDatePicker(
+      context: context,
+      firstDate: DateTime(DateTime.now().year-5),
+      lastDate: DateTime(DateTime.now().year+5),
+      initialDate: DateTime.now(),
+    );
+
+    if (date != null) {
+      setState(() {
+        _pickedEndDate = date;
+        _endDateEditingController.text = df.format(_pickedEndDate);
+      });
+    }
+  }
 
   displayWidget() {
     if (currentSelectedType == 'Periodic') {
@@ -129,6 +176,11 @@ class _AddBudgetState extends State<AddBudget> {
                   Container(
                     height: 50.0,
                     child: TextFormField(
+                      focusNode: DisableFocusNode(),
+                      controller: _startDateEditingController,
+                      onTap: () {
+                        pickStartDate();
+                      },
                       onChanged: (value) {
                         startDate = DateTime.parse(value);
                       },
@@ -162,6 +214,11 @@ class _AddBudgetState extends State<AddBudget> {
                   Container(
                     height: 50.0,
                     child: TextFormField(
+                      focusNode: DisableFocusNode(),
+                      controller: _endDateEditingController,
+                      onTap: () {
+                        pickEndDate();
+                      },
                       onChanged: (value) {
                         endDate = DateTime.parse(value);
                       },
@@ -195,6 +252,12 @@ class _AddBudgetState extends State<AddBudget> {
         ),
       );
     }
+  }
+
+  @override
+  void initState() {
+    // TODO: implement initState
+    super.initState();
   }
 
   @override

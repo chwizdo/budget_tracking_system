@@ -4,6 +4,17 @@ import 'package:budget_tracking_system/services/record.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:custom_radio_grouped_button/custom_radio_grouped_button.dart';
+import 'package:file_picker/file_picker.dart';
+import 'package:flutter/services.dart';
+import 'package:budget_tracking_system/services/image_data.dart';
+import 'package:budget_tracking_system/pages/image.dart';
+import 'package:budget_tracking_system/pages/addincome.dart';
+import 'package:intl/intl.dart';
+
+class DisableFocusNode extends FocusNode {
+  @override
+  bool get hasFocus => false;
+}
 
 class AddRecord extends StatefulWidget {
   final String uid;
@@ -15,6 +26,7 @@ class AddRecord extends StatefulWidget {
 }
 
 class _AddRecordState extends State<AddRecord> {
+  ImageData imageData = ImageData();
   final String uid;
   _AddRecordState(this.uid);
 
@@ -26,15 +38,62 @@ class _AddRecordState extends State<AddRecord> {
   DateTime dateTime = DateTime.utc(0000);
   Category category = Category.incomeList[0];
   Account account = Account.list[0];
+  Account toAccount = Account.list[1];
+  String currency = Account.list[0].currency;
   double amount = 0;
   String note = '';
   String attachment = '';
   bool isFav = false;
 
+  //Initialize current date
+  DateTime _pickedDate;
+
+  //Initialize controller
+  TextEditingController _dateEditingController = TextEditingController();
+
+  //Initialize Date Format
+  DateFormat df = new DateFormat("dd-MM-yyyy");
+
   @override
   void initState() {
     // TODO: implement initState
     super.initState();
+
+    //Set current date on init
+    _pickedDate = DateTime.now();
+    _dateEditingController.text = df.format(_pickedDate);
+    dateTime = _pickedDate;
+  }
+
+  pickDate() async {
+    DateTime date = await showDatePicker(
+      context: context,
+      firstDate: DateTime(DateTime.now().year - 5),
+      lastDate: DateTime(DateTime.now().year + 5),
+      initialDate: DateTime.now(),
+    );
+
+    if (date != null) {
+      setState(() {
+        _pickedDate = date;
+        _dateEditingController.text = df.format(_pickedDate);
+        dateTime = _pickedDate;
+      });
+    }
+  }
+
+  void selectAttachment() async {
+    try {
+      imageData.path =
+          await FilePicker.getFilePath(type: imageData.pickingType);
+    } on PlatformException catch (e) {
+      print("Unsupported operation" + e.toString());
+    }
+    setState(() {
+      imageData.fileName =
+          imageData.path != null ? imageData.path.split('/').last : '';
+      imageData.filePath = imageData.path;
+    });
   }
 
   //Creates a list of items for DropdownButton category and account.
@@ -42,7 +101,7 @@ class _AddRecordState extends State<AddRecord> {
   List<Category> categoryTypes = Category.incomeList;
 
   String currentSelectedAccount = Account.list[0].name;
-  String currentSelectedTransferAccount = Account.list[0].name;
+  String currentSelectedTransferAccount = Account.list[1].name;
   List<Account> accountTypes = Account.list;
 
   GlobalKey<FormState> formkey = GlobalKey<FormState>();
@@ -123,6 +182,11 @@ class _AddRecordState extends State<AddRecord> {
                   child: Container(
                     height: 50.0,
                     child: TextFormField(
+                      focusNode: DisableFocusNode(),
+                      controller: _dateEditingController,
+                      onTap: () {
+                        pickDate();
+                      },
                       validator: (_val) {
                         if (_val.isEmpty) {
                           return null;
@@ -130,9 +194,10 @@ class _AddRecordState extends State<AddRecord> {
                           return null;
                         }
                       },
-                      onChanged: (_val) {
-                        dateTime = DateTime.parse(_val);
-                      },
+                      // onChanged: (_val) {
+                      //   dateTime = _pickedDate;
+                      //   print(dateTime);
+                      // },
                       style: TextStyle(color: Colors.white),
                       decoration: InputDecoration(
                         border: InputBorder.none,
@@ -250,15 +315,25 @@ class _AddRecordState extends State<AddRecord> {
                   ),
                 ),
                 Expanded(
-                    flex: 1,
-                    child: Padding(
-                      padding: const EdgeInsets.only(left: 6.0),
-                      child: Align(
-                        alignment: Alignment.centerRight,
-                        child: Icon(Icons.settings,
-                            color: Color.fromRGBO(101, 101, 101, 1)),
-                      ),
-                    )),
+                  flex: 1,
+                  child: Align(
+                    alignment: Alignment.centerRight,
+                    child: IconButton(
+                      icon: Icon(Icons.settings),
+                      color: Color.fromRGBO(101, 101, 101, 1),
+                      onPressed: () {
+                        Navigator.push(
+                          context,
+                          MaterialPageRoute(
+                              builder: (context) => AddIncome(
+                                  //uid: user.uid,
+                                  ),
+                              fullscreenDialog: true),
+                        );
+                      },
+                    ),
+                  ),
+                ),
               ],
             ),
           ),
@@ -400,10 +475,11 @@ class _AddRecordState extends State<AddRecord> {
                               onChanged: (newValue) {
                                 setState(() {
                                   // LANDMARK
-                                  currentSelectedAccount = (newValue);
+                                  currentSelectedAccount = newValue;
                                   Account.list.forEach((element) {
                                     if (element.name == newValue) {
                                       account = element;
+                                      currency = element.currency;
                                     }
                                   });
                                 });
@@ -481,7 +557,7 @@ class _AddRecordState extends State<AddRecord> {
                         prefixIcon: Padding(
                           padding: EdgeInsets.only(left: 15.0, top: 15),
                           child: Text(
-                            'RM',
+                            currency,
                             style: TextStyle(
                                 color: Color.fromRGBO(101, 101, 101, 1)),
                           ),
@@ -547,10 +623,34 @@ class _AddRecordState extends State<AddRecord> {
             child: Row(
               children: [
                 Expanded(
-                  flex: 1,
+                  flex: 7,
                   child: Text(
                     'Attachment:',
                     style: TextStyle(color: Colors.white, fontSize: 18.0),
+                  ),
+                ),
+                Expanded(
+                  flex: 16,
+                  child: Padding(
+                    padding: EdgeInsets.only(left: 8.0),
+                    child: Container(
+                        height: 40.0,
+                        child: Align(
+                          alignment: Alignment.centerLeft,
+                          child: GestureDetector(
+                            onTap: () {
+                              showDialog(
+                                  context: context,
+                                  child: Dialog(
+                                    child: ViewImage(filepath: imageData.path),
+                                  ));
+                            },
+                            child: Text(
+                              imageData.fileName,
+                              style: TextStyle(color: Colors.white),
+                            ),
+                          ),
+                        )),
                   ),
                 ),
                 Expanded(
@@ -559,8 +659,13 @@ class _AddRecordState extends State<AddRecord> {
                       height: 40.0,
                       child: Align(
                         alignment: Alignment.centerRight,
-                        child: Icon(Icons.attach_file,
-                            color: Color.fromRGBO(101, 101, 101, 1)),
+                        child: IconButton(
+                          icon: Icon(Icons.attach_file,
+                              color: Color.fromRGBO(101, 101, 101, 1)),
+                          onPressed: () {
+                            selectAttachment();
+                          },
+                        ),
                       )),
                 ),
               ],
@@ -687,6 +792,11 @@ class _AddRecordState extends State<AddRecord> {
                   child: Container(
                     height: 50.0,
                     child: TextFormField(
+                      focusNode: DisableFocusNode(),
+                      controller: _dateEditingController,
+                      onTap: () {
+                        pickDate();
+                      },
                       validator: (_val) {
                         if (_val.isEmpty) {
                           return null;
@@ -694,9 +804,9 @@ class _AddRecordState extends State<AddRecord> {
                           return null;
                         }
                       },
-                      onChanged: (_val) {
-                        dateTime = DateTime.parse(_val);
-                      },
+                      // onChanged: (_val) {
+                      //   dateTime = DateTime.parse(_val);
+                      // },
                       style: TextStyle(color: Colors.white),
                       decoration: InputDecoration(
                         border: InputBorder.none,
@@ -725,7 +835,7 @@ class _AddRecordState extends State<AddRecord> {
 
           SizedBox(height: 12.0),
 
-          //Display Account To: DropdownButton Field
+          //Display Account From: DropdownButton Field
           Container(
             margin: EdgeInsets.only(left: 12.0, right: 10.0),
             child: Row(
@@ -774,7 +884,7 @@ class _AddRecordState extends State<AddRecord> {
                               onChanged: (newValue) {
                                 setState(() {
                                   // LANDMARK
-                                  currentSelectedAccount = (newValue);
+                                  currentSelectedAccount = newValue;
                                   Account.list.forEach((element) {
                                     if (element.name == newValue) {
                                       account = element;
@@ -812,7 +922,7 @@ class _AddRecordState extends State<AddRecord> {
 
           SizedBox(height: 12.0),
 
-          //Display Account From: DropdownButton Field
+          //Display Account To: DropdownButton Field
           Container(
             margin: EdgeInsets.only(left: 12.0, right: 10.0),
             child: Row(
@@ -861,10 +971,10 @@ class _AddRecordState extends State<AddRecord> {
                               onChanged: (newValue) {
                                 setState(() {
                                   // LANDMARK
-                                  currentSelectedTransferAccount = (newValue);
+                                  currentSelectedTransferAccount = newValue;
                                   Account.list.forEach((element) {
                                     if (element.name == newValue) {
-                                      account = element;
+                                      toAccount = element;
                                     }
                                   });
                                 });
@@ -1008,10 +1118,34 @@ class _AddRecordState extends State<AddRecord> {
             child: Row(
               children: [
                 Expanded(
-                  flex: 1,
+                  flex: 7,
                   child: Text(
                     'Attachment:',
                     style: TextStyle(color: Colors.white, fontSize: 18.0),
+                  ),
+                ),
+                Expanded(
+                  flex: 16,
+                  child: Padding(
+                    padding: EdgeInsets.only(left: 8.0),
+                    child: Container(
+                        height: 40.0,
+                        child: Align(
+                          alignment: Alignment.centerLeft,
+                          child: GestureDetector(
+                            onTap: () {
+                              showDialog(
+                                  context: context,
+                                  child: Dialog(
+                                    child: ViewImage(filepath: imageData.path),
+                                  ));
+                            },
+                            child: Text(
+                              imageData.fileName,
+                              style: TextStyle(color: Colors.white),
+                            ),
+                          ),
+                        )),
                   ),
                 ),
                 Expanded(
@@ -1020,8 +1154,13 @@ class _AddRecordState extends State<AddRecord> {
                       height: 40.0,
                       child: Align(
                         alignment: Alignment.centerRight,
-                        child: Icon(Icons.attach_file,
-                            color: Color.fromRGBO(101, 101, 101, 1)),
+                        child: IconButton(
+                          icon: Icon(Icons.attach_file,
+                              color: Color.fromRGBO(101, 101, 101, 1)),
+                          onPressed: () {
+                            selectAttachment();
+                          },
+                        ),
                       )),
                 ),
               ],
@@ -1042,14 +1181,30 @@ class _AddRecordState extends State<AddRecord> {
                       color: Color.fromRGBO(255, 185, 49, 1),
                       shape: RoundedRectangleBorder(
                           borderRadius: BorderRadius.circular(18.0)),
+                      // onPressed: () {
+                      //   Record.add(Record(
+                      //     uid: uid,
+                      //     type: type,
+                      //     title: title,
+                      //     account: account,
+                      //     amount: amount,
+                      //     category: category,
+                      //     dateTime: dateTime,
+                      //     note: note,
+                      //     attachment: attachment,
+                      //     isFav: isFav,
+                      //     save: true,
+                      //   ));
+                      //   Navigator.pop(context);
+                      // },
                       onPressed: () {
                         Record.add(Record(
                           uid: uid,
                           type: type,
                           title: title,
                           account: account,
+                          toAccount: toAccount,
                           amount: amount,
-                          category: category,
                           dateTime: dateTime,
                           note: note,
                           attachment: attachment,

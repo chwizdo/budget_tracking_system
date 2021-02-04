@@ -162,7 +162,7 @@ class _AddAccountState extends State<AddAccount> {
                         shape: RoundedRectangleBorder(
                             borderRadius: BorderRadius.circular(18.0)),
                         onPressed: () {
-                          if (name == null || amount == null) {
+                          if (name == null) {
                             showDialog(
                                 context: context,
                                 builder: (BuildContext context) {
@@ -184,7 +184,6 @@ class _AddAccountState extends State<AddAccount> {
                               uid: uid,
                               name: name,
                               currency: currency,
-                              amount: amount,
                               save: true,
                             ));
                             Navigator.pop(context);

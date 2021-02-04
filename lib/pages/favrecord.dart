@@ -1,20 +1,9 @@
+import 'package:budget_tracking_system/services/record.dart';
+import 'package:budget_tracking_system/pages/editrecord.dart';
 import 'package:flutter/material.dart';
 import 'package:grouped_list/grouped_list.dart';
 
-class Records {
-  String category;
-  String title;
-  String account; 
-  String type;
-  double money;
-  DateTime currentDate;
-
-  Records({this.category, this.title, this.account, this.money, this.type, this.currentDate});
-  
-}
-
 class RecordGroupSeparator extends StatelessWidget {
-
   final DateTime date;
   RecordGroupSeparator({this.date});
   @override
@@ -27,16 +16,13 @@ class RecordGroupSeparator extends StatelessWidget {
         child: Row(
           children: [
             Expanded(
-            flex: 1,
-            child: Text(
+              flex: 1,
+              child: Text(
                 "${this.date.year}/${this.date.month}/${this.date.day}",
-                style: TextStyle(
-                  color: Colors.white,
-                  fontSize: 20
-                ),
+                style: TextStyle(color: Colors.white, fontSize: 20),
               ),
             ),
-          ],  
+          ],
         ),
       ),
     );
@@ -44,106 +30,259 @@ class RecordGroupSeparator extends StatelessWidget {
 }
 
 class FavouriteRecord extends StatefulWidget {
+  final String uid;
+
+  FavouriteRecord({this.uid});
+
   @override
-  _FavouriteRecordState createState() => _FavouriteRecordState();
+  _FavouriteRecordState createState() => _FavouriteRecordState(uid: uid);
 }
 
 class _FavouriteRecordState extends State<FavouriteRecord> {
-  List recordView = [
-    Records(category: 'Food', title: 'McD Fried Chicken', account: 'Maybank', money: 13.50, type: 'Expenses', currentDate: DateTime.utc(2020, 12, 18, 14, 20, 55)),
-    Records(category: 'Food', title: 'Blueberry Waffle', account: 'Cash', money: 4.50, type: 'Expenses', currentDate: DateTime.utc(2020, 12, 20, 17, 33, 20)),
-    Records(category: 'Transport', title: 'Fuel', account: 'Maybank', money: 54.60, type: 'Expenses', currentDate: DateTime.utc(2020, 12, 20, 21, 34, 20)),
-    Records(category: 'Entertainment', title: 'Avenger End Game', account: 'Maybank', money: 17.50, type: 'Expenses', currentDate: DateTime.utc(2020, 11, 19, 8, 20, 55)),
-    Records(category: 'Food', title: 'Starbucks Coffee', account: 'Maybank', money: 17.50, type: 'Expenses', currentDate: DateTime.utc(2020, 12, 18, 16, 30, 27)),
-    // Records(category: 'Food', title: 'Starbucks Coffee', account: 'Maybank', money: 17.50, type: 'Expenses', currentDate: DateTime.utc(2020, 12, 18)),
-    // Records(category: 'Food', title: 'Starbucks Coffee', account: 'Maybank', money: 17.50, type: 'Expenses', currentDate: DateTime.utc(2020, 12, 30)),
-    // Records(category: 'Food', title: 'Chicken Rice', account: 'Maybank', money: 17.50, type: 'Expenses', currentDate: DateTime.utc(2020, 12, 29)),
-    // Records(category: 'Food', title: 'Fried Rice', account: 'Maybank', money: 17.50, type: 'Expenses', currentDate: DateTime.utc(2020, 12, 29)),
-  ];
+  final String uid;
+  List recordView = [];
+
+  _FavouriteRecordState({this.uid});
+
+  @override
+  void initState() {
+    // TODO: implement initState
+    super.initState();
+
+    List<Record> allRecord = List.from(Record.list);
+    allRecord.forEach((Record record) {
+      if (record.isFav) {
+        recordView.add(record);
+      }
+    });
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-        appBar: AppBar(
+      appBar: AppBar(
         backgroundColor: Color.fromRGBO(18, 18, 18, 1),
         title: Text('Favourite Records'),
       ),
-
       body: SafeArea(
-          child: Container(
+        child: Container(
           decoration: BoxDecoration(color: Color.fromRGBO(57, 57, 57, 1)),
           child: GroupedListView<dynamic, DateTime>(
             elements: recordView,
             groupBy: (record) {
-              return DateTime(
-                record.currentDate.year,
-                record.currentDate.month,
-                record.currentDate.day
-              );
-            }, 
-            groupSeparatorBuilder: (DateTime currentDate) => RecordGroupSeparator(date: currentDate),
+              return DateTime(record.dateTime.year, record.dateTime.month,
+                  record.dateTime.day);
+            },
+            groupSeparatorBuilder: (DateTime dateTime) =>
+                RecordGroupSeparator(date: dateTime),
             order: GroupedListOrder.DESC,
-             separator: Divider(
+            separator: Divider(
               color: Colors.grey,
               indent: 15.0,
               endIndent: 15.0,
             ),
-            itemComparator: (item1,item2) => item1.currentDate.hour.compareTo(item2.currentDate.hour),
+            itemComparator: (item1, item2) =>
+                item1.dateTime.hour.compareTo(item2.dateTime.hour),
             padding: EdgeInsets.only(bottom: 100),
-            itemBuilder: (context, dynamic record){         
-                return Container(
-                  height: 70,
-                  child: Row(
-                    children: [
-                      Expanded(
-                        flex: 4,
-                        child: ListTile(
-                          leading: Text(
-                            record.category,
-                            overflow: TextOverflow.ellipsis,
-                            style: TextStyle(
-                              color: Colors.grey,
-                              fontSize: 14
-                            ),
-                          ),
-                        ),
-                      ),
-                      Expanded(
-                        flex: 9,
-                        child: ListTile(
-                          title: Text(
-                            record.title,
-                            overflow: TextOverflow.ellipsis,
-                            style: TextStyle(color: Colors.white),
-                          ),
-                          subtitle: Text(
-                            record.account,
-                            style: TextStyle(color: Colors.grey),
-                          ),
-                        ),
-                      ),
-                       Expanded(
-                        flex: 5,
-                        child: ListTile(
-                          trailing: record.type == 'Expenses' ?
-                            Text(
-                              "- RM " + record.money.toStringAsFixed(2),
-                              style: TextStyle(
-                                color: Colors.white,
-                                fontSize: 13.0
-                                ),
+            indexedItemBuilder: (context, dynamic record, index) {
+              return Container(
+                height: 70,
+                child: Row(
+                  children: [
+                    Expanded(
+                      flex: 4,
+                      child: ListTile(
+                        onTap: () {
+                          Navigator.push(
+                            context,
+                            MaterialPageRoute(
+                                builder: (context) => EditRecord(
+                                      uid: uid,
+                                      index: Record.list.length - 1 - index,
+                                      type: Record
+                                          .list[Record.list.length - 1 - index]
+                                          .type,
+                                      title: Record
+                                          .list[Record.list.length - 1 - index]
+                                          .title,
+                                      dateTime: Record
+                                          .list[Record.list.length - 1 - index]
+                                          .dateTime,
+                                      category: Record
+                                          .list[Record.list.length - 1 - index]
+                                          .category,
+                                      account: Record
+                                          .list[Record.list.length - 1 - index]
+                                          .account,
+                                      toAccount: Record
+                                          .list[Record.list.length - 1 - index]
+                                          .toAccount,
+                                      amount: Record
+                                          .list[Record.list.length - 1 - index]
+                                          .amount,
+                                      note: Record
+                                          .list[Record.list.length - 1 - index]
+                                          .note,
+                                      isFav: Record
+                                          .list[Record.list.length - 1 - index]
+                                          .isFav,
+                                    ),
+                                fullscreenDialog: true),
+                          ).then((value) => setState(() {
+                                List<Record> allRecord = List.from(Record.list);
+                                recordView = [];
+                                allRecord.forEach((Record record) {
+                                  if (record.isFav) {
+                                    recordView.add(record);
+                                  }
+                                });
+                              }));
+                        },
+                        leading: record.type != 'Transfer'
+                            ? Text(
+                                record.category.name,
+                                overflow: TextOverflow.ellipsis,
+                                style:
+                                    TextStyle(color: Colors.grey, fontSize: 14),
                               )
-                              :Text(
-                              "+ RM " + record.money.toStringAsFixed(2),
-                              style: TextStyle(
-                                color: Colors.white,
-                                fontSize: 13.0
-                            ),
-                          ),
-                        ),
+                            : Text(
+                                'Transfer',
+                                overflow: TextOverflow.ellipsis,
+                                style:
+                                    TextStyle(color: Colors.grey, fontSize: 14),
+                              ),
                       ),
-                    ],
-                  ),
-                );
+                    ),
+                    Expanded(
+                      flex: 9,
+                      child: ListTile(
+                        onTap: () {
+                          Navigator.push(
+                            context,
+                            MaterialPageRoute(
+                                builder: (context) => EditRecord(
+                                      uid: uid,
+                                      index: Record.list.length - 1 - index,
+                                      type: Record
+                                          .list[Record.list.length - 1 - index]
+                                          .type,
+                                      title: Record
+                                          .list[Record.list.length - 1 - index]
+                                          .title,
+                                      dateTime: Record
+                                          .list[Record.list.length - 1 - index]
+                                          .dateTime,
+                                      category: Record
+                                          .list[Record.list.length - 1 - index]
+                                          .category,
+                                      account: Record
+                                          .list[Record.list.length - 1 - index]
+                                          .account,
+                                      toAccount: Record
+                                          .list[Record.list.length - 1 - index]
+                                          .toAccount,
+                                      amount: Record
+                                          .list[Record.list.length - 1 - index]
+                                          .amount,
+                                      note: Record
+                                          .list[Record.list.length - 1 - index]
+                                          .note,
+                                      isFav: Record
+                                          .list[Record.list.length - 1 - index]
+                                          .isFav,
+                                    ),
+                                fullscreenDialog: true),
+                          ).then((value) => setState(() {
+                                List<Record> allRecord = List.from(Record.list);
+                                recordView = [];
+                                allRecord.forEach((Record record) {
+                                  if (record.isFav) {
+                                    recordView.add(record);
+                                  }
+                                });
+                              }));
+                        },
+                        title: Text(
+                          record.title,
+                          overflow: TextOverflow.ellipsis,
+                          style: TextStyle(color: Colors.white),
+                        ),
+                        subtitle: record.type != 'Transfer'
+                            ? Text(
+                                record.account.name,
+                                style: TextStyle(color: Colors.grey),
+                              )
+                            : Text(
+                                '${record.account.name} - ${record.toAccount.name}',
+                                style: TextStyle(color: Colors.grey),
+                              ),
+                      ),
+                    ),
+                    Expanded(
+                      flex: 5,
+                      child: ListTile(
+                        onTap: () {
+                          Navigator.push(
+                            context,
+                            MaterialPageRoute(
+                                builder: (context) => EditRecord(
+                                      uid: uid,
+                                      index: Record.list.length - 1 - index,
+                                      type: Record
+                                          .list[Record.list.length - 1 - index]
+                                          .type,
+                                      title: Record
+                                          .list[Record.list.length - 1 - index]
+                                          .title,
+                                      dateTime: Record
+                                          .list[Record.list.length - 1 - index]
+                                          .dateTime,
+                                      category: Record
+                                          .list[Record.list.length - 1 - index]
+                                          .category,
+                                      account: Record
+                                          .list[Record.list.length - 1 - index]
+                                          .account,
+                                      toAccount: Record
+                                          .list[Record.list.length - 1 - index]
+                                          .toAccount,
+                                      amount: Record
+                                          .list[Record.list.length - 1 - index]
+                                          .amount,
+                                      note: Record
+                                          .list[Record.list.length - 1 - index]
+                                          .note,
+                                      isFav: Record
+                                          .list[Record.list.length - 1 - index]
+                                          .isFav,
+                                    ),
+                                fullscreenDialog: true),
+                          ).then((value) => setState(() {
+                                List<Record> allRecord = List.from(Record.list);
+                                recordView = [];
+                                allRecord.forEach((Record record) {
+                                  if (record.isFav) {
+                                    recordView.add(record);
+                                  }
+                                });
+                              }));
+                        },
+                        trailing: record.type == 'Expenses'
+                            ? Text(
+                                "- RM " + record.amount.toStringAsFixed(2),
+                                style: TextStyle(
+                                    color: Colors.white, fontSize: 13.0),
+                              )
+                            : Text(
+                                "+ RM " + record.amount.toStringAsFixed(2),
+                                style: TextStyle(
+                                    color: Colors.white, fontSize: 13.0),
+                              ),
+                      ),
+                    ),
+                  ],
+                ),
+              );
             },
           ),
         ),

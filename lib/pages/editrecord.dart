@@ -24,6 +24,7 @@ class EditRecord extends StatefulWidget {
   final DateTime dateTime;
   final Category category;
   final Account account;
+  final Account toAccount;
   final double amount;
   final String note;
   final bool isFav;
@@ -37,6 +38,7 @@ class EditRecord extends StatefulWidget {
     @required this.dateTime,
     @required this.category,
     @required this.account,
+    @required this.toAccount,
     @required this.amount,
     @required this.note,
     @required this.isFav,
@@ -51,6 +53,7 @@ class EditRecord extends StatefulWidget {
         dateTime: dateTime,
         category: category,
         account: account,
+        toAccount: toAccount,
         amount: amount,
         note: note,
         isFav: isFav,
@@ -69,6 +72,7 @@ class _EditRecordState extends State<EditRecord> {
     this.dateTime,
     this.category,
     this.account,
+    this.toAccount,
     this.amount,
     this.note,
     this.isFav,
@@ -83,6 +87,7 @@ class _EditRecordState extends State<EditRecord> {
   DateTime dateTime = DateTime.utc(0000);
   Category category = Category.incomeList[0];
   Account account = Account.list[0];
+  Account toAccount = Account.list[1];
   String currency = Account.list[0].currency;
   double amount = 0;
   String note = '';
@@ -144,6 +149,7 @@ class _EditRecordState extends State<EditRecord> {
   List<Category> categoryTypes = Category.incomeList;
 
   String currentSelectedAccount = Account.list[0].name;
+  String currentSelectedTransferAccount = Account.list[1].name;
   List<Account> accountTypes = Account.list;
 
   @override
@@ -159,6 +165,8 @@ class _EditRecordState extends State<EditRecord> {
     currentSelectedCategory =
         category != null ? category.name : categoryTypes[0].name;
     currentSelectedAccount = account.name;
+    currentSelectedTransferAccount =
+        toAccount != null ? toAccount.name : Account.list[1].name;
     currency = account.currency;
 
     displayWidget() {
@@ -754,6 +762,7 @@ class _EditRecordState extends State<EditRecord> {
                         dateTime: dateTime,
                         category: category,
                         account: account,
+                        toAccount: null,
                         amount: amount,
                         note: note,
                         attachment: attachment,
@@ -948,7 +957,7 @@ class _EditRecordState extends State<EditRecord> {
                                 value: currentSelectedAccount,
                                 onChanged: (newValue) {
                                   setState(() {
-                                    currentSelectedAccount = (newValue);
+                                    currentSelectedAccount = newValue;
                                     Account.list.forEach((element) {
                                       if (element.name == newValue) {
                                         account = element;
@@ -1030,13 +1039,13 @@ class _EditRecordState extends State<EditRecord> {
                                 isDense: true),
                             child: DropdownButtonHideUnderline(
                               child: DropdownButton<String>(
-                                value: currentSelectedAccount,
+                                value: currentSelectedTransferAccount,
                                 onChanged: (newValue) {
                                   setState(() {
-                                    currentSelectedAccount = (newValue);
+                                    currentSelectedTransferAccount = newValue;
                                     Account.list.forEach((element) {
                                       if (element.name == newValue) {
-                                        account = element;
+                                        toAccount = element;
                                       }
                                     });
                                   });
@@ -1051,7 +1060,7 @@ class _EditRecordState extends State<EditRecord> {
                                 selectedItemBuilder: (BuildContext context) {
                                   return accountTypes.map((Account value) {
                                     return Text(
-                                      currentSelectedAccount,
+                                      currentSelectedTransferAccount,
                                       style: TextStyle(
                                           color: Colors.white, fontSize: 15.0),
                                     );
@@ -1252,8 +1261,9 @@ class _EditRecordState extends State<EditRecord> {
                         type: type,
                         title: title,
                         dateTime: dateTime,
-                        category: category,
+                        category: null,
                         account: account,
+                        toAccount: toAccount,
                         amount: amount,
                         note: note,
                         attachment: attachment,

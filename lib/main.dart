@@ -1,28 +1,11 @@
 import 'package:flutter/material.dart';
-// import 'package:budget_tracking_system/pages/mainpage.dart';
-// import 'package:budget_tracking_system/pages/login.dart';
-// import 'package:budget_tracking_system/pages/register.dart';
-// import 'package:budget_tracking_system/pages/addrecord.dart';
-// import 'package:budget_tracking_system/pages/editrecord.dart';
-import 'package:budget_tracking_system/pages/addbudget.dart';
 import 'package:provider/provider.dart';
 import 'package:budget_tracking_system/services/user.dart';
 import 'package:budget_tracking_system/services/auth.dart';
 import 'package:budget_tracking_system/pages/wrapper.dart';
 
 void main() {
-  runApp(MyApp(
-      // MaterialApp(
-      // initialRoute: '/login',
-      // routes: {
-      //   '/login': (context) => Login(),
-      //   '/mainpage': (context) => Mainpage(),
-      //   '/register': (context) => Register(),
-      //   '/addrecord': (context) => AddRecord(),
-      //   '/editrecord': (context) => EditRecord(),
-      //   '/addbudget': (context) => AddBudget()
-      // },
-      ));
+  runApp(MyApp());
 }
 
 class MyApp extends StatelessWidget {
@@ -32,7 +15,6 @@ class MyApp extends StatelessWidget {
     return StreamProvider<User>.value(
       value: AuthService().user,
       child: MaterialApp(
-        routes: {'/addbudget': (context) => AddBudget()},
         home: Wrapper(),
       ),
     );

@@ -2,14 +2,22 @@ import 'package:budget_tracking_system/services/category.dart';
 import 'package:budget_tracking_system/services/onetimebudget.dart';
 import 'package:budget_tracking_system/services/periodicbudget.dart';
 import 'package:budget_tracking_system/services/record.dart';
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 
 class AddBudget extends StatefulWidget {
+  final String uid;
+  AddBudget({Key key, @required this.uid}) : super(key: key);
+
   @override
-  _AddBudgetState createState() => _AddBudgetState();
+  _AddBudgetState createState() => _AddBudgetState(uid);
 }
 
 class _AddBudgetState extends State<AddBudget> {
+  final String uid;
+  _AddBudgetState(this.uid);
+  var recordcollections = Firestore.instance.collection('users');
+
   // Initialized local variables for user input
   String title = "Untitled";
   Category category = Category.list[0];
@@ -21,7 +29,7 @@ class _AddBudgetState extends State<AddBudget> {
 
   //Creates a list of items for DropdownButton category and account.
   String currentSelectedCategory = "Food";
-  List<String> categoryTypes = ["Food", "Transport", "Entertainment"];
+  List<Category> categoryTypes = Category.expenseList;
 
   String currentSelectedType = "Periodic";
   List<String> budgetTypes = ["Periodic", "One-Time"];
@@ -70,6 +78,7 @@ class _AddBudgetState extends State<AddBudget> {
                           onChanged: (newValue) {
                             setState(() {
                               currentSelectedInterval = newValue;
+                              interval = currentSelectedInterval;
                             });
                           },
                           items: intervalTypes.map((String value) {
@@ -380,19 +389,24 @@ class _AddBudgetState extends State<AddBudget> {
                                   onChanged: (newValue) {
                                     setState(() {
                                       currentSelectedCategory = newValue;
+                                      categoryTypes.forEach((element) {
+                                        if (element.name == newValue) {
+                                          category = element;
+                                        }
+                                      });
                                     });
                                   },
                                   //Map the items from categoryTypes lists into item menu dropdown.
-                                  items: categoryTypes.map((String value) {
+                                  items: categoryTypes.map((Category value) {
                                     return DropdownMenuItem<String>(
-                                      value: value,
-                                      child: Text(value),
+                                      value: value.name,
+                                      child: Text(value.name),
                                     );
                                   }).toList(),
                                   //Style the dropdown items text.
                                   style: TextStyle(color: Colors.black),
                                   selectedItemBuilder: (BuildContext context) {
-                                    return categoryTypes.map((String value) {
+                                    return categoryTypes.map((Category value) {
                                       return Text(
                                         currentSelectedCategory,
                                         style: TextStyle(
@@ -489,25 +503,64 @@ class _AddBudgetState extends State<AddBudget> {
                       shape: RoundedRectangleBorder(
                           borderRadius: BorderRadius.circular(18.0)),
                       onPressed: () {
+                        if (currentSelectedType == "Periodic") {
+                          PeriodicBudget.add(PeriodicBudget(
+                              uid: uid,
+                              title: title,
+                              category: category,
+                              amount: amount,
+                              interval: interval,
+                              save: true,
+                              startDate: DateTime.now()));
+                          Navigator.pop(context);
+                        } else {
+                          OneTimeBudget.add(OneTimeBudget(
+                              uid: uid,
+                              title: title,
+                              category: category,
+                              amount: amount,
+                              startDate: startDate,
+                              endDate: endDate,
+                              save: true));
+                          Navigator.pop(context);
+                        }
+
                         // if (currentSelectedType == "Periodic") {
-                        PeriodicBudget.add(PeriodicBudget(
-                            title: "pb1",
-                            category: Category.list[0],
-                            amount: 2000,
-                            interval: "Monthly",
-                            startDate: DateTime.utc(2020, 1, 1)));
-                        PeriodicBudget.add(PeriodicBudget(
-                            title: "pb2",
-                            category: Category.list[1],
-                            amount: 50,
-                            interval: "Weekly",
-                            startDate: DateTime.utc(2019, 1, 1)));
-                        PeriodicBudget.add(PeriodicBudget(
-                            title: "pb3",
-                            category: Category.list[0],
-                            amount: 10,
-                            interval: "Monthly",
-                            startDate: DateTime.utc(2021, 1, 1)));
+                        // PeriodicBudget(
+                        //     uid: uid,
+                        //     title: title,
+                        //     category: category,
+                        //     amount: amount,
+                        //     interval: interval,
+                        //     save: false,
+                        //     startDate: DateTime.utc(2021, 3, 2));
+                        //   PeriodicBudget(
+                        //     uid: uid,
+                        //     title: title,
+                        //     category: category,
+                        //     amount: amount,
+                        //     interval: interval,
+                        //     save: false,
+                        //     startDate: DateTime.utc(2021, 2, 2));
+
+                        // PeriodicBudget.add(PeriodicBudget(
+                        //     title: "pb1",
+                        //     category: Category.list[0],
+                        //     amount: 2000,
+                        //     interval: "Monthly",
+                        //     startDate: DateTime.utc(2020, 1, 1)));
+                        // PeriodicBudget.add(PeriodicBudget(
+                        //     title: "pb2",
+                        //     category: Category.list[1],
+                        //     amount: 50,
+                        //     interval: "Weekly",
+                        //     startDate: DateTime.utc(2019, 1, 1)));
+                        // PeriodicBudget.add(PeriodicBudget(
+                        //     title: "pb3",
+                        //     category: Category.list[0],
+                        //     amount: 10,
+                        //     interval: "Monthly",
+                        //     startDate: DateTime.utc(2021, 1, 1)));
                         // } else {
                         // OneTimeBudget.add(OneTimeBudget(
                         //     title: "buget1",
@@ -545,10 +598,10 @@ class _AddBudgetState extends State<AddBudget> {
                         //     DateTime.utc(2020, 1, 2),
                         //     DateTime.utc(2020, 12, 21));
                         // OneTimeBudget.calculateAmountUsed();
-                        PeriodicBudget.calculateAmountUsed(
-                            DateTime.utc(2020, 1));
-                        print(PeriodicBudget.returnList(
-                            DateTime.utc(2019, 12, 30)));
+                        // PeriodicBudget.calculateAmountUsed(
+                        //     DateTime.utc(2020, 1));
+                        // print(PeriodicBudget.returnList(
+                        //     DateTime.utc(2019, 12, 30)));
 
                         // }
                       },

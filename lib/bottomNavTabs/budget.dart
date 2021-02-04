@@ -4,6 +4,8 @@ import 'package:budget_tracking_system/pages/budgetonetime.dart';
 import 'package:budget_tracking_system/pages/addbudget.dart';
 
 class Budget extends StatelessWidget {
+  final String uid;
+  Budget({this.uid});
   @override
   Widget build(BuildContext context) {
     return DefaultTabController(
@@ -19,8 +21,12 @@ class Budget extends StatelessWidget {
                 indicatorColor: Color.fromRGBO(255, 185, 49, 1),
                 unselectedLabelColor: Colors.grey,
                 tabs: [
-                  Tab(text: "Periodic",),
-                  Tab(text: "One-Time",),
+                  Tab(
+                    text: "Periodic",
+                  ),
+                  Tab(
+                    text: "One-Time",
+                  ),
                 ],
               ),
             ],
@@ -30,7 +36,9 @@ class Budget extends StatelessWidget {
         body: SafeArea(
           child: TabBarView(
             children: [
-              Periodic(),
+              Periodic(
+                uid: uid,
+              ),
               OneTime(),
             ],
           ),
@@ -41,18 +49,18 @@ class Budget extends StatelessWidget {
           child: Text(
             "+",
             style:
-              TextStyle(fontSize: 25.0, color: Color.fromRGBO(41, 41, 41, 1)),
+                TextStyle(fontSize: 25.0, color: Color.fromRGBO(41, 41, 41, 1)),
           ),
           backgroundColor: Color.fromRGBO(255, 185, 49, 1),
           onPressed: () {
             Navigator.push(
               context,
               MaterialPageRoute(
-                builder: (context) => AddBudget(
-                      //uid: user.uid,
-                    ),
-                fullscreenDialog: true),
-              );
+                  builder: (context) => AddBudget(
+                        uid: uid,
+                      ),
+                  fullscreenDialog: true),
+            );
           },
         ),
       ),

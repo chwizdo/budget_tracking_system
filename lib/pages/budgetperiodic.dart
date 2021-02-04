@@ -1,33 +1,24 @@
+import 'package:budget_tracking_system/pages/editbudget.dart';
 import 'package:flutter/material.dart';
-
-class BudgetRecords {
-  String category, title, type, interval;
-  double money, moneyUsed;
-
-
-  BudgetRecords({this.category, this.title, this.money, this.type, this.interval, this.moneyUsed}); 
-}
+import 'package:budget_tracking_system/services/periodicbudget.dart';
 
 class Periodic extends StatefulWidget {
+  final String uid;
+  Periodic({Key key, @required this.uid}) : super(key: key);
   @override
-  _PeriodicState createState() => _PeriodicState();
+  _PeriodicState createState() => _PeriodicState(uid);
 }
 
 class _PeriodicState extends State<Periodic> {
+  final String uid;
+  _PeriodicState(this.uid);
 
-  //A list to store all the BudgetRecords by passing the values through using the constructor from BudgetRecords() Class.
-  List recordView = [
-    BudgetRecords(category: 'Food', title: 'Food', money: 600.0, type: 'Expenses', interval: 'M', moneyUsed: 230.75),
-    BudgetRecords(category: 'Entertainment', title: 'Fun Time', money: 50.0, type: 'Expenses', interval: 'W', moneyUsed: 35.75),
-    BudgetRecords(category: 'Home', title: 'Home Appliances', money: 250.0, type: 'Expenses', interval: 'M', moneyUsed: 0.00),
-    BudgetRecords(category: 'Food', title: 'Snacks', money: 60.0, type: 'Expenses', interval: 'M', moneyUsed: 44.50),
-  ];
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       backgroundColor: Color.fromRGBO(57, 57, 57, 1),
       body: ListView.separated(
-        itemCount: recordView.length,
+        itemCount: PeriodicBudget.list.length,
         itemBuilder: (context, index) {
           return Container(
             height: 70.0,
@@ -38,28 +29,41 @@ class _PeriodicState extends State<Periodic> {
                 Expanded(
                   flex: 1,
                   child: ListTile(
+                    onTap: () {
+                      print(uid);
+                      Navigator.push(
+                        context,
+                        MaterialPageRoute(
+                            builder: (context) => EditBudget(
+                                index: PeriodicBudget.list
+                                    .indexOf(PeriodicBudget.list[index]),
+                                uid: uid,
+                                title: PeriodicBudget.list[index].title,
+                                category: PeriodicBudget.list[index].category,
+                                amount: PeriodicBudget.list[index].amount,
+                                interval: PeriodicBudget.list[index].interval,
+                                startDate:
+                                    PeriodicBudget.list[index].startDate),
+                            fullscreenDialog: true),
+                      ).then((value) => setState(() {}));
+                    },
                     title: Text(
-                      recordView[index].title,
+                      PeriodicBudget.list[index].title,
                       //Used to wrap long texts
                       overflow: TextOverflow.ellipsis,
-                      style: TextStyle(
-                        color: Colors.white,
-                        fontSize: 16
-                      ),
+                      style: TextStyle(color: Colors.white, fontSize: 16),
                     ),
                     subtitle: Text(
-                      '${recordView[index].category} /' + ' ${recordView[index].interval}',
+                      '${PeriodicBudget.list[index].category.name} /' +
+                          ' ${PeriodicBudget.list[index].interval.substring(0, 1)}',
                       //Used to wrap long texts
                       overflow: TextOverflow.ellipsis,
-                      style: TextStyle(
-                        color: Colors.grey,
-                        fontSize: 14.0
-                      ),
+                      style: TextStyle(color: Colors.grey, fontSize: 14.0),
                     ),
                   ),
                 ),
                 //Second part is to display the money budget and money used.
-                  Expanded(
+                Expanded(
                   flex: 1,
                   child: ListTile(
                     //RichText is used to display texts with multiple styles.
@@ -67,18 +71,15 @@ class _PeriodicState extends State<Periodic> {
                       text: TextSpan(
                         children: [
                           TextSpan(
-                            text: 'RM ' + '${recordView[index].moneyUsed.toString()}',
-                            style: TextStyle(
-                              color: Colors.grey,
-                              fontSize: 14.0
-                            )
-                          ),
+                              text: 'RM ' +
+                                  '${PeriodicBudget.list[index].amountUsed.toString()}',
+                              style: TextStyle(
+                                  color: Colors.grey, fontSize: 14.0)),
                           TextSpan(
-                            text: ' / ' + '${recordView[index].money.toString()}',
-                            style: TextStyle(
-                              color: Colors.white,
-                              fontSize: 14.0
-                            ),
+                            text: ' / ' +
+                                '${PeriodicBudget.list[index].amount.toString()}',
+                            style:
+                                TextStyle(color: Colors.white, fontSize: 14.0),
                           ),
                         ],
                       ),
@@ -88,15 +89,15 @@ class _PeriodicState extends State<Periodic> {
               ],
             ),
           );
-        }, 
+        },
         //Adds a divider in between lists items, no divider will be included in the first and last item from the list.
         separatorBuilder: (context, index) {
-        return Divider(
+          return Divider(
             color: Colors.grey,
             indent: 15.0,
             endIndent: 15.0,
           );
-        },       
+        },
       ),
     );
   }

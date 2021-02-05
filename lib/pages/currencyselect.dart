@@ -1,27 +1,20 @@
 import 'package:flutter/material.dart';
 import 'package:budget_tracking_system/services/currency.dart';
 
-class CurrencyList {
-  String name, value;
-
-  CurrencyList({this.name, this.value});
-}
-
 class CurrencySelection extends StatefulWidget {
+  final String uid;
+
+  CurrencySelection({this.uid});
+
   @override
-  _CurrencySelectionState createState() => _CurrencySelectionState();
+  _CurrencySelectionState createState() => _CurrencySelectionState(uid: uid);
 }
 
 class _CurrencySelectionState extends State<CurrencySelection> {
-  String _currentSelectedCurrency = "Main";
-  List _currencyTypes = ["Main", "Sub"];
-
+  String uid;
   List currencyList = Currency.fullList;
 
-  // String selectedMainCurrency = 'myr';
-  // String selectedSubCurrency = 'usd';
-  
-  bool _isSelected = false;
+  _CurrencySelectionState({this.uid});
 
   displayCurrency() {
     return Theme(
@@ -29,18 +22,21 @@ class _CurrencySelectionState extends State<CurrencySelection> {
       child: ListView.separated(
         itemCount: currencyList.length,
         itemBuilder: (BuildContext context, int index) {
-          return CheckboxListTile(          
+          return CheckboxListTile(
             //ListTileControlAffinity.trailing will place the checkbox at the trailing
             controlAffinity: ListTileControlAffinity.trailing,
             activeColor: Color.fromRGBO(255, 185, 49, 1),
             title: Text(
-              currencyList[index],
+              currencyList[index].name,
               style: TextStyle(color: Colors.white),
             ),
-            value: _isSelected,
+            value: currencyList[index].isChecked,
             onChanged: (bool value) {
               setState(() {
-                _isSelected = value;
+                value
+                    ? Currency.add(
+                        uid: uid, currency: currencyList[index], save: true)
+                    : Currency.remove(uid: uid, currency: currencyList[index]);
               });
             },
           );
@@ -67,40 +63,6 @@ class _CurrencySelectionState extends State<CurrencySelection> {
               Flexible(
                 child: Text('Currency Selection'),
               ),
-              // Expanded(
-              //   child: Container(
-              //     height: 40,
-              //     padding: EdgeInsets.symmetric(horizontal: 10.0),
-              //     decoration: BoxDecoration(
-              //       border: Border.all(
-              //           color: Colors.white,
-              //           style: BorderStyle.solid,
-              //           width: 0.20),
-              //     ),
-              //     child: DropdownButtonHideUnderline(
-              //       child: Theme(
-              //         data: Theme.of(context).copyWith(
-              //           canvasColor: Color.fromRGBO(18, 18, 18, 1),
-              //         ),
-              //         child: DropdownButton(
-              //           style: TextStyle(color: Colors.white),
-              //           value: _currentSelectedCurrency,
-              //           onChanged: (newValue) {
-              //             setState(() {
-              //               _currentSelectedCurrency = newValue;
-              //             });
-              //           },
-              //           items: _currencyTypes.map((value) {
-              //             return DropdownMenuItem<String>(
-              //               value: value,
-              //               child: Text(value),
-              //             );
-              //           }).toList(),
-              //         ),
-              //       ),
-              //     ),
-              //   ),
-              // ),
             ],
           ),
         ),

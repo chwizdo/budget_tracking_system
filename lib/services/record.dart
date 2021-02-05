@@ -1,6 +1,9 @@
 import 'dart:math';
 
+import 'package:budget_tracking_system/pages/budgetperiodic.dart';
 import 'package:budget_tracking_system/services/currency.dart';
+import 'package:budget_tracking_system/services/onetimebudget.dart';
+import 'package:budget_tracking_system/services/periodicbudget.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
@@ -23,6 +26,7 @@ class Record {
   Category _category;
   Account _account;
   Account _toAccount;
+  dynamic _budget;
   double _amount;
   String _note;
   String _attachment;
@@ -41,6 +45,7 @@ class Record {
     Category category,
     @required Account account,
     Account toAccount,
+    dynamic budget,
     @required double amount,
     String note = '',
     String attachment = '',
@@ -54,6 +59,7 @@ class Record {
         _category = category,
         _account = account,
         _toAccount = toAccount,
+        _budget = budget,
         _amount = amount,
         _note = note,
         _attachment = attachment,
@@ -93,6 +99,7 @@ class Record {
           'category': _category != null ? _category.id : null,
           'account': _account.id,
           'To Account': _toAccount != null ? _toAccount.id : null,
+          'budget': _budget != null ? _budget.id : null,
           'amount': _amount,
           'note': _note,
           'attachment': _attachment,
@@ -131,6 +138,10 @@ class Record {
 
   Category get category {
     return _category;
+  }
+
+  dynamic get budget {
+    return _budget;
   }
 
   set category(Category category) {
@@ -181,6 +192,7 @@ class Record {
     Category category,
     @required Account account,
     Account toAccount,
+    dynamic budget,
     @required double amount,
     String note = '',
     String attachment = '',
@@ -205,6 +217,7 @@ class Record {
     _account = account;
     _toAccount = toAccount;
     _amount = amount;
+    _budget = budget;
     _note = note;
     _attachment = attachment;
     _isFav = isFav;
@@ -280,6 +293,7 @@ class Record {
       'category': _category != null ? _category.id : null,
       'account': _account.id,
       'To Account': _toAccount != null ? _toAccount.id : null,
+      'budget': _budget != null ? _budget.id : null,
       'amount': _amount,
       'note': _note,
       'attachment': _attachment,
@@ -473,6 +487,23 @@ class Record {
                     toAccount = acc;
                   }
                 });
+                dynamic budget;
+                List<dynamic> budgetList = [];
+                PeriodicBudget.returnList(DateTime.fromMicrosecondsSinceEpoch(
+                        timestamp.microsecondsSinceEpoch))
+                    .forEach((PeriodicBudget budget) {
+                  budgetList.add(budget);
+                });
+                OneTimeBudget.returnList(DateTime.fromMicrosecondsSinceEpoch(
+                        timestamp.microsecondsSinceEpoch))
+                    .forEach((OneTimeBudget budget) {
+                  budgetList.add(budget);
+                });
+                budgetList.forEach((bud) {
+                  if (bud.id == element.data['budget']) {
+                    budget = bud;
+                  }
+                });
                 Record.add(Record(
                   uid: uid,
                   id: element.data['id'],
@@ -483,6 +514,7 @@ class Record {
                   category: category,
                   account: account,
                   toAccount: toAccount,
+                  budget: budget,
                   amount: element.data['amount'],
                   note: element.data['note'],
                   attachment: element.data['attachment'],
@@ -510,6 +542,7 @@ class Record {
       }
     });
     double balance = totalIncome - totalExpense;
+    print(totalIncome);
     return [totalIncome, totalExpense, balance];
   }
 }

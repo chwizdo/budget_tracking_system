@@ -50,9 +50,15 @@ class _LoadingState extends State<Loading> {
   }
 
   void initialize() async {
-    await service.Currency.init();
+    await service.Currency.init(uid: uid);
 
     await service.Category.getCategories(uid: uid);
+    if (service.Currency.list.length < 1) {
+      service.Currency.add(
+          uid: uid,
+          currency: service.Currency(name: 'USD', isChecked: true),
+          save: true);
+    }
     if (service.Category.list.length < 1) {
       service.Category.add(service.Category(
           uid: uid, name: 'No Category', type: 'income', save: true));
@@ -93,7 +99,6 @@ class _LoadingState extends State<Loading> {
     await PeriodicBudget.getPeriodicBudget(uid: uid);
     await OneTimeBudget.getOneTimeBudget(uid: uid);
     await service.Record.getRecords(uid: uid);
-    await PeriodicBudget.calculateAmountUsed(uid: uid);
     print('system initialized!');
     setState(() {
       isLoading = false;

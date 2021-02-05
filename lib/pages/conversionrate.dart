@@ -1,3 +1,4 @@
+import 'package:budget_tracking_system/services/currency.dart';
 import 'package:flutter/material.dart';
 
 class CurrencyRate {
@@ -13,11 +14,7 @@ class ConversionRate extends StatefulWidget {
 }
 
 class _ConversionRateState extends State<ConversionRate> {
-
-  List currencyRate = [
-    CurrencyRate(mainCurrency: 'MYR', otherCurrency: 'USD', rate: 0.25),
-    CurrencyRate(mainCurrency: 'MYR', otherCurrency: 'EUR', rate: 0.20),
-  ];
+  List<Currency> currencyRate = Currency.list;
 
   @override
   Widget build(BuildContext context) {
@@ -25,10 +22,10 @@ class _ConversionRateState extends State<ConversionRate> {
       backgroundColor: Color.fromRGBO(57, 57, 57, 1),
       appBar: AppBar(
         backgroundColor: Color.fromRGBO(18, 18, 18, 1),
-        title: Text('Currency Conversion Rate'),
+        title: Text('Conversion Rate From EUR'),
       ),
-       body: SafeArea(
-         //Used to add divider between lists.
+      body: SafeArea(
+        //Used to add divider between lists.
         child: ListView.separated(
           itemCount: currencyRate.length,
           itemBuilder: (BuildContext context, int index) {
@@ -40,7 +37,7 @@ class _ConversionRateState extends State<ConversionRate> {
                   Expanded(
                     flex: 2,
                     child: Text(
-                      '${currencyRate[index].mainCurrency}' + ' to ' + '${currencyRate[index].otherCurrency}',
+                      '${currencyRate[index].name}',
                       style: TextStyle(color: Colors.white, fontSize: 18.0),
                     ),
                   ),
@@ -50,7 +47,16 @@ class _ConversionRateState extends State<ConversionRate> {
                       height: 50.0,
                       child: TextFormField(
                         //To add a default value inside  the text field.
-                        controller: new TextEditingController(text: currencyRate[index].rate.toStringAsFixed(2)), //Fixed the number at 2 decimal places.
+                        onChanged: (rate) {
+                          Currency.setCurrencyRate(
+                              currency: currencyRate[index],
+                              rate: double.parse(rate));
+                        },
+                        controller: new TextEditingController(
+                            text: Currency.getCurrencyRate(
+                                    currency: currencyRate[index])
+                                .toStringAsFixed(
+                                    2)), //Fixed the number at 2 decimal places.
                         style: TextStyle(color: Colors.white),
                         decoration: InputDecoration(
                           //Remove visible borders
@@ -60,14 +66,17 @@ class _ConversionRateState extends State<ConversionRate> {
                           fillColor: Color.fromRGBO(41, 41, 41, 1),
                           //Border when it is not focused by user input.
                           enabledBorder: OutlineInputBorder(
-                            borderRadius:BorderRadius.all(Radius.circular(10.0)),
+                            borderRadius:
+                                BorderRadius.all(Radius.circular(10.0)),
                             borderSide: BorderSide(color: Colors.transparent),
                           ),
                           //Border when it is focused by user input.
                           focusedBorder: OutlineInputBorder(
-                            borderRadius:BorderRadius.all(Radius.circular(10.0)),
-                            borderSide:BorderSide(color: Colors.transparent)),
-                            contentPadding: EdgeInsets.all(12.0),
+                              borderRadius:
+                                  BorderRadius.all(Radius.circular(10.0)),
+                              borderSide:
+                                  BorderSide(color: Colors.transparent)),
+                          contentPadding: EdgeInsets.all(12.0),
                         ),
                       ),
                     ),

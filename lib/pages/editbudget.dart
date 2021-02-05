@@ -1,3 +1,4 @@
+import 'package:budget_tracking_system/services/onetimebudget.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:budget_tracking_system/services/category.dart';
@@ -11,6 +12,7 @@ class EditBudget extends StatefulWidget {
   double amount;
   String interval;
   DateTime startDate;
+  DateTime endDate;
 
   EditBudget({
     @required this.index,
@@ -18,8 +20,9 @@ class EditBudget extends StatefulWidget {
     @required this.title,
     @required this.category,
     @required this.amount,
-    @required this.interval,
+    this.interval,
     @required this.startDate,
+    this.endDate,
   });
 
   @override
@@ -30,7 +33,8 @@ class EditBudget extends StatefulWidget {
       category: category,
       amount: amount,
       interval: interval,
-      startDate: startDate);
+      startDate: startDate,
+      endDate: endDate);
 }
 
 class _EditBudgetState extends State<EditBudget> {
@@ -42,8 +46,9 @@ class _EditBudgetState extends State<EditBudget> {
   String title;
   Category category;
   double amount;
-  String interval;
+  String interval = "no interval";
   DateTime startDate;
+  DateTime endDate;
 
   _EditBudgetState({
     this.index,
@@ -53,16 +58,17 @@ class _EditBudgetState extends State<EditBudget> {
     this.amount,
     this.interval,
     this.startDate,
+    this.endDate,
   });
 
   //Creates a list of items for DropdownButton category and account.
   String currentSelectedCategory = Category.expenseList[0].name;
   List<Category> categoryTypes = Category.expenseList;
 
-  String currentSelectedType = "Periodic";
+  String currentSelectedType;
   List<String> budgetTypes = ["Periodic", "One-Time"];
 
-  String currentSelectedInterval = "Weekly";
+  String currentSelectedInterval;
   List<String> intervalTypes = ["Weekly", "Monthly"];
 
   displayWidget() {
@@ -221,7 +227,13 @@ class _EditBudgetState extends State<EditBudget> {
 
   @override
   Widget build(BuildContext context) {
+    currentSelectedCategory = category.name;
     currentSelectedInterval = interval;
+    if (this.endDate == null) {
+      currentSelectedType = "Periodic";
+    } else {
+      currentSelectedType = "One-Time";
+    }
     currentSelectedCategory = category.name;
     return Scaffold(
       backgroundColor: Color.fromRGBO(57, 57, 57, 1),
@@ -529,13 +541,22 @@ class _EditBudgetState extends State<EditBudget> {
                       shape: RoundedRectangleBorder(
                           borderRadius: BorderRadius.circular(18.0)),
                       onPressed: () {
-                        PeriodicBudget.list[index].setBudget(
-                          title: title,
-                          category: category,
-                          amount: amount,
-                          interval: interval,
-                          startDate: startDate,
-                        );
+                        if (currentSelectedType == "Periodic") {
+                          PeriodicBudget.list[index].setBudget(
+                            title: title,
+                            category: category,
+                            amount: amount,
+                            interval: interval,
+                            startDate: startDate,
+                          );
+                        } else {
+                          OneTimeBudget.list[index].setBudget(
+                              title: title,
+                              category: category,
+                              amount: amount,
+                              startDate: startDate,
+                              endDate: endDate);
+                        }
                         Navigator.pop(context);
                       },
                       child: Text(

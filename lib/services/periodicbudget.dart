@@ -60,6 +60,10 @@ class PeriodicBudget {
   }
 
   // getter for each properties
+  String get id {
+    return _id;
+  }
+
   String get title {
     return _title;
   }
@@ -127,9 +131,15 @@ class PeriodicBudget {
   }
 
   // Delete budget based on list index
-  static List<PeriodicBudget> delete(int index) {
-    _list.removeAt(index);
-    return _list;
+  void delete() {
+    _list.remove(this);
+
+    Firestore.instance
+        .collection("users")
+        .document(_uid)
+        .collection("periodic budget")
+        .document(_id)
+        .delete();
   }
 
   //TODO refresh amount used after INTERVAL
@@ -149,15 +159,14 @@ class PeriodicBudget {
 
   //TODO calculate amountUsed (Weekly cannot do)
   // take all record for that period of time
-  static Future<void> calculateAmountUsed({@required String uid}) async {
+  static void calculateAmountUsed() {
     _list.forEach((periodicbudget) {
       double sum = 0;
       double sum2 = 0;
       if (periodicbudget._interval == "Monthly") {
         List<Record> monthlyRecordList = [];
         Record.list.forEach((record) {
-          if (!record.dateTime.isBefore(periodicbudget._startDate) &&
-              record.type == "Expenses" &&
+          if (record.type == "Expenses" &&
               record.category == periodicbudget._category &&
               record.dateTime.year == DateTime.now().year &&
               record.dateTime.month == DateTime.now().month) {
@@ -182,7 +191,6 @@ class PeriodicBudget {
         });
         periodicbudget._amountUsed = sum2;
       }
-      print(periodicbudget._amountUsed);
       Firestore.instance
           .collection("users")
           .document(periodicbudget._uid)
@@ -194,8 +202,9 @@ class PeriodicBudget {
 
   // Need to return active budget list???
   static List<PeriodicBudget> returnList(DateTime dateTime) {
+    _activeList = [];
     _list.forEach((element) {
-      if (!element.startDate.isBefore(dateTime)) {
+      if (!element.startDate.isAfter(dateTime)) {
         _activeList.add(element);
       }
     });
@@ -233,7 +242,7 @@ class PeriodicBudget {
                 ));
               },
             ),
-            print('Periodic Budget retrieved: ${_list}')
+            print('Periodic Budget retrieved: ${_list.length}')
           },
         );
     return null;

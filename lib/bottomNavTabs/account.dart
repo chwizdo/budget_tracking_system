@@ -51,7 +51,7 @@ class _AccountState extends State<Account> {
                           ),
                           subtitle: Center(
                             child: Text(
-                              service.Account.calAsset().toString(),
+                              service.Account.calAsset().toStringAsFixed(2),
                               style: TextStyle(color: Colors.white),
                             ),
                           ),
@@ -67,7 +67,7 @@ class _AccountState extends State<Account> {
                           ),
                           subtitle: Center(
                             child: Text(
-                              service.Account.calLiability().toString(),
+                              service.Account.calLiability().toStringAsFixed(2),
                               style: TextStyle(color: Colors.white),
                             ),
                           ),
@@ -83,7 +83,7 @@ class _AccountState extends State<Account> {
                           ),
                           subtitle: Center(
                             child: Text(
-                              service.Account.calNet().toString(),
+                              service.Account.calNet().toStringAsFixed(2),
                               style: TextStyle(color: Colors.white),
                             ),
                           ),

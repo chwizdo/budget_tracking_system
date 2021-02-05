@@ -15,7 +15,7 @@ class OneTimeBudget {
   DateTime _endDate;
   static List<OneTimeBudget> _list = [];
   static List<OneTimeBudget> _activeList = [];
-  String _budgetStatus;
+  String _budgetStatus = "no status";
   static List<Record> _budgetRecordList = [];
 
 // Constructor for Add Budget
@@ -50,7 +50,7 @@ class OneTimeBudget {
         "amount used": 0,
         "start date": _startDate,
         "end date": _endDate,
-        "budget status": "no status",
+        "budget status": _budgetStatus,
       }).then((value) => {
                 _id = value.documentID,
                 Firestore.instance
@@ -64,6 +64,10 @@ class OneTimeBudget {
   }
 
   // getter for each properties
+  String get id {
+    return _id;
+  }
+
   String get title {
     return _title;
   }
@@ -142,6 +146,12 @@ class OneTimeBudget {
           element._endDate.isAfter(DateTime.now())) {
         element._budgetStatus = "Current";
       }
+      Firestore.instance
+          .collection("users")
+          .document(element._uid)
+          .collection("one time budget")
+          .document(element._id)
+          .updateData({"budget status": element._budgetStatus});
     });
   }
 
@@ -151,20 +161,27 @@ class OneTimeBudget {
     return _list;
   }
 
-  static List<OneTimeBudget> delete(int index) {
-    _list.removeAt(index);
-    return _list;
+  void delete() {
+    _list.remove(this);
+
+    Firestore.instance
+        .collection("users")
+        .document(_uid)
+        .collection("one time budget")
+        .document("id")
+        .delete();
   }
 
   //return list of active budget at thta time (parameter: that time)
   static List<OneTimeBudget> returnList(DateTime dateTime) {
+    _activeList = [];
     _list.forEach((element) {
       if (!element.startDate.isAfter(dateTime) &&
           !element.endDate.isBefore(dateTime)) {
-        activeList.add(element);
+        _activeList.add(element);
       }
     });
-    return activeList;
+    return _activeList;
   }
 
   // Add all RELATED record into budget specific list
@@ -189,7 +206,6 @@ class OneTimeBudget {
   // if no (can both user choose and auto)
   static void calculateAmountUsed() {
     _list.forEach((onetimebudget) {
-      print(onetimebudget._title);
       List<Record> recordList = [];
       double sum = 0;
       Record.list.forEach((record) {
@@ -200,11 +216,13 @@ class OneTimeBudget {
           recordList.add(record);
         }
       }); // Record loop
+
       recordList.forEach((element) {
         sum += element.amount;
       }); // recordList loop
+
       onetimebudget._amountUsed = sum;
-      print(onetimebudget._amountUsed);
+
       Firestore.instance
           .collection("users")
           .document(onetimebudget._uid)
@@ -247,7 +265,7 @@ class OneTimeBudget {
                 ));
               },
             ),
-            print('One Time Budget retrieved: ${_list}')
+            print('One Time Budget retrieved: ${_list.length}')
           },
         );
     return null;

@@ -1,5 +1,8 @@
+import 'package:budget_tracking_system/pages/budgetperiodic.dart';
 import 'package:budget_tracking_system/services/category.dart';
 import 'package:budget_tracking_system/services/account.dart';
+import 'package:budget_tracking_system/services/onetimebudget.dart';
+import 'package:budget_tracking_system/services/periodicbudget.dart';
 import 'package:budget_tracking_system/services/record.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
@@ -37,6 +40,7 @@ class _AddRecordState extends State<AddRecord> {
   String title = 'Untitled';
   DateTime dateTime = DateTime.utc(0000);
   Category category = Category.incomeList[0];
+  dynamic budget;
   Account account = Account.list[0];
   Account toAccount = Account.list[1];
   String currency = Account.list[0].currency;
@@ -63,6 +67,20 @@ class _AddRecordState extends State<AddRecord> {
     _pickedDate = DateTime.now();
     _dateEditingController.text = df.format(_pickedDate);
     dateTime = _pickedDate;
+
+    budgetTypes.add('No Budget');
+    OneTimeBudget.returnList(DateTime.now()).forEach((OneTimeBudget budget) {
+      print(budget.title);
+      budgetTypes.add(budget);
+    });
+
+    PeriodicBudget.returnList(DateTime.now()).forEach((PeriodicBudget budget) {
+      print(budget.title);
+      budgetTypes.add(budget);
+    });
+
+    currentSelectedBudget =
+        budgetTypes[0] is String ? 'No Budget' : budgetTypes[0].title;
   }
 
   pickDate() async {
@@ -78,6 +96,19 @@ class _AddRecordState extends State<AddRecord> {
         _pickedDate = date;
         _dateEditingController.text = df.format(_pickedDate);
         dateTime = _pickedDate;
+
+        budgetTypes = [];
+        budgetTypes.add('No Budget');
+        OneTimeBudget.returnList(_pickedDate).forEach((OneTimeBudget budget) {
+          budgetTypes.add(budget);
+        });
+
+        PeriodicBudget.returnList(_pickedDate).forEach((PeriodicBudget budget) {
+          budgetTypes.add(budget);
+        });
+
+        currentSelectedBudget =
+            budgetTypes[0] is String ? 'No Budget' : budgetTypes[0].title;
       });
     }
   }
@@ -103,6 +134,9 @@ class _AddRecordState extends State<AddRecord> {
   String currentSelectedAccount = Account.list[0].name;
   String currentSelectedTransferAccount = Account.list[1].name;
   List<Account> accountTypes = Account.list;
+
+  String currentSelectedBudget;
+  List<dynamic> budgetTypes = [];
 
   GlobalKey<FormState> formkey = GlobalKey<FormState>();
 
@@ -385,35 +419,39 @@ class _AddRecordState extends State<AddRecord> {
                               isDense: true),
                           child: DropdownButtonHideUnderline(
                             child: DropdownButton<String>(
-                              value: 'Budget',
-                              // value: currentSelectedAccount,
-                              // onChanged: (newValue) {
-                              // setState(() {
-                              //   currentSelectedAccount = (newValue);
-                              //   Account.list.forEach((element) {
-                              //     if (element.name == newValue) {
-                              //       account = element;
-                              //     }
-                              //   });
-                              // });
-                              // },
-                              // items: accountTypes.map((Account value) {
-                              //   return DropdownMenuItem<String>(
-                              //     value: value.name,
-                              //     child: Text(value.name),
-                              //   );
-                              // }).toList(),
+                              value: currentSelectedBudget,
+                              onChanged: (newValue) {
+                                setState(() {
+                                  currentSelectedBudget = newValue;
+                                  budgetTypes.forEach((element) {
+                                    if (element is String) {
+                                      budget = null;
+                                    } else if (element.title == newValue) {
+                                      budget = element;
+                                    }
+                                  });
+                                });
+                              },
+                              items: budgetTypes.map((dynamic value) {
+                                return DropdownMenuItem<String>(
+                                  value: value is String
+                                      ? 'No Budget'
+                                      : value.title,
+                                  child: value is String
+                                      ? Text('No Budget')
+                                      : Text(value.title),
+                                );
+                              }).toList(),
                               style: TextStyle(color: Colors.black),
-                              // selectedItemBuilder: (BuildContext context) {
-                              //   return accountTypes.map((Account value) {
-                              //     return Text(
-                              //       currentSelectedAccount,
-                              //       style: TextStyle(
-                              //           color: Colors.white,
-                              //           fontSize: 15.0),
-                              //     );
-                              //   }).toList();
-                              // },
+                              selectedItemBuilder: (BuildContext context) {
+                                return budgetTypes.map((dynamic value) {
+                                  return Text(
+                                    currentSelectedBudget,
+                                    style: TextStyle(
+                                        color: Colors.white, fontSize: 15.0),
+                                  );
+                                }).toList();
+                              },
                             ),
                           ),
                         );
@@ -692,8 +730,10 @@ class _AddRecordState extends State<AddRecord> {
                           type: type,
                           title: title,
                           account: account,
+                          toAccount: null,
                           amount: amount,
                           category: category,
+                          budget: budget,
                           dateTime: dateTime,
                           note: note,
                           attachment: attachment,
@@ -1052,7 +1092,7 @@ class _AddRecordState extends State<AddRecord> {
                         prefixIcon: Padding(
                           padding: EdgeInsets.only(left: 15.0, top: 15),
                           child: Text(
-                            'RM',
+                            account.currency,
                             style: TextStyle(
                                 color: Color.fromRGBO(101, 101, 101, 1)),
                           ),
@@ -1181,22 +1221,6 @@ class _AddRecordState extends State<AddRecord> {
                       color: Color.fromRGBO(255, 185, 49, 1),
                       shape: RoundedRectangleBorder(
                           borderRadius: BorderRadius.circular(18.0)),
-                      // onPressed: () {
-                      //   Record.add(Record(
-                      //     uid: uid,
-                      //     type: type,
-                      //     title: title,
-                      //     account: account,
-                      //     amount: amount,
-                      //     category: category,
-                      //     dateTime: dateTime,
-                      //     note: note,
-                      //     attachment: attachment,
-                      //     isFav: isFav,
-                      //     save: true,
-                      //   ));
-                      //   Navigator.pop(context);
-                      // },
                       onPressed: () {
                         Record.add(Record(
                           uid: uid,
@@ -1204,6 +1228,8 @@ class _AddRecordState extends State<AddRecord> {
                           title: title,
                           account: account,
                           toAccount: toAccount,
+                          category: null,
+                          budget: null,
                           amount: amount,
                           dateTime: dateTime,
                           note: note,

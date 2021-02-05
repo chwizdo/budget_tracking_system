@@ -98,33 +98,36 @@ class _FavouriteRecordState extends State<FavouriteRecord> {
                             MaterialPageRoute(
                                 builder: (context) => EditRecord(
                                       uid: uid,
-                                      index: Record.list.length - 1 - index,
-                                      type: Record
-                                          .list[Record.list.length - 1 - index]
+                                      index: recordView.length - 1 - index,
+                                      type: recordView[
+                                              recordView.length - 1 - index]
                                           .type,
-                                      title: Record
-                                          .list[Record.list.length - 1 - index]
+                                      title: recordView[
+                                              recordView.length - 1 - index]
                                           .title,
-                                      dateTime: Record
-                                          .list[Record.list.length - 1 - index]
+                                      dateTime: recordView[
+                                              recordView.length - 1 - index]
                                           .dateTime,
-                                      category: Record
-                                          .list[Record.list.length - 1 - index]
+                                      category: recordView[
+                                              recordView.length - 1 - index]
                                           .category,
-                                      account: Record
-                                          .list[Record.list.length - 1 - index]
+                                      account: recordView[
+                                              recordView.length - 1 - index]
                                           .account,
-                                      toAccount: Record
-                                          .list[Record.list.length - 1 - index]
+                                      toAccount: recordView[
+                                              recordView.length - 1 - index]
                                           .toAccount,
-                                      amount: Record
-                                          .list[Record.list.length - 1 - index]
+                                      budget: recordView[
+                                              recordView.length - 1 - index]
+                                          .budget,
+                                      amount: recordView[
+                                              recordView.length - 1 - index]
                                           .amount,
-                                      note: Record
-                                          .list[Record.list.length - 1 - index]
+                                      note: recordView[
+                                              recordView.length - 1 - index]
                                           .note,
-                                      isFav: Record
-                                          .list[Record.list.length - 1 - index]
+                                      isFav: recordView[
+                                              recordView.length - 1 - index]
                                           .isFav,
                                     ),
                                 fullscreenDialog: true),
@@ -162,33 +165,36 @@ class _FavouriteRecordState extends State<FavouriteRecord> {
                             MaterialPageRoute(
                                 builder: (context) => EditRecord(
                                       uid: uid,
-                                      index: Record.list.length - 1 - index,
-                                      type: Record
-                                          .list[Record.list.length - 1 - index]
+                                      index: recordView.length - 1 - index,
+                                      type: recordView[
+                                              recordView.length - 1 - index]
                                           .type,
-                                      title: Record
-                                          .list[Record.list.length - 1 - index]
+                                      title: recordView[
+                                              recordView.length - 1 - index]
                                           .title,
-                                      dateTime: Record
-                                          .list[Record.list.length - 1 - index]
+                                      dateTime: recordView[
+                                              recordView.length - 1 - index]
                                           .dateTime,
-                                      category: Record
-                                          .list[Record.list.length - 1 - index]
+                                      category: recordView[
+                                              recordView.length - 1 - index]
                                           .category,
-                                      account: Record
-                                          .list[Record.list.length - 1 - index]
+                                      account: recordView[
+                                              recordView.length - 1 - index]
                                           .account,
-                                      toAccount: Record
-                                          .list[Record.list.length - 1 - index]
+                                      toAccount: recordView[
+                                              recordView.length - 1 - index]
                                           .toAccount,
-                                      amount: Record
-                                          .list[Record.list.length - 1 - index]
+                                      budget: recordView[
+                                              recordView.length - 1 - index]
+                                          .budget,
+                                      amount: recordView[
+                                              recordView.length - 1 - index]
                                           .amount,
-                                      note: Record
-                                          .list[Record.list.length - 1 - index]
+                                      note: recordView[
+                                              recordView.length - 1 - index]
                                           .note,
-                                      isFav: Record
-                                          .list[Record.list.length - 1 - index]
+                                      isFav: recordView[
+                                              recordView.length - 1 - index]
                                           .isFav,
                                     ),
                                 fullscreenDialog: true),
@@ -227,33 +233,36 @@ class _FavouriteRecordState extends State<FavouriteRecord> {
                             MaterialPageRoute(
                                 builder: (context) => EditRecord(
                                       uid: uid,
-                                      index: Record.list.length - 1 - index,
-                                      type: Record
-                                          .list[Record.list.length - 1 - index]
+                                      index: recordView.length - 1 - index,
+                                      type: recordView[
+                                              recordView.length - 1 - index]
                                           .type,
-                                      title: Record
-                                          .list[Record.list.length - 1 - index]
+                                      title: recordView[
+                                              recordView.length - 1 - index]
                                           .title,
-                                      dateTime: Record
-                                          .list[Record.list.length - 1 - index]
+                                      dateTime: recordView[
+                                              recordView.length - 1 - index]
                                           .dateTime,
-                                      category: Record
-                                          .list[Record.list.length - 1 - index]
+                                      category: recordView[
+                                              recordView.length - 1 - index]
                                           .category,
-                                      account: Record
-                                          .list[Record.list.length - 1 - index]
+                                      account: recordView[
+                                              recordView.length - 1 - index]
                                           .account,
-                                      toAccount: Record
-                                          .list[Record.list.length - 1 - index]
+                                      toAccount: recordView[
+                                              recordView.length - 1 - index]
                                           .toAccount,
-                                      amount: Record
-                                          .list[Record.list.length - 1 - index]
+                                      budget: recordView[
+                                              recordView.length - 1 - index]
+                                          .budget,
+                                      amount: recordView[
+                                              recordView.length - 1 - index]
                                           .amount,
-                                      note: Record
-                                          .list[Record.list.length - 1 - index]
+                                      note: recordView[
+                                              recordView.length - 1 - index]
                                           .note,
-                                      isFav: Record
-                                          .list[Record.list.length - 1 - index]
+                                      isFav: recordView[
+                                              recordView.length - 1 - index]
                                           .isFav,
                                     ),
                                 fullscreenDialog: true),

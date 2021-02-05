@@ -319,6 +319,7 @@ class Record {
     bool attachment = false,
     // bool isFav,
   }) {
+    print(account);
     List<Record> list = [];
     _list.forEach(
       (value) {

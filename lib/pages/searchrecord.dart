@@ -67,7 +67,7 @@ class _SearchRecordState extends State<SearchRecord> {
   List<dynamic> accountTypes = [];
 
   //Initialize controller
-  
+
   TextEditingController _startDateEditingController = TextEditingController();
   TextEditingController _endDateEditingController = TextEditingController();
   TextEditingController _amountMinEditingController = TextEditingController();
@@ -742,6 +742,16 @@ class _SearchRecordState extends State<SearchRecord> {
                                                         1 -
                                                         index]
                                                 .account,
+                                            toAccount: _recordList[
+                                                    _recordList.length -
+                                                        1 -
+                                                        index]
+                                                .toAccount,
+                                            budget: _recordList[
+                                                    _recordList.length -
+                                                        1 -
+                                                        index]
+                                                .budget,
                                             amount: _recordList[
                                                     _recordList.length -
                                                         1 -
@@ -815,6 +825,16 @@ class _SearchRecordState extends State<SearchRecord> {
                                                         1 -
                                                         index]
                                                 .account,
+                                            toAccount: _recordList[
+                                                    _recordList.length -
+                                                        1 -
+                                                        index]
+                                                .toAccount,
+                                            budget: _recordList[
+                                                    _recordList.length -
+                                                        1 -
+                                                        index]
+                                                .budget,
                                             amount: _recordList[
                                                     _recordList.length -
                                                         1 -
@@ -887,6 +907,16 @@ class _SearchRecordState extends State<SearchRecord> {
                                                         1 -
                                                         index]
                                                 .account,
+                                            toAccount: _recordList[
+                                                    _recordList.length -
+                                                        1 -
+                                                        index]
+                                                .toAccount,
+                                            budget: _recordList[
+                                                    _recordList.length -
+                                                        1 -
+                                                        index]
+                                                .budget,
                                             amount: _recordList[
                                                     _recordList.length -
                                                         1 -

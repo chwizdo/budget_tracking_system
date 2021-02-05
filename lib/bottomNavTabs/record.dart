@@ -68,9 +68,6 @@ class _RecordState extends State<Record> {
   DateTime pickedDate;
   DateFormat df = new DateFormat('yyyy MMM');
 
-  //Initializing list
-  List<service.Record> _recordList = service.Record.list;
-
   final String uid;
   _RecordState(this.uid);
 
@@ -89,6 +86,8 @@ class _RecordState extends State<Record> {
       });
     }
   }
+
+  void filterList() {}
 
   @override
   void initState() {
@@ -159,15 +158,14 @@ class _RecordState extends State<Record> {
         ],
       ),
 
-      body: _recordList.length != 0
-          ?
-          //GroupedListView is a widget that can help group the list view by anything
-          //Eg: Can group lists based on category or date.
-          //DateTime object is explicitly stated so that it can group the records by date
-          SafeArea(
+      body: service.Record.list.length != 0
+          ? SafeArea(
+              //GroupedListView is a widget that can help group the list view by anything
+              //Eg: Can group lists based on category or date.
+              //DateTime object is explicitly stated so that it can group the records by date
               child: GroupedListView<dynamic, DateTime>(
                   //Elements takes in a list of data that needs to be grouped, in this case recordView's data needs to be taken in.
-                  elements: _recordList,
+                  elements: service.Record.list,
                   //groupBy is a function that chooses what to group given by an element.
                   //In this case, we give an element named record to represent our recordView list, and we want to group by currentDate.
                   groupBy: (record) {
@@ -210,50 +208,76 @@ class _RecordState extends State<Record> {
                                   MaterialPageRoute(
                                       builder: (context) => EditRecord(
                                             uid: user.uid,
-                                            index:
-                                                _recordList.length - 1 - index,
-                                            type: _recordList[
-                                                    _recordList.length -
+                                            index: service.Record.list.length -
+                                                1 -
+                                                index,
+                                            type: service
+                                                .Record
+                                                .list[
+                                                    service.Record.list.length -
                                                         1 -
                                                         index]
                                                 .type,
-                                            title: _recordList[
-                                                    _recordList.length -
+                                            title: service
+                                                .Record
+                                                .list[
+                                                    service.Record.list.length -
                                                         1 -
                                                         index]
                                                 .title,
-                                            dateTime: _recordList[
-                                                    _recordList.length -
+                                            dateTime: service
+                                                .Record
+                                                .list[
+                                                    service.Record.list.length -
                                                         1 -
                                                         index]
                                                 .dateTime,
-                                            category: _recordList[
-                                                    _recordList.length -
+                                            category: service
+                                                .Record
+                                                .list[
+                                                    service.Record.list.length -
                                                         1 -
                                                         index]
                                                 .category,
-                                            account: _recordList[
-                                                    _recordList.length -
+                                            account: service
+                                                .Record
+                                                .list[
+                                                    service.Record.list.length -
                                                         1 -
                                                         index]
                                                 .account,
-                                            toAccount: _recordList[
-                                                    _recordList.length -
+                                            toAccount: service
+                                                .Record
+                                                .list[
+                                                    service.Record.list.length -
                                                         1 -
                                                         index]
                                                 .toAccount,
-                                            amount: _recordList[
-                                                    _recordList.length -
+                                            budget: service
+                                                .Record
+                                                .list[
+                                                    service.Record.list.length -
+                                                        1 -
+                                                        index]
+                                                .budget,
+                                            amount: service
+                                                .Record
+                                                .list[
+                                                    service.Record.list.length -
                                                         1 -
                                                         index]
                                                 .amount,
-                                            note: _recordList[
-                                                    _recordList.length -
+                                            note: service
+                                                .Record
+                                                .list[
+                                                    service.Record.list.length -
                                                         1 -
                                                         index]
                                                 .note,
-                                            isFav: _recordList[
-                                                    _recordList.length -
+                                            isFav: service
+                                                .Record
+                                                .list[
+                                                    service.Record.list.length -
                                                         1 -
                                                         index]
                                                 .isFav,
@@ -288,50 +312,76 @@ class _RecordState extends State<Record> {
                                   MaterialPageRoute(
                                       builder: (context) => EditRecord(
                                             uid: user.uid,
-                                            index:
-                                                _recordList.length - 1 - index,
-                                            type: _recordList[
-                                                    _recordList.length -
+                                            index: service.Record.list.length -
+                                                1 -
+                                                index,
+                                            type: service
+                                                .Record
+                                                .list[
+                                                    service.Record.list.length -
                                                         1 -
                                                         index]
                                                 .type,
-                                            title: _recordList[
-                                                    _recordList.length -
+                                            title: service
+                                                .Record
+                                                .list[
+                                                    service.Record.list.length -
                                                         1 -
                                                         index]
                                                 .title,
-                                            dateTime: _recordList[
-                                                    _recordList.length -
+                                            dateTime: service
+                                                .Record
+                                                .list[
+                                                    service.Record.list.length -
                                                         1 -
                                                         index]
                                                 .dateTime,
-                                            category: _recordList[
-                                                    _recordList.length -
+                                            category: service
+                                                .Record
+                                                .list[
+                                                    service.Record.list.length -
                                                         1 -
                                                         index]
                                                 .category,
-                                            account: _recordList[
-                                                    _recordList.length -
+                                            account: service
+                                                .Record
+                                                .list[
+                                                    service.Record.list.length -
                                                         1 -
                                                         index]
                                                 .account,
-                                            toAccount: _recordList[
-                                                    _recordList.length -
+                                            toAccount: service
+                                                .Record
+                                                .list[
+                                                    service.Record.list.length -
                                                         1 -
                                                         index]
                                                 .toAccount,
-                                            amount: _recordList[
-                                                    _recordList.length -
+                                            budget: service
+                                                .Record
+                                                .list[
+                                                    service.Record.list.length -
+                                                        1 -
+                                                        index]
+                                                .budget,
+                                            amount: service
+                                                .Record
+                                                .list[
+                                                    service.Record.list.length -
                                                         1 -
                                                         index]
                                                 .amount,
-                                            note: _recordList[
-                                                    _recordList.length -
+                                            note: service
+                                                .Record
+                                                .list[
+                                                    service.Record.list.length -
                                                         1 -
                                                         index]
                                                 .note,
-                                            isFav: _recordList[
-                                                    _recordList.length -
+                                            isFav: service
+                                                .Record
+                                                .list[
+                                                    service.Record.list.length -
                                                         1 -
                                                         index]
                                                 .isFav,
@@ -365,50 +415,76 @@ class _RecordState extends State<Record> {
                                   MaterialPageRoute(
                                       builder: (context) => EditRecord(
                                             uid: user.uid,
-                                            index:
-                                                _recordList.length - 1 - index,
-                                            type: _recordList[
-                                                    _recordList.length -
+                                            index: service.Record.list.length -
+                                                1 -
+                                                index,
+                                            type: service
+                                                .Record
+                                                .list[
+                                                    service.Record.list.length -
                                                         1 -
                                                         index]
                                                 .type,
-                                            title: _recordList[
-                                                    _recordList.length -
+                                            title: service
+                                                .Record
+                                                .list[
+                                                    service.Record.list.length -
                                                         1 -
                                                         index]
                                                 .title,
-                                            dateTime: _recordList[
-                                                    _recordList.length -
+                                            dateTime: service
+                                                .Record
+                                                .list[
+                                                    service.Record.list.length -
                                                         1 -
                                                         index]
                                                 .dateTime,
-                                            category: _recordList[
-                                                    _recordList.length -
+                                            category: service
+                                                .Record
+                                                .list[
+                                                    service.Record.list.length -
                                                         1 -
                                                         index]
                                                 .category,
-                                            account: _recordList[
-                                                    _recordList.length -
+                                            account: service
+                                                .Record
+                                                .list[
+                                                    service.Record.list.length -
                                                         1 -
                                                         index]
                                                 .account,
-                                            toAccount: _recordList[
-                                                    _recordList.length -
+                                            toAccount: service
+                                                .Record
+                                                .list[
+                                                    service.Record.list.length -
                                                         1 -
                                                         index]
                                                 .toAccount,
-                                            amount: _recordList[
-                                                    _recordList.length -
+                                            budget: service
+                                                .Record
+                                                .list[
+                                                    service.Record.list.length -
+                                                        1 -
+                                                        index]
+                                                .budget,
+                                            amount: service
+                                                .Record
+                                                .list[
+                                                    service.Record.list.length -
                                                         1 -
                                                         index]
                                                 .amount,
-                                            note: _recordList[
-                                                    _recordList.length -
+                                            note: service
+                                                .Record
+                                                .list[
+                                                    service.Record.list.length -
                                                         1 -
                                                         index]
                                                 .note,
-                                            isFav: _recordList[
-                                                    _recordList.length -
+                                            isFav: service
+                                                .Record
+                                                .list[
+                                                    service.Record.list.length -
                                                         1 -
                                                         index]
                                                 .isFav,
@@ -440,7 +516,7 @@ class _RecordState extends State<Record> {
             )
           : Center(
               child: Text(
-                "No records found.",
+                'No Records Added.',
                 style: TextStyle(color: Colors.white, fontSize: 15.0),
               ),
             ),

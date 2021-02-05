@@ -93,7 +93,6 @@ class _LoadingState extends State<Loading> {
     await PeriodicBudget.getPeriodicBudget(uid: uid);
     await OneTimeBudget.getOneTimeBudget(uid: uid);
     await service.Record.getRecords(uid: uid);
-    await PeriodicBudget.calculateAmountUsed(uid: uid);
     print('system initialized!');
     setState(() {
       isLoading = false;

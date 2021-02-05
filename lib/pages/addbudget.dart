@@ -26,7 +26,7 @@ class _AddBudgetState extends State<AddBudget> {
 
   // Initialized local variables for user input
   String title = "Untitled";
-  Category category = Category.list[0];
+  Category category = Category.expenseList[0];
   double amount = 0;
   DateTime startDate;
   DateTime endDate;
@@ -64,6 +64,7 @@ class _AddBudgetState extends State<AddBudget> {
       setState(() {
         _pickedStartDate = date;
         _startDateEditingController.text = df.format(_pickedStartDate);
+        startDate = _pickedStartDate;
       });
     }
   }
@@ -80,6 +81,7 @@ class _AddBudgetState extends State<AddBudget> {
       setState(() {
         _pickedEndDate = date;
         _endDateEditingController.text = df.format(_pickedEndDate);
+        endDate = _pickedEndDate;
       });
     }
   }
@@ -181,9 +183,9 @@ class _AddBudgetState extends State<AddBudget> {
                       onTap: () {
                         pickStartDate();
                       },
-                      onChanged: (value) {
-                        startDate = DateTime.parse(value);
-                      },
+                      // onChanged: (value) {
+                      //   startDate = DateTime.parse(value);
+                      // },
                       style: TextStyle(color: Colors.white),
                       decoration: InputDecoration(
                         border: InputBorder.none,
@@ -219,9 +221,9 @@ class _AddBudgetState extends State<AddBudget> {
                       onTap: () {
                         pickEndDate();
                       },
-                      onChanged: (value) {
-                        endDate = DateTime.parse(value);
-                      },
+                      // onChanged: (value) {
+                      //   endDate = DateTime.parse(value);
+                      // },
                       style: TextStyle(color: Colors.white),
                       decoration: InputDecoration(
                         border: InputBorder.none,
@@ -575,7 +577,6 @@ class _AddBudgetState extends State<AddBudget> {
                               interval: interval,
                               save: true,
                               startDate: DateTime.now()));
-                          Navigator.pop(context);
                         } else {
                           OneTimeBudget.add(OneTimeBudget(
                               uid: uid,
@@ -585,88 +586,8 @@ class _AddBudgetState extends State<AddBudget> {
                               startDate: startDate,
                               endDate: endDate,
                               save: true));
-                          Navigator.pop(context);
                         }
-
-                        // if (currentSelectedType == "Periodic") {
-                        // PeriodicBudget(
-                        //     uid: uid,
-                        //     title: title,
-                        //     category: category,
-                        //     amount: amount,
-                        //     interval: interval,
-                        //     save: false,
-                        //     startDate: DateTime.utc(2021, 3, 2));
-                        //   PeriodicBudget(
-                        //     uid: uid,
-                        //     title: title,
-                        //     category: category,
-                        //     amount: amount,
-                        //     interval: interval,
-                        //     save: false,
-                        //     startDate: DateTime.utc(2021, 2, 2));
-
-                        // PeriodicBudget.add(PeriodicBudget(
-                        //     title: "pb1",
-                        //     category: Category.list[0],
-                        //     amount: 2000,
-                        //     interval: "Monthly",
-                        //     startDate: DateTime.utc(2020, 1, 1)));
-                        // PeriodicBudget.add(PeriodicBudget(
-                        //     title: "pb2",
-                        //     category: Category.list[1],
-                        //     amount: 50,
-                        //     interval: "Weekly",
-                        //     startDate: DateTime.utc(2019, 1, 1)));
-                        // PeriodicBudget.add(PeriodicBudget(
-                        //     title: "pb3",
-                        //     category: Category.list[0],
-                        //     amount: 10,
-                        //     interval: "Monthly",
-                        //     startDate: DateTime.utc(2021, 1, 1)));
-                        // } else {
-                        // OneTimeBudget.add(OneTimeBudget(
-                        //     title: "buget1",
-                        //     category: Category.list[0],
-                        //     amount: 30,
-                        //     startDate: DateTime.utc(2021, 1, 1),
-                        //     endDate: DateTime.utc(2021, 1, 10)));
-                        // OneTimeBudget.add(OneTimeBudget(
-                        //     title: "buget2",
-                        //     category: Category.list[0],
-                        //     amount: 21330,
-                        //     startDate: DateTime.utc(2019, 1, 2),
-                        //     endDate: DateTime.utc(2021, 1, 4)));
-                        // OneTimeBudget.add(OneTimeBudget(
-                        //     title: "buget3",
-                        //     category: Category.list[0],
-                        //     amount: 340,
-                        //     startDate: DateTime.utc(2021, 2, 1),
-                        //     endDate: DateTime.utc(2021, 2, 10)));
-                        //   OneTimeBudget.changeStatus();
-                        //   print(OneTimeBudget.list[0].budgetStatus);
-                        //   print(OneTimeBudget.list[1].budgetStatus);
-                        //   print(OneTimeBudget.list[2].budgetStatus);
-                        //   OneTimeBudget.returnList(DateTime.utc(2021, 1, 3));
-                        //   print(OneTimeBudget.activeList);
-                        //   print(DateTime.now().toUtc().month);
-                        //   OneTimeBudget.delete(2);
-                        // print(OneTimeBudget.list[2]);
-                        // OneTimeBudget.budgetRecordList(
-                        //     Category.list[0],
-                        //     DateTime.utc(2020, 1, 02),
-                        //     DateTime.utc(2020, 12, 21));
-                        // OneTimeBudget.calculateAmountUsed(
-                        //     Category.list[0],
-                        //     DateTime.utc(2020, 1, 2),
-                        //     DateTime.utc(2020, 12, 21));
-                        // OneTimeBudget.calculateAmountUsed();
-                        // PeriodicBudget.calculateAmountUsed(
-                        //     DateTime.utc(2020, 1));
-                        // print(PeriodicBudget.returnList(
-                        //     DateTime.utc(2019, 12, 30)));
-
-                        // }
+                        Navigator.pop(context);
                       },
                       child: Text(
                         'Save',

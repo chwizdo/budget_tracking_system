@@ -39,7 +39,7 @@ class Budget extends StatelessWidget {
               Periodic(
                 uid: uid,
               ),
-              OneTime(),
+              OneTime(uid: uid),
             ],
           ),
         ),

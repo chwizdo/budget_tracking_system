@@ -246,6 +246,12 @@ class _RecordState extends State<Record> {
                                               1 -
                                               index]
                                           .toAccount,
+                                      budget: service
+                                          .Record
+                                          .list[service.Record.list.length -
+                                              1 -
+                                              index]
+                                          .budget,
                                       amount: service
                                           .Record
                                           .list[service.Record.list.length -
@@ -334,6 +340,12 @@ class _RecordState extends State<Record> {
                                               1 -
                                               index]
                                           .toAccount,
+                                      budget: service
+                                          .Record
+                                          .list[service.Record.list.length -
+                                              1 -
+                                              index]
+                                          .budget,
                                       amount: service
                                           .Record
                                           .list[service.Record.list.length -
@@ -421,6 +433,12 @@ class _RecordState extends State<Record> {
                                               1 -
                                               index]
                                           .toAccount,
+                                      budget: service
+                                          .Record
+                                          .list[service.Record.list.length -
+                                              1 -
+                                              index]
+                                          .budget,
                                       amount: service
                                           .Record
                                           .list[service.Record.list.length -

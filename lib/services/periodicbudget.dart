@@ -60,6 +60,10 @@ class PeriodicBudget {
   }
 
   // getter for each properties
+  String get id {
+    return _id;
+  }
+
   String get title {
     return _title;
   }
@@ -198,8 +202,9 @@ class PeriodicBudget {
 
   // Need to return active budget list???
   static List<PeriodicBudget> returnList(DateTime dateTime) {
+    _activeList = [];
     _list.forEach((element) {
-      if (!element.startDate.isBefore(dateTime)) {
+      if (!element.startDate.isAfter(dateTime)) {
         _activeList.add(element);
       }
     });
@@ -237,7 +242,7 @@ class PeriodicBudget {
                 ));
               },
             ),
-            print('Periodic Budget retrieved: ${_list}')
+            print('Periodic Budget retrieved: ${_list.length}')
           },
         );
     return null;

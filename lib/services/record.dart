@@ -344,7 +344,7 @@ class Record {
           }
         }
 
-        if (category != null) {
+        if (category != null && value._category != null) {
           hasValue = true;
           isMatch++;
           // TODO add .name on both sides
@@ -359,7 +359,7 @@ class Record {
           isMatch++;
           // TODO add .name on both sides
           // TODO change to account id
-          if (value.account == account) {
+          if (value.account.name == account) {
             isMatch--;
           }
         }

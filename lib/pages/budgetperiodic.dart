@@ -15,6 +15,7 @@ class _PeriodicState extends State<Periodic> {
 
   @override
   Widget build(BuildContext context) {
+    PeriodicBudget.calculateAmountUsed();
     return Scaffold(
       backgroundColor: Color.fromRGBO(57, 57, 57, 1),
       body: ListView.separated(
@@ -30,7 +31,6 @@ class _PeriodicState extends State<Periodic> {
                   flex: 1,
                   child: ListTile(
                     onTap: () {
-                      print(uid);
                       Navigator.push(
                         context,
                         MaterialPageRoute(

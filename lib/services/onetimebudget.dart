@@ -64,6 +64,10 @@ class OneTimeBudget {
   }
 
   // getter for each properties
+  String get id {
+    return _id;
+  }
+
   String get title {
     return _title;
   }
@@ -170,13 +174,14 @@ class OneTimeBudget {
 
   //return list of active budget at thta time (parameter: that time)
   static List<OneTimeBudget> returnList(DateTime dateTime) {
+    _activeList = [];
     _list.forEach((element) {
       if (!element.startDate.isAfter(dateTime) &&
           !element.endDate.isBefore(dateTime)) {
-        activeList.add(element);
+        _activeList.add(element);
       }
     });
-    return activeList;
+    return _activeList;
   }
 
   // Add all RELATED record into budget specific list
@@ -260,7 +265,7 @@ class OneTimeBudget {
                 ));
               },
             ),
-            print('One Time Budget retrieved: ${_list}')
+            print('One Time Budget retrieved: ${_list.length}')
           },
         );
     return null;

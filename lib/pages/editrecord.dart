@@ -1,5 +1,7 @@
 import 'package:budget_tracking_system/services/category.dart';
 import 'package:budget_tracking_system/services/account.dart';
+import 'package:budget_tracking_system/services/onetimebudget.dart';
+import 'package:budget_tracking_system/services/periodicbudget.dart';
 import 'package:budget_tracking_system/services/record.dart' as service;
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
@@ -25,6 +27,7 @@ class EditRecord extends StatefulWidget {
   final Category category;
   final Account account;
   final Account toAccount;
+  final dynamic budget;
   final double amount;
   final String note;
   final bool isFav;
@@ -39,6 +42,7 @@ class EditRecord extends StatefulWidget {
     @required this.category,
     @required this.account,
     @required this.toAccount,
+    @required this.budget,
     @required this.amount,
     @required this.note,
     @required this.isFav,
@@ -54,6 +58,7 @@ class EditRecord extends StatefulWidget {
         category: category,
         account: account,
         toAccount: toAccount,
+        budget: budget,
         amount: amount,
         note: note,
         isFav: isFav,
@@ -73,6 +78,7 @@ class _EditRecordState extends State<EditRecord> {
     this.category,
     this.account,
     this.toAccount,
+    this.budget,
     this.amount,
     this.note,
     this.isFav,
@@ -88,6 +94,7 @@ class _EditRecordState extends State<EditRecord> {
   Category category = Category.incomeList[0];
   Account account = Account.list[0];
   Account toAccount = Account.list[1];
+  dynamic budget;
   String currency = Account.list[0].currency;
   double amount = 0;
   String note = '';
@@ -111,6 +118,19 @@ class _EditRecordState extends State<EditRecord> {
     //Initialize controller
     _dateEditingController =
         TextEditingController(text: "${df.format(_pickedDate)}");
+
+    budgetTypes.add('No Budget');
+    OneTimeBudget.returnList(dateTime).forEach((OneTimeBudget budget) {
+      print(budget.title);
+      budgetTypes.add(budget);
+    });
+
+    PeriodicBudget.returnList(dateTime).forEach((PeriodicBudget budget) {
+      print(budget.title);
+      budgetTypes.add(budget);
+    });
+
+    currentSelectedBudget = budget != null ? budget.title : 'No Budget';
   }
 
   pickDate() async {
@@ -126,6 +146,18 @@ class _EditRecordState extends State<EditRecord> {
         _pickedDate = date;
         _dateEditingController.text = df.format(_pickedDate);
         dateTime = _pickedDate;
+
+        budgetTypes = [];
+        budgetTypes.add('No Budget');
+        OneTimeBudget.returnList(_pickedDate).forEach((OneTimeBudget budget) {
+          budgetTypes.add(budget);
+        });
+
+        PeriodicBudget.returnList(_pickedDate).forEach((PeriodicBudget budget) {
+          budgetTypes.add(budget);
+        });
+
+        currentSelectedBudget = budgetTypes[0].title;
       });
     }
   }
@@ -151,6 +183,9 @@ class _EditRecordState extends State<EditRecord> {
   String currentSelectedAccount = Account.list[0].name;
   String currentSelectedTransferAccount = Account.list[1].name;
   List<Account> accountTypes = Account.list;
+
+  String currentSelectedBudget;
+  List<dynamic> budgetTypes = [];
 
   @override
   Widget build(BuildContext context) {
@@ -450,35 +485,39 @@ class _EditRecordState extends State<EditRecord> {
                                 isDense: true),
                             child: DropdownButtonHideUnderline(
                               child: DropdownButton<String>(
-                                value: 'Budget',
-                                // value: currentSelectedAccount,
-                                // onChanged: (newValue) {
-                                // setState(() {
-                                //   currentSelectedAccount = (newValue);
-                                //   Account.list.forEach((element) {
-                                //     if (element.name == newValue) {
-                                //       account = element;
-                                //     }
-                                //   });
-                                // });
-                                // },
-                                // items: accountTypes.map((Account value) {
-                                //   return DropdownMenuItem<String>(
-                                //     value: value.name,
-                                //     child: Text(value.name),
-                                //   );
-                                // }).toList(),
+                                value: currentSelectedBudget,
+                                onChanged: (newValue) {
+                                  setState(() {
+                                    currentSelectedBudget = newValue;
+                                    budgetTypes.forEach((element) {
+                                      if (element is String) {
+                                        budget = null;
+                                      } else if (element.title == newValue) {
+                                        budget = element;
+                                      }
+                                    });
+                                  });
+                                },
+                                items: budgetTypes.map((dynamic value) {
+                                  return DropdownMenuItem<String>(
+                                    value: value is String
+                                        ? 'No Budget'
+                                        : value.title,
+                                    child: value is String
+                                        ? Text('No budget')
+                                        : Text(value.title),
+                                  );
+                                }).toList(),
                                 style: TextStyle(color: Colors.black),
-                                // selectedItemBuilder: (BuildContext context) {
-                                //   return accountTypes.map((Account value) {
-                                //     return Text(
-                                //       currentSelectedAccount,
-                                //       style: TextStyle(
-                                //           color: Colors.white,
-                                //           fontSize: 15.0),
-                                //     );
-                                //   }).toList();
-                                // },
+                                selectedItemBuilder: (BuildContext context) {
+                                  return budgetTypes.map((dynamic value) {
+                                    return Text(
+                                      currentSelectedBudget,
+                                      style: TextStyle(
+                                          color: Colors.white, fontSize: 15.0),
+                                    );
+                                  }).toList();
+                                },
                               ),
                             ),
                           );
@@ -624,7 +663,7 @@ class _EditRecordState extends State<EditRecord> {
                           prefixIcon: Padding(
                             padding: EdgeInsets.only(left: 15.0, top: 15),
                             child: Text(
-                              account.currency,
+                              currency,
                               style: TextStyle(
                                   color: Color.fromRGBO(101, 101, 101, 1)),
                             ),
@@ -763,6 +802,7 @@ class _EditRecordState extends State<EditRecord> {
                         category: category,
                         account: account,
                         toAccount: null,
+                        budget: budget,
                         amount: amount,
                         note: note,
                         attachment: attachment,

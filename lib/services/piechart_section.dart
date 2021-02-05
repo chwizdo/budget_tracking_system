@@ -8,7 +8,7 @@ List<PieChartSectionData> getIncomeSections() => PieIncomeData.data
       final value = PieChartSectionData(
           color: data.color,
           value: data.amount,
-          title: '${data.amount}',
+          title: '',
           titleStyle: TextStyle(
               fontSize: 16.0,
               fontWeight: FontWeight.bold,
@@ -24,7 +24,7 @@ List<PieChartSectionData> getExpensesSections() => PieExpensesData.data
       final value = PieChartSectionData(
           color: data.color,
           value: data.amount,
-          title: '${data.amount}',
+          title: '',
           titleStyle: TextStyle(
               fontSize: 16.0,
               fontWeight: FontWeight.bold,

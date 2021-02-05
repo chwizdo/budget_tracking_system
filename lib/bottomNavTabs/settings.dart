@@ -134,7 +134,7 @@ class _SettingsState extends State<Settings> {
                   context,
                   MaterialPageRoute(
                       builder: (context) => CurrencySelection(
-                          //uid: user.uid,
+                            uid: user.uid,
                           ),
                       fullscreenDialog: true),
                 );

@@ -157,7 +157,8 @@ class _EditRecordState extends State<EditRecord> {
           budgetTypes.add(budget);
         });
 
-        currentSelectedBudget = budgetTypes[0].title;
+        currentSelectedBudget =
+            budgetTypes[0] is String ? 'No Budget' : budgetTypes[0].title;
       });
     }
   }

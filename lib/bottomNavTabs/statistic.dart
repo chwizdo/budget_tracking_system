@@ -16,7 +16,7 @@ class _StatisticState extends State<Statistic> {
   List _types = ["Income", "Expenses", "Budget"];
 
   String _currentSelectedCurrency = "USD";
-  List _currencyTypes = Currency.fullList;
+  List _currencyTypes = Currency.list;
 
   bool isVisible = true;
 
@@ -105,8 +105,8 @@ class _StatisticState extends State<Statistic> {
                             },
                             items: _currencyTypes.map((value) {
                               return DropdownMenuItem<String>(
-                                value: value,
-                                child: Text(value),
+                                value: value.name,
+                                child: Text(value.name),
                               );
                             }).toList(),
                           ),

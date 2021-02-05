@@ -79,7 +79,8 @@ class _AddRecordState extends State<AddRecord> {
       budgetTypes.add(budget);
     });
 
-    currentSelectedBudget = 'No Budget';
+    currentSelectedBudget =
+        budgetTypes[0] is String ? 'No Budget' : budgetTypes[0].title;
   }
 
   pickDate() async {
@@ -106,7 +107,8 @@ class _AddRecordState extends State<AddRecord> {
           budgetTypes.add(budget);
         });
 
-        currentSelectedBudget = budgetTypes[0].title;
+        currentSelectedBudget =
+            budgetTypes[0] is String ? 'No Budget' : budgetTypes[0].title;
       });
     }
   }
@@ -1090,7 +1092,7 @@ class _AddRecordState extends State<AddRecord> {
                         prefixIcon: Padding(
                           padding: EdgeInsets.only(left: 15.0, top: 15),
                           child: Text(
-                            'RM',
+                            account.currency,
                             style: TextStyle(
                                 color: Color.fromRGBO(101, 101, 101, 1)),
                           ),

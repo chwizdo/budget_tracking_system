@@ -34,7 +34,7 @@ class _AddBudgetState extends State<AddBudget> {
   String budgetstatus;
 
   //Creates a list of items for DropdownButton category and account.
-  String currentSelectedCategory = "Food";
+  String currentSelectedCategory = Category.expenseList[0].name;
   List<Category> categoryTypes = Category.expenseList;
 
   String currentSelectedType = "Periodic";
@@ -52,11 +52,11 @@ class _AddBudgetState extends State<AddBudget> {
   TextEditingController _startDateEditingController = TextEditingController();
   TextEditingController _endDateEditingController = TextEditingController();
 
-   pickStartDate() async{
+  pickStartDate() async {
     DateTime date = await showDatePicker(
       context: context,
-      firstDate: DateTime(DateTime.now().year-5),
-      lastDate: DateTime(DateTime.now().year+5),
+      firstDate: DateTime(DateTime.now().year - 5),
+      lastDate: DateTime(DateTime.now().year + 5),
       initialDate: DateTime.now(),
     );
 
@@ -68,11 +68,11 @@ class _AddBudgetState extends State<AddBudget> {
     }
   }
 
-     pickEndDate() async{
+  pickEndDate() async {
     DateTime date = await showDatePicker(
       context: context,
-      firstDate: DateTime(DateTime.now().year-5),
-      lastDate: DateTime(DateTime.now().year+5),
+      firstDate: DateTime(DateTime.now().year - 5),
+      lastDate: DateTime(DateTime.now().year + 5),
       initialDate: DateTime.now(),
     );
 

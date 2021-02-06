@@ -1,22 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:grouped_list/grouped_list.dart';
 import 'package:intl/intl.dart';
-
-class OneTimeRecords {
-  String category, title, type, interval, budgetStatus;
-  double money, moneyUsed;
-  DateTime startDate, endDate;
-
-  OneTimeRecords(
-      {this.category,
-      this.title,
-      this.money,
-      this.interval,
-      this.moneyUsed,
-      this.budgetStatus,
-      this.startDate,
-      this.endDate});
-}
+import 'package:budget_tracking_system/services/onetimebudget.dart';
 
 class RecordGroupSeparator extends StatelessWidget {
   //Initialize variable and creating a constructor
@@ -56,43 +41,11 @@ class OneTimeStats extends StatefulWidget {
 }
 
 class _OneTimeStatsState extends State<OneTimeStats> {
-
-   //A list to store all the BudgetRecords by passing the values through using the constructor from BudgetRecords() Class.
-  List recordView = [
-    OneTimeRecords(
-        category: 'Miscellaneuous',
-        title: 'Christmas Presents',
-        money: 600.0,
-        interval: 'M',
-        moneyUsed: 230.75,
-        budgetStatus: 'Current',
-        startDate: DateTime.utc(2020, 12, 20),
-        endDate: DateTime.utc(2020, 12, 29),
-        ),
-    OneTimeRecords(
-        category: 'Miscellaneuous',
-        title: 'New Year Gift',
-        money: 250.0,
-        interval: 'M',
-        moneyUsed: 0.00,
-        budgetStatus: 'Up-coming',
-        startDate: DateTime.utc(2020, 12, 25),
-        endDate: DateTime.utc(2020, 12, 31),
-        ),
-    OneTimeRecords(
-        category: 'Miscellaneuous',
-        title: 'Double Eleven Gift',
-        money: 60.0,
-        interval: 'M',
-        moneyUsed: 58.0,
-        budgetStatus: 'Completed',
-        startDate: DateTime.utc(2020, 11, 11),
-        endDate: DateTime.utc(2020, 11, 12),
-        ),
-  ];
   @override
   Widget build(BuildContext context) {
-     return Scaffold(
+    OneTimeBudget.calculateAmountUsed();
+    OneTimeBudget.changeStatus();
+    return Scaffold(
       backgroundColor: Color.fromRGBO(57, 57, 57, 1),
       body: SafeArea(
         //GroupedListView is a widget that can help group the list view by anything
@@ -100,14 +53,15 @@ class _OneTimeStatsState extends State<OneTimeStats> {
         //DateTime object is explicitly stated so that it can group the records by date
         child: GroupedListView<dynamic, String>(
           //Elements takes in a list of data that needs to be grouped, in this case recordView's data needs to be taken in.
-          elements: recordView,
+          elements: OneTimeBudget.list,
           //groupBy is a function that chooses what to group given by an element.
           //In this case, we give an element named record to represent our recordView list, and we want to group by currentDate.
           groupBy: (record) => record.budgetStatus,
           //This function prepares to separate the lists by date.
           //This can be done by returning a constructor of RecordGroupSeparator() that passes currentDate to date.
           //Hence the RecordGroupSeparator() class can perform its own task which is to generate respective headers for each lists.
-          groupSeparatorBuilder: (String budgetStatus) => RecordGroupSeparator(status: budgetStatus),
+          groupSeparatorBuilder: (String budgetStatus) =>
+              RecordGroupSeparator(status: budgetStatus),
           //Arrange the grouped lists in descending order
           order: GroupedListOrder.DESC,
           separator: Divider(
@@ -127,35 +81,39 @@ class _OneTimeStatsState extends State<OneTimeStats> {
                   Expanded(
                     flex: 1,
                     child: ListTile(
-                      title: Text(
-                        record.title,
-                        //Used to wrap long texts
-                        overflow: TextOverflow.ellipsis,
-                        style: TextStyle(color: Colors.white, fontSize: 16),
-                      ),
-                      subtitle: record.budgetStatus == 'Up-coming' ? 
-                      Text(                   
-                        '${record.category} / \n'
-                        'Start Date: '+ '${DateFormat('d/M/y').format(record.startDate)}',
-                        //Used to wrap long texts
-                        overflow: TextOverflow.ellipsis,
-                        style: TextStyle(color: Colors.grey, fontSize: 14.0),
-                      )
-                      :record.budgetStatus == 'Current' ?
-                      Text(                   
-                        '${record.category} / \n'
-                        'End Date: '+ '${DateFormat('d/M/y').format(record.endDate)}',
-                        //Used to wrap long texts
-                        overflow: TextOverflow.ellipsis,
-                        style: TextStyle(color: Colors.grey, fontSize: 14.0),
-                      )
-                      :Text(                   
-                        '${record.category}',
-                        //Used to wrap long texts
-                        overflow: TextOverflow.ellipsis,
-                        style: TextStyle(color: Colors.grey, fontSize: 14.0),
-                      )
-                    ),
+                        title: Text(
+                          record.title,
+                          //Used to wrap long texts
+                          overflow: TextOverflow.ellipsis,
+                          style: TextStyle(color: Colors.white, fontSize: 16),
+                        ),
+                        subtitle: record.budgetStatus == 'Up-coming'
+                            ? Text(
+                                '${record.category.name} / \n'
+                                        'Start Date: ' +
+                                    '${DateFormat('d/M/y').format(record.startDate)}',
+                                //Used to wrap long texts
+                                overflow: TextOverflow.ellipsis,
+                                style: TextStyle(
+                                    color: Colors.grey, fontSize: 14.0),
+                              )
+                            : record.budgetStatus == 'Current'
+                                ? Text(
+                                    '${record.category.name} / \n'
+                                            'End Date: ' +
+                                        '${DateFormat('d/M/y').format(record.endDate)}',
+                                    //Used to wrap long texts
+                                    overflow: TextOverflow.ellipsis,
+                                    style: TextStyle(
+                                        color: Colors.grey, fontSize: 14.0),
+                                  )
+                                : Text(
+                                    '${record.category.name}',
+                                    //Used to wrap long texts
+                                    overflow: TextOverflow.ellipsis,
+                                    style: TextStyle(
+                                        color: Colors.grey, fontSize: 14.0),
+                                  )),
                   ),
                   //Second part is to display the money budget and money used.
                   Expanded(
@@ -166,13 +124,13 @@ class _OneTimeStatsState extends State<OneTimeStats> {
                         text: TextSpan(
                           children: [
                             TextSpan(
-                              text: 'RM ' + '${record.moneyUsed.toString()}',
-                              style: TextStyle(
-                                color: Colors.grey, fontSize: 14.0)),
+                                text: 'RM ' + '${record.amountUsed.toString()}',
+                                style: TextStyle(
+                                    color: Colors.grey, fontSize: 14.0)),
                             TextSpan(
-                              text: ' / ' + '${record.money.toString()}',
+                              text: ' / ' + '${record.amount.toString()}',
                               style: TextStyle(
-                                color: Colors.white, fontSize: 14.0),
+                                  color: Colors.white, fontSize: 14.0),
                             ),
                           ],
                         ),

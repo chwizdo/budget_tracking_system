@@ -19,8 +19,6 @@ class OneTimeBudget {
   static List<Record> _budgetRecordList = [];
 
 // Constructor for Add Budget
-// interval (refresh), onetime (change state)
-// method-refresh when start app
   OneTimeBudget({
     @required String uid,
     String id = " ",
@@ -184,35 +182,13 @@ class OneTimeBudget {
     return _activeList;
   }
 
-  // Add all RELATED record into budget specific list
-  static List<Record> budgetRecordList(
-      Category category, DateTime startDate, DateTime endDate) {
-    Record.list.forEach((record) {
-      if (!record.dateTime.isBefore(startDate) &&
-          !record.dateTime.isAfter(endDate) &&
-          record.type == "Expenses" &&
-          record.category == category) {
-        print(record.title);
-        _budgetRecordList.add(record);
-      }
-    });
-    return _budgetRecordList;
-  }
-
-  // TODO How to calculate amountUsed
-  // take all record for that period of time (between start and end date)
-  // is budget's record only come from user selection? if user no choose, will it count into budget?
-  // if yes (only come from choose) {amountused can get from a list of record in that budget (no need condition)}
-  // if no (can both user choose and auto)
+  // How to calculate amountUsed
   static void calculateAmountUsed() {
     _list.forEach((onetimebudget) {
       List<Record> recordList = [];
       double sum = 0;
       Record.list.forEach((record) {
-        if (!record.dateTime.isBefore(onetimebudget._startDate) &&
-            !record.dateTime.isAfter(onetimebudget._endDate) &&
-            record.type == "Expenses" &&
-            record.category == onetimebudget._category) {
+        if (record.budget == onetimebudget) {
           recordList.add(record);
         }
       }); // Record loop

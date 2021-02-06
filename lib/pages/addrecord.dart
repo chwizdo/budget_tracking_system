@@ -74,12 +74,14 @@ class _AddRecordState extends State<AddRecord> {
       budgetTypes.add(budget);
     });
 
-    PeriodicBudget.returnList(DateTime.now()).forEach((PeriodicBudget budget) {
+    PeriodicBudget.returnList(DateTime.now(), category)
+        .forEach((PeriodicBudget budget) {
       print(budget.title);
       budgetTypes.add(budget);
     });
 
-    currentSelectedBudget = 'No Budget';
+    currentSelectedBudget =
+        budgetTypes[0] is String ? 'No Budget' : budgetTypes[0].title;
   }
 
   pickDate() async {
@@ -102,11 +104,13 @@ class _AddRecordState extends State<AddRecord> {
           budgetTypes.add(budget);
         });
 
-        PeriodicBudget.returnList(_pickedDate).forEach((PeriodicBudget budget) {
+        PeriodicBudget.returnList(_pickedDate, category)
+            .forEach((PeriodicBudget budget) {
           budgetTypes.add(budget);
         });
 
-        currentSelectedBudget = budgetTypes[0].title;
+        currentSelectedBudget =
+            budgetTypes[0] is String ? 'No Budget' : budgetTypes[0].title;
       });
     }
   }

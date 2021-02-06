@@ -145,6 +145,17 @@ class Record {
     return _budget;
   }
 
+  set budget(dynamic budget) {
+    _budget = budget;
+
+    Firestore.instance
+        .collection('users')
+        .document(_uid)
+        .collection('records')
+        .document(_id)
+        .updateData({'budget': _budget});
+  }
+
   set category(Category category) {
     _category = category;
 
@@ -490,8 +501,10 @@ class Record {
                 });
                 dynamic budget;
                 List<dynamic> budgetList = [];
-                PeriodicBudget.returnList(DateTime.fromMicrosecondsSinceEpoch(
-                        timestamp.microsecondsSinceEpoch))
+                PeriodicBudget.returnList(
+                        DateTime.fromMicrosecondsSinceEpoch(
+                            timestamp.microsecondsSinceEpoch),
+                        category)
                     .forEach((PeriodicBudget budget) {
                   budgetList.add(budget);
                 });

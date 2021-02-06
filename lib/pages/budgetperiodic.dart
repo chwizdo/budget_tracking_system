@@ -54,8 +54,8 @@ class _PeriodicState extends State<Periodic> {
                       style: TextStyle(color: Colors.white, fontSize: 16),
                     ),
                     subtitle: Text(
-                      '${PeriodicBudget.list[index].category.name} /' +
-                          ' ${PeriodicBudget.list[index].interval.substring(0, 1)}',
+                      '${PeriodicBudget.list[index].interval.substring(0, 1)} /' +
+                          ' ${PeriodicBudget.list[index].category.name}',
                       //Used to wrap long texts
                       overflow: TextOverflow.ellipsis,
                       style: TextStyle(color: Colors.grey, fontSize: 14.0),

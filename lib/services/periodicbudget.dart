@@ -132,6 +132,11 @@ class PeriodicBudget {
 
   // Delete budget based on list index
   void delete() {
+    Record.list.forEach((element) {
+      if (element.budget == this) {
+        element.budget = null;
+      }
+    });
     _list.remove(this);
 
     Firestore.instance
@@ -142,22 +147,7 @@ class PeriodicBudget {
         .delete();
   }
 
-  //TODO refresh amount used after INTERVAL
-  // fetch record on that month only (eg: now January, only take January record)
-  static void refreshBudget() {
-    List<PeriodicBudget> monthlyBudget = [];
-    List<PeriodicBudget> weeklyBudget = [];
-    // Seperate monthly and weekly budget
-    _list.forEach((element) {
-      if (element._interval == "Monthly") {
-        monthlyBudget.add(element);
-      } else if (element._interval == "Weekly") {
-        weeklyBudget.add(element);
-      }
-    });
-  }
-
-  //TODO calculate amountUsed (Weekly cannot do)
+  // calculate amountUsed (Weekly cannot do)
   // take all record for that period of time
   static void calculateAmountUsed() {
     _list.forEach((periodicbudget) {
@@ -166,10 +156,9 @@ class PeriodicBudget {
       if (periodicbudget._interval == "Monthly") {
         List<Record> monthlyRecordList = [];
         Record.list.forEach((record) {
-          if (record.type == "Expenses" &&
-              record.category == periodicbudget._category &&
-              record.dateTime.year == DateTime.now().year &&
-              record.dateTime.month == DateTime.now().month) {
+          if (record.budget == periodicbudget &&
+              record.dateTime.month == DateTime.now().month &&
+              record.dateTime.year == DateTime.now().year) {
             monthlyRecordList.add(record);
           }
         });
@@ -180,9 +169,9 @@ class PeriodicBudget {
       } else if (periodicbudget._interval == "Weekly") {
         List<Record> weeklyRecordList = [];
         Record.list.forEach((record) {
-          if (!record.dateTime.isBefore(periodicbudget._startDate) &&
-              record.type == "Expenses" &&
-              record.category == periodicbudget._category) {
+          if (record.budget == periodicbudget &&
+              record.dateTime.month == DateTime.now().month &&
+              record.dateTime.year == DateTime.now().year) {
             weeklyRecordList.add(record);
           }
         });
@@ -200,11 +189,30 @@ class PeriodicBudget {
     });
   }
 
-  // Need to return active budget list???
-  static List<PeriodicBudget> returnList(DateTime dateTime) {
+  // return active budget list based on a datetime
+  // static List<PeriodicBudget> returnList(DateTime dateTime) {
+  //   _activeList = [];
+  //   _list.forEach((element) {
+  //     if (!element.startDate.isAfter(dateTime)) {
+  //       _activeList.add(element);
+  //     } else if (element.startDate.month == dateTime.month &&
+  //         element.startDate.year == dateTime.year) {
+  //       _activeList.add(element);
+  //     }
+  //   });
+  //   return _activeList;
+  // }
+
+  // return active budget list based on a datetime
+  static List<PeriodicBudget> returnList(DateTime dateTime, Category category) {
     _activeList = [];
     _list.forEach((element) {
-      if (!element.startDate.isAfter(dateTime)) {
+      if (!element.startDate.isAfter(dateTime) &&
+          element.category == category) {
+        _activeList.add(element);
+      } else if (element.startDate.month == dateTime.month &&
+          element.startDate.year == dateTime.year &&
+          element.category == category) {
         _activeList.add(element);
       }
     });
@@ -246,5 +254,29 @@ class PeriodicBudget {
           },
         );
     return null;
+  }
+
+  static List findHighest() {
+    List allbudget = [];
+
+    list.forEach((budget) {
+      List<double> eachmonth = [];
+      for (int i = 1; i < 13; i++) {
+        double sum = 0;
+        List<Record> r = [];
+        Record.list.forEach((record) {
+          if (record.budget == budget && record.dateTime.month == i) {
+            r.add(record);
+          }
+        });
+        r.forEach((element) {
+          sum += element.amount;
+        });
+        eachmonth.add(sum);
+      }
+      allbudget.add(eachmonth);
+      print(eachmonth);
+    });
+    return allbudget;
   }
 }

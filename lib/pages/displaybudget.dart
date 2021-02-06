@@ -30,18 +30,21 @@ class _DisplayBudgetState extends State<DisplayBudget> {
                         style: TextStyle(color: Colors.white),
                       ),
                       onPressed: () {
-                        showDialog(context: context,
-                        child: Dialog(
-                          child: SelectBudget(),
-                        )
-                        );
+                        showDialog(
+                            context: context,
+                            child: Dialog(
+                              child: SelectBudget(),
+                            ));
                       },
                     ),
                   ),
                 ),
-                Card(
-                    color: Color.fromRGBO(57, 57, 57, 1),
-                    child: DisplayLineChart()),
+                ConstrainedBox(
+                  constraints: BoxConstraints.expand(height: 500.0),
+                  child: Card(
+                      color: Color.fromRGBO(57, 57, 57, 1),
+                      child: DisplayLineChart()),
+                ),
               ],
             ),
           ),

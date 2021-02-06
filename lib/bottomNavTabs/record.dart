@@ -65,8 +65,10 @@ class Record extends StatefulWidget {
 
 class _RecordState extends State<Record> {
   //Initialize current date and date format
-  DateTime pickedDate;
+  DateTime _pickedDate;
   DateFormat df = new DateFormat('yyyy MMM');
+
+  List<service.Record> _recordList;
 
   final String uid;
   _RecordState(this.uid);
@@ -78,21 +80,34 @@ class _RecordState extends State<Record> {
         context: context,
         firstDate: DateTime(DateTime.now().year - 5),
         lastDate: DateTime(DateTime.now().year + 5),
-        initialDate: pickedDate);
+        initialDate: _pickedDate);
 
     if (date != null) {
       setState(() {
-        pickedDate = date;
+        _pickedDate = date;
       });
     }
+    filterList();
   }
 
-  void filterList() {}
+  void filterList() {
+    List<service.Record> _searchList = [];
+    service.Record.list.forEach((value) {
+      if (value.dateTime.month == (_pickedDate.month)) {
+        _searchList.add(value);
+      }
+    });
+
+    setState(() {
+      _recordList = _searchList;
+    });
+  }
 
   @override
   void initState() {
     // TODO: implement initState
-    pickedDate = DateTime.now();
+    _pickedDate = DateTime.now();
+    filterList();
   }
 
   @override
@@ -104,13 +119,16 @@ class _RecordState extends State<Record> {
         backgroundColor: Color.fromRGBO(18, 18, 18, 1),
         title: Row(
           children: [
-            Expanded(
-              child: GestureDetector(
-                onTap: () {
+            Flexible(
+              child: RaisedButton(
+                shape: RoundedRectangleBorder(
+                    side: BorderSide(color: Colors.grey[700])),
+                color: Color.fromRGBO(18, 18, 18, 1),
+                onPressed: () {
                   pickDate();
                 },
                 child: Text(
-                  "< ${df.format(pickedDate)} >",
+                  "${df.format(_pickedDate)}",
                   style: TextStyle(
                       fontWeight: FontWeight.normal,
                       fontSize: 16.0,
@@ -135,7 +153,9 @@ class _RecordState extends State<Record> {
                         //uid: user.uid,
                         ),
                     fullscreenDialog: true),
-              );
+              ).then((value) => setState(() {
+                    filterList();
+                  }));
             },
           ),
           IconButton(
@@ -152,20 +172,22 @@ class _RecordState extends State<Record> {
                           uid: user.uid,
                         ),
                     fullscreenDialog: true),
-              ).then((value) => setState(() {}));
+              ).then((value) => setState(() {
+                    filterList();
+                  }));
             },
           ),
         ],
       ),
 
-      body: service.Record.list.length != 0
+      body: _recordList.length != 0
           ? SafeArea(
               //GroupedListView is a widget that can help group the list view by anything
               //Eg: Can group lists based on category or date.
               //DateTime object is explicitly stated so that it can group the records by date
               child: GroupedListView<dynamic, DateTime>(
                   //Elements takes in a list of data that needs to be grouped, in this case recordView's data needs to be taken in.
-                  elements: service.Record.list,
+                  elements: _recordList,
                   //groupBy is a function that chooses what to group given by an element.
                   //In this case, we give an element named record to represent our recordView list, and we want to group by currentDate.
                   groupBy: (record) {
@@ -184,7 +206,6 @@ class _RecordState extends State<Record> {
                   order: GroupedListOrder.DESC,
                   itemComparator: (item1, item2) =>
                       item1.dateTime.hour.compareTo(item2.dateTime.hour),
-                  useStickyGroupSeparators: true,
                   separator: Divider(
                     color: Colors.grey,
                     indent: 15.0,
@@ -203,87 +224,71 @@ class _RecordState extends State<Record> {
                             flex: 4,
                             child: ListTile(
                               onTap: () {
+                                print(record.title);
+                                print(_recordList.length - 1 - index);
                                 Navigator.push(
                                   context,
                                   MaterialPageRoute(
                                       builder: (context) => EditRecord(
                                             uid: user.uid,
-                                            index: service.Record.list.length -
-                                                1 -
-                                                index,
-                                            type: service
-                                                .Record
-                                                .list[
-                                                    service.Record.list.length -
+                                            recordList: _recordList,
+                                            index:
+                                                _recordList.length - 1 - index,
+                                            type: _recordList[
+                                                    _recordList.length -
                                                         1 -
                                                         index]
                                                 .type,
-                                            title: service
-                                                .Record
-                                                .list[
-                                                    service.Record.list.length -
+                                            title: _recordList[
+                                                    _recordList.length -
                                                         1 -
                                                         index]
                                                 .title,
-                                            dateTime: service
-                                                .Record
-                                                .list[
-                                                    service.Record.list.length -
+                                            dateTime: _recordList[
+                                                    _recordList.length -
                                                         1 -
                                                         index]
                                                 .dateTime,
-                                            category: service
-                                                .Record
-                                                .list[
-                                                    service.Record.list.length -
+                                            category: _recordList[
+                                                    _recordList.length -
                                                         1 -
                                                         index]
                                                 .category,
-                                            account: service
-                                                .Record
-                                                .list[
-                                                    service.Record.list.length -
+                                            account: _recordList[
+                                                    _recordList.length -
                                                         1 -
                                                         index]
                                                 .account,
-                                            toAccount: service
-                                                .Record
-                                                .list[
-                                                    service.Record.list.length -
+                                            toAccount: _recordList[
+                                                    _recordList.length -
                                                         1 -
                                                         index]
                                                 .toAccount,
-                                            budget: service
-                                                .Record
-                                                .list[
-                                                    service.Record.list.length -
+                                            budget: _recordList[
+                                                    _recordList.length -
                                                         1 -
                                                         index]
                                                 .budget,
-                                            amount: service
-                                                .Record
-                                                .list[
-                                                    service.Record.list.length -
+                                            amount: _recordList[
+                                                    _recordList.length -
                                                         1 -
                                                         index]
                                                 .amount,
-                                            note: service
-                                                .Record
-                                                .list[
-                                                    service.Record.list.length -
+                                            note: _recordList[
+                                                    _recordList.length -
                                                         1 -
                                                         index]
                                                 .note,
-                                            isFav: service
-                                                .Record
-                                                .list[
-                                                    service.Record.list.length -
+                                            isFav: _recordList[
+                                                    _recordList.length -
                                                         1 -
                                                         index]
                                                 .isFav,
                                           ),
                                       fullscreenDialog: true),
-                                ).then((value) => setState(() {}));
+                                ).then((value) => setState(() {
+                                      filterList();
+                                    }));
                               },
                               leading: record.type != 'Transfer'
                                   ? Text(
@@ -304,7 +309,7 @@ class _RecordState extends State<Record> {
                           ),
                           //Second part is to display the title.
                           Expanded(
-                            flex: 9,
+                            flex: 8,
                             child: ListTile(
                               onTap: () {
                                 Navigator.push(
@@ -312,82 +317,64 @@ class _RecordState extends State<Record> {
                                   MaterialPageRoute(
                                       builder: (context) => EditRecord(
                                             uid: user.uid,
-                                            index: service.Record.list.length -
-                                                1 -
-                                                index,
-                                            type: service
-                                                .Record
-                                                .list[
-                                                    service.Record.list.length -
+                                            recordList: _recordList,
+                                            index:
+                                                _recordList.length - 1 - index,
+                                            type: _recordList[
+                                                    _recordList.length -
                                                         1 -
                                                         index]
                                                 .type,
-                                            title: service
-                                                .Record
-                                                .list[
-                                                    service.Record.list.length -
+                                            title: _recordList[
+                                                    _recordList.length -
                                                         1 -
                                                         index]
                                                 .title,
-                                            dateTime: service
-                                                .Record
-                                                .list[
-                                                    service.Record.list.length -
+                                            dateTime: _recordList[
+                                                    _recordList.length -
                                                         1 -
                                                         index]
                                                 .dateTime,
-                                            category: service
-                                                .Record
-                                                .list[
-                                                    service.Record.list.length -
+                                            category: _recordList[
+                                                    _recordList.length -
                                                         1 -
                                                         index]
                                                 .category,
-                                            account: service
-                                                .Record
-                                                .list[
-                                                    service.Record.list.length -
+                                            account: _recordList[
+                                                    _recordList.length -
                                                         1 -
                                                         index]
                                                 .account,
-                                            toAccount: service
-                                                .Record
-                                                .list[
-                                                    service.Record.list.length -
+                                            toAccount: _recordList[
+                                                    _recordList.length -
                                                         1 -
                                                         index]
                                                 .toAccount,
-                                            budget: service
-                                                .Record
-                                                .list[
-                                                    service.Record.list.length -
+                                            budget: _recordList[
+                                                    _recordList.length -
                                                         1 -
                                                         index]
                                                 .budget,
-                                            amount: service
-                                                .Record
-                                                .list[
-                                                    service.Record.list.length -
+                                            amount: _recordList[
+                                                    _recordList.length -
                                                         1 -
                                                         index]
                                                 .amount,
-                                            note: service
-                                                .Record
-                                                .list[
-                                                    service.Record.list.length -
+                                            note: _recordList[
+                                                    _recordList.length -
                                                         1 -
                                                         index]
                                                 .note,
-                                            isFav: service
-                                                .Record
-                                                .list[
-                                                    service.Record.list.length -
+                                            isFav: _recordList[
+                                                    _recordList.length -
                                                         1 -
                                                         index]
                                                 .isFav,
                                           ),
                                       fullscreenDialog: true),
-                                ).then((value) => setState(() {}));
+                                ).then((value) => setState(() {
+                                      filterList();
+                                    }));
                               },
                               title: Text(
                                 record.title,
@@ -407,7 +394,7 @@ class _RecordState extends State<Record> {
                           ),
                           //Third part is to display the money.
                           Expanded(
-                            flex: 5,
+                            flex: 6,
                             child: ListTile(
                               onTap: () {
                                 Navigator.push(
@@ -415,82 +402,64 @@ class _RecordState extends State<Record> {
                                   MaterialPageRoute(
                                       builder: (context) => EditRecord(
                                             uid: user.uid,
-                                            index: service.Record.list.length -
-                                                1 -
-                                                index,
-                                            type: service
-                                                .Record
-                                                .list[
-                                                    service.Record.list.length -
+                                            recordList: _recordList,
+                                            index:
+                                                _recordList.length - 1 - index,
+                                            type: _recordList[
+                                                    _recordList.length -
                                                         1 -
                                                         index]
                                                 .type,
-                                            title: service
-                                                .Record
-                                                .list[
-                                                    service.Record.list.length -
+                                            title: _recordList[
+                                                    _recordList.length -
                                                         1 -
                                                         index]
                                                 .title,
-                                            dateTime: service
-                                                .Record
-                                                .list[
-                                                    service.Record.list.length -
+                                            dateTime: _recordList[
+                                                    _recordList.length -
                                                         1 -
                                                         index]
                                                 .dateTime,
-                                            category: service
-                                                .Record
-                                                .list[
-                                                    service.Record.list.length -
+                                            category: _recordList[
+                                                    _recordList.length -
                                                         1 -
                                                         index]
                                                 .category,
-                                            account: service
-                                                .Record
-                                                .list[
-                                                    service.Record.list.length -
+                                            account: _recordList[
+                                                    _recordList.length -
                                                         1 -
                                                         index]
                                                 .account,
-                                            toAccount: service
-                                                .Record
-                                                .list[
-                                                    service.Record.list.length -
+                                            toAccount: _recordList[
+                                                    _recordList.length -
                                                         1 -
                                                         index]
                                                 .toAccount,
-                                            budget: service
-                                                .Record
-                                                .list[
-                                                    service.Record.list.length -
+                                            budget: _recordList[
+                                                    _recordList.length -
                                                         1 -
                                                         index]
                                                 .budget,
-                                            amount: service
-                                                .Record
-                                                .list[
-                                                    service.Record.list.length -
+                                            amount: _recordList[
+                                                    _recordList.length -
                                                         1 -
                                                         index]
                                                 .amount,
-                                            note: service
-                                                .Record
-                                                .list[
-                                                    service.Record.list.length -
+                                            note: _recordList[
+                                                    _recordList.length -
                                                         1 -
                                                         index]
                                                 .note,
-                                            isFav: service
-                                                .Record
-                                                .list[
-                                                    service.Record.list.length -
+                                            isFav: _recordList[
+                                                    _recordList.length -
                                                         1 -
                                                         index]
                                                 .isFav,
                                           ),
                                       fullscreenDialog: true),
-                                ).then((value) => setState(() {}));
+                                ).then((value) => setState(() {
+                                      filterList();
+                                    }));
                               },
                               //An if else statement is used to check whether it is an expense or income
                               //If it is expenses, add '-' in front of money, else add '+'
@@ -539,7 +508,9 @@ class _RecordState extends State<Record> {
                     ),
                 fullscreenDialog: true),
             // The Greatest Mystery
-          ).then((value) => setState(() {}));
+          ).then((value) => setState(() {
+                filterList();
+              }));
         },
       ),
     );

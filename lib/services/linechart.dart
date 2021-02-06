@@ -24,7 +24,7 @@ class _DisplayLineChartState extends State<DisplayLineChart> {
           minX: 0,
           maxX: 11,
           minY: 0,
-          maxY: 6,
+          maxY: 10,
           gridData: FlGridData(
             show: true,
             getDrawingHorizontalLine: (value) {
@@ -45,7 +45,7 @@ class _DisplayLineChartState extends State<DisplayLineChart> {
             show: true,
             bottomTitles: SideTitles(
               showTitles: true,
-              reservedSize: 22,
+              reservedSize: 26,
               getTextStyles: (value) => const TextStyle(
                   color: Colors.grey,
                   fontWeight: FontWeight.bold,
@@ -73,11 +73,11 @@ class _DisplayLineChartState extends State<DisplayLineChart> {
               getTitles: (value) {
                 switch (value.toInt()) {
                   case 1:
-                    return '10k';
+                    return '100';
                   case 3:
-                    return '30k';
+                    return '300';
                   case 5:
-                    return '50k';
+                    return '500';
                 }
                 return '';
               },
@@ -100,13 +100,13 @@ class _DisplayLineChartState extends State<DisplayLineChart> {
           lineBarsData: [
             LineChartBarData(
                 spots: [
-                  FlSpot(0, 3),
-                  FlSpot(2.6, 2),
-                  FlSpot(4.9, 5),
-                  FlSpot(6.8, 3.1),
-                  FlSpot(8, 4),
-                  FlSpot(9.5, 3),
-                  FlSpot(11, 4),
+                  FlSpot(0, 0.3),
+                  FlSpot(1, 0.5),
+                  FlSpot(2, 5),
+                  FlSpot(3, 3.1),
+                  FlSpot(4, 4),
+                  FlSpot(5, 3),
+                  FlSpot(6, 4),
                 ],
                 isCurved: true,
                 colors: gradientColors,

@@ -1,8 +1,15 @@
+import 'package:budget_tracking_system/pages/addexpense.dart';
 import 'package:budget_tracking_system/services/onetimebudget.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:budget_tracking_system/services/category.dart';
 import 'package:budget_tracking_system/services/periodicbudget.dart';
+import 'package:intl/intl.dart';
+
+class DisableFocusNode extends FocusNode {
+  @override
+  bool get hasFocus => false;
+}
 
 class EditBudget extends StatefulWidget {
   int index;
@@ -70,6 +77,49 @@ class _EditBudgetState extends State<EditBudget> {
 
   String currentSelectedInterval;
   List<String> intervalTypes = ["Weekly", "Monthly"];
+
+  //Initialize controller
+  TextEditingController _startDateEditingController = TextEditingController();
+  TextEditingController _endDateEditingController = TextEditingController();
+
+  //Initialize start date, end date and date format
+  DateTime _pickedStartDate;
+  DateTime _pickedEndDate;
+  DateFormat df = new DateFormat("dd-MM-yyyy");
+
+  pickStartDate() async {
+    DateTime date = await showDatePicker(
+      context: context,
+      firstDate: DateTime(DateTime.now().year - 5),
+      lastDate: DateTime(DateTime.now().year + 5),
+      initialDate: DateTime.now(),
+    );
+
+    if (date != null) {
+      setState(() {
+        _pickedStartDate = date;
+        _startDateEditingController.text = df.format(_pickedStartDate);
+        startDate = _pickedStartDate;
+      });
+    }
+  }
+
+  pickEndDate() async {
+    DateTime date = await showDatePicker(
+      context: context,
+      firstDate: DateTime(DateTime.now().year - 5),
+      lastDate: DateTime(DateTime.now().year + 5),
+      initialDate: DateTime.now(),
+    );
+
+    if (date != null) {
+      setState(() {
+        _pickedEndDate = date;
+        _endDateEditingController.text = df.format(_pickedEndDate);
+        endDate = _pickedEndDate;
+      });
+    }
+  }
 
   displayWidget() {
     if (currentSelectedType == 'Periodic') {
@@ -163,6 +213,11 @@ class _EditBudgetState extends State<EditBudget> {
                   Container(
                     height: 50.0,
                     child: TextFormField(
+                      focusNode: DisableFocusNode(),
+                      controller: _startDateEditingController,
+                      onTap: () {
+                        pickStartDate();
+                      },
                       style: TextStyle(color: Colors.white),
                       decoration: InputDecoration(
                         border: InputBorder.none,
@@ -193,6 +248,11 @@ class _EditBudgetState extends State<EditBudget> {
                   Container(
                     height: 50.0,
                     child: TextFormField(
+                      focusNode: DisableFocusNode(),
+                      controller: _endDateEditingController,
+                      onTap: () {
+                        pickEndDate();
+                      },
                       style: TextStyle(color: Colors.white),
                       decoration: InputDecoration(
                         border: InputBorder.none,
@@ -240,6 +300,17 @@ class _EditBudgetState extends State<EditBudget> {
       appBar: AppBar(
         backgroundColor: Color.fromRGBO(18, 18, 18, 1),
         title: Text('Edit Budget'),
+        actions: [
+          IconButton(
+            icon: Icon(
+              Icons.delete,
+              color: Colors.white,
+            ),
+            onPressed: () {
+              //DELETE
+            },
+          ),
+        ],
       ),
       body: SafeArea(
         child: Container(
@@ -316,55 +387,30 @@ class _EditBudgetState extends State<EditBudget> {
                       flex: 3,
                       child: Container(
                         height: 50.0,
-                        child: FormField(
-                          builder: (FormFieldState<String> state) {
-                            return InputDecorator(
-                              decoration: InputDecoration(
-                                  border: InputBorder.none,
-                                  filled: true,
-                                  fillColor: Color.fromRGBO(41, 41, 41, 1),
-                                  enabledBorder: OutlineInputBorder(
-                                    borderRadius:
-                                        BorderRadius.all(Radius.circular(10.0)),
-                                    borderSide:
-                                        BorderSide(color: Colors.transparent),
-                                  ),
-                                  focusedBorder: OutlineInputBorder(
-                                    borderRadius:
-                                        BorderRadius.all(Radius.circular(10.0)),
-                                    borderSide:
-                                        BorderSide(color: Colors.transparent),
-                                  ),
-                                  isDense: true),
-                              child: DropdownButtonHideUnderline(
-                                child: DropdownButton<String>(
-                                  value: currentSelectedType,
-                                  onChanged: (newValue) {
-                                    setState(() {
-                                      currentSelectedType = newValue;
-                                    });
-                                  },
-                                  items: budgetTypes.map((String value) {
-                                    return DropdownMenuItem<String>(
-                                      value: value,
-                                      child: Text(value),
-                                    );
-                                  }).toList(),
-                                  style: TextStyle(color: Colors.black),
-                                  selectedItemBuilder: (BuildContext context) {
-                                    return budgetTypes.map((String value) {
-                                      return Text(
-                                        currentSelectedType,
-                                        style: TextStyle(
-                                            color: Colors.white,
-                                            fontSize: 15.0),
-                                      );
-                                    }).toList();
-                                  },
-                                ),
-                              ),
-                            );
-                          },
+                        child: TextFormField(
+                          focusNode: DisableFocusNode(),
+                          initialValue: currentSelectedType,
+                          style: TextStyle(color: Colors.grey),
+                          decoration: InputDecoration(
+                            //Remove visible borders
+                            border: InputBorder.none,
+                            //Enables color fill in the text form field.
+                            filled: true,
+                            fillColor: Color.fromRGBO(41, 41, 41, 1),
+                            //Border when it is not focused by user input.
+                            enabledBorder: OutlineInputBorder(
+                              borderRadius:
+                                  BorderRadius.all(Radius.circular(10.0)),
+                              borderSide: BorderSide(color: Colors.transparent),
+                            ),
+                            //Border when it is focused by user input.
+                            focusedBorder: OutlineInputBorder(
+                                borderRadius:
+                                    BorderRadius.all(Radius.circular(10.0)),
+                                borderSide:
+                                    BorderSide(color: Colors.transparent)),
+                            contentPadding: EdgeInsets.all(12.0),
+                          ),
                         ),
                       ),
                     ),
@@ -462,10 +508,20 @@ class _EditBudgetState extends State<EditBudget> {
                     Expanded(
                         flex: 1,
                         child: Container(
-                          margin: EdgeInsets.only(left: 6.0),
                           child: Align(
                             alignment: Alignment.centerLeft,
-                            child: Icon(Icons.settings,
+                            child: IconButton(
+                                onPressed: () {
+                                  Navigator.push(
+                                    context,
+                                    MaterialPageRoute(
+                                        builder: (context) => AddExpense(
+                                            //uid: user.uid,
+                                            ),
+                                        fullscreenDialog: true),
+                                  );
+                                },
+                                icon: Icon(Icons.settings),
                                 color: Color.fromRGBO(101, 101, 101, 1)),
                           ),
                         )),

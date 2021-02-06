@@ -56,8 +56,7 @@ class _SearchRecordState extends State<SearchRecord> {
 
   bool checkedValue = false;
 
-  // String currentSelectedCategory = "Food";
-  // List<String> categoryTypes = ["Food", "Transport", "Entertainment"];
+  String groupValue;
 
   //Creates a list of items for DropdownButton category and account.
   List<dynamic> categoryTypes = [];
@@ -67,7 +66,6 @@ class _SearchRecordState extends State<SearchRecord> {
   List<dynamic> accountTypes = [];
 
   //Initialize controller
-
   TextEditingController _startDateEditingController = TextEditingController();
   TextEditingController _endDateEditingController = TextEditingController();
   TextEditingController _amountMinEditingController = TextEditingController();
@@ -83,6 +81,7 @@ class _SearchRecordState extends State<SearchRecord> {
 
   //Initialize variable to storing values
   String title = '';
+  String type = '';
   String category;
   DateTime startDate;
   DateTime endDate;
@@ -132,6 +131,7 @@ class _SearchRecordState extends State<SearchRecord> {
   searchResult() {
     _recordList = service.Record.search(
       title: title,
+      type: type,
       category: category,
       startDate: startDate,
       endDate: endDate,
@@ -162,9 +162,6 @@ class _SearchRecordState extends State<SearchRecord> {
 
   @override
   Widget build(BuildContext context) {
-    // accountTypes.forEach((Account account) {
-    //   print(account.name);
-    // });
     final user = Provider.of<User>(context);
     return Scaffold(
       resizeToAvoidBottomPadding: false,
@@ -233,6 +230,60 @@ class _SearchRecordState extends State<SearchRecord> {
                   ),
                 ),
                 children: [
+                  SizedBox(height: 12.0),
+                  //Display type
+                  Container(
+                    padding: EdgeInsets.only(left: 20.0, right: 20.0),
+                    child: Row(
+                      children: [
+                        Radio(
+                          activeColor: Color.fromRGBO(255, 185, 49, 1),
+                          value: "Income",
+                          groupValue: groupValue,
+                          onChanged: (value) {
+                            setState(() {
+                              groupValue = value;
+                              type = value;
+                            });
+                          },
+                        ),
+                        Text(
+                          'Income',
+                          style: TextStyle(fontSize: 16.0, color: Colors.white),
+                        ),
+                         Radio(
+                          activeColor: Color.fromRGBO(255, 185, 49, 1),
+                          value: "Expenses",
+                          groupValue: groupValue,
+                          onChanged: (value) {
+                            setState(() {
+                              groupValue = value;
+                              type = value;
+                            });
+                          },
+                        ),
+                        Text(
+                          'Expenses',
+                          style: TextStyle(fontSize: 16.0, color: Colors.white),
+                        ),
+                         Radio(
+                          activeColor: Color.fromRGBO(255, 185, 49, 1),
+                          value: "Transfer",
+                          groupValue: groupValue,
+                          onChanged: (value) {
+                            setState(() {
+                              groupValue = value;
+                              type = value;
+                            });
+                          },
+                        ),
+                        Text(
+                          'Transfer',
+                          style: TextStyle(fontSize: 16.0, color: Colors.white),
+                        ),
+                      ],
+                    ),
+                  ),
                   SizedBox(height: 12.0),
 
                   //Display DateTime Picker Field
@@ -715,6 +766,7 @@ class _SearchRecordState extends State<SearchRecord> {
                                   MaterialPageRoute(
                                       builder: (context) => EditRecord(
                                             uid: user.uid,
+                                            recordList: _recordList,
                                             index:
                                                 _recordList.length - 1 - index,
                                             type: _recordList[
@@ -798,6 +850,7 @@ class _SearchRecordState extends State<SearchRecord> {
                                   MaterialPageRoute(
                                       builder: (context) => EditRecord(
                                             uid: user.uid,
+                                            recordList: _recordList,
                                             index:
                                                 _recordList.length - 1 - index,
                                             type: _recordList[
@@ -880,6 +933,7 @@ class _SearchRecordState extends State<SearchRecord> {
                                   MaterialPageRoute(
                                       builder: (context) => EditRecord(
                                             uid: user.uid,
+                                            recordList: _recordList,
                                             index:
                                                 _recordList.length - 1 - index,
                                             type: _recordList[

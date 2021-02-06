@@ -5,6 +5,8 @@ import 'package:flutter/material.dart';
 import 'package:budget_tracking_system/pages/displayincome.dart';
 import 'package:budget_tracking_system/pages/displayexpenses.dart';
 import 'package:budget_tracking_system/pages/displaybudget.dart';
+import 'package:intl/intl.dart';
+import 'package:month_picker_dialog/month_picker_dialog.dart';
 
 class Statistic extends StatefulWidget {
   @override
@@ -18,12 +20,31 @@ class _StatisticState extends State<Statistic> {
   String _currentSelectedCurrency = "USD";
   List _currencyTypes = Currency.list;
 
+  //Initialize current date and date format
+  DateTime _pickedDate;
+  DateFormat df = new DateFormat('yyyy MMM');
+
   bool isVisible = true;
+
+  pickDate() async {
+    DateTime date = await showMonthPicker(
+        context: context,
+        firstDate: DateTime(DateTime.now().year - 5),
+        lastDate: DateTime(DateTime.now().year + 5),
+        initialDate: _pickedDate);
+
+    if (date != null) {
+      setState(() {
+        _pickedDate = date;
+      });
+    }
+  }
 
   @override
   void initState() {
     // TODO: implement initState
     super.initState();
+    _pickedDate = DateTime.now();
 
     PieIncomeData.createObj();
     PieExpensesData.createObj();
@@ -36,9 +57,9 @@ class _StatisticState extends State<Statistic> {
         appBar: AppBar(
           backgroundColor: Color.fromRGBO(18, 18, 18, 1),
           title: Row(
+            mainAxisAlignment: MainAxisAlignment.spaceBetween,
             children: [
               Flexible(
-                flex: 1,
                 child: Container(
                   height: 40,
                   padding: EdgeInsets.symmetric(horizontal: 10.0),
@@ -75,44 +96,20 @@ class _StatisticState extends State<Statistic> {
                   ),
                 ),
               ),
-              Visibility(
-                visible: isVisible,
-                child: Flexible(
-                  flex: 2,
-                  child: Padding(
-                    padding: const EdgeInsets.all(8.0),
-                    child: Container(
-                      height: 40,
-                      padding: EdgeInsets.symmetric(horizontal: 10.0),
-                      decoration: BoxDecoration(
-                        border: Border.all(
-                            color: Colors.white,
-                            style: BorderStyle.solid,
-                            width: 0.20),
-                      ),
-                      child: DropdownButtonHideUnderline(
-                        child: Theme(
-                          data: Theme.of(context).copyWith(
-                            canvasColor: Color.fromRGBO(18, 18, 18, 1),
-                          ),
-                          child: DropdownButton(
-                            style: TextStyle(color: Colors.white),
-                            value: _currentSelectedCurrency,
-                            onChanged: (newValue) {
-                              setState(() {
-                                _currentSelectedCurrency = newValue;
-                              });
-                            },
-                            items: _currencyTypes.map((value) {
-                              return DropdownMenuItem<String>(
-                                value: value.name,
-                                child: Text(value.name),
-                              );
-                            }).toList(),
-                          ),
-                        ),
-                      ),
-                    ),
+              Flexible(
+                child: RaisedButton(
+                  shape: RoundedRectangleBorder(
+                      side: BorderSide(color: Colors.grey[700])),
+                  color: Color.fromRGBO(18, 18, 18, 1),
+                  onPressed: () {
+                    pickDate();
+                  },
+                  child: Text(
+                    "${df.format(_pickedDate)}",
+                    style: TextStyle(
+                        fontWeight: FontWeight.normal,
+                        fontSize: 16.0,
+                        color: Colors.white),
                   ),
                 ),
               ),

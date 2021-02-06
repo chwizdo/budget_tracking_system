@@ -1,3 +1,4 @@
+import 'package:budget_tracking_system/pages/addexpense.dart';
 import 'package:budget_tracking_system/services/category.dart';
 import 'package:budget_tracking_system/services/onetimebudget.dart';
 import 'package:budget_tracking_system/services/periodicbudget.dart';
@@ -490,10 +491,20 @@ class _AddBudgetState extends State<AddBudget> {
                     Expanded(
                         flex: 1,
                         child: Container(
-                          margin: EdgeInsets.only(left: 6.0),
                           child: Align(
                             alignment: Alignment.centerLeft,
-                            child: Icon(Icons.settings,
+                            child: IconButton(
+                              onPressed: () {
+                                Navigator.push(
+                                    context,
+                                    MaterialPageRoute(
+                                        builder: (context) => AddExpense(
+                                            //uid: user.uid,
+                                            ),
+                                        fullscreenDialog: true),
+                                  );
+                              },
+                                icon: Icon(Icons.settings),
                                 color: Color.fromRGBO(101, 101, 101, 1)),
                           ),
                         )),

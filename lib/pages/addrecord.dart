@@ -1,3 +1,4 @@
+import 'package:budget_tracking_system/pages/addexpense.dart';
 import 'package:budget_tracking_system/pages/budgetperiodic.dart';
 import 'package:budget_tracking_system/services/category.dart';
 import 'package:budget_tracking_system/services/account.dart';
@@ -142,127 +143,11 @@ class _AddRecordState extends State<AddRecord> {
 
   GlobalKey<FormState> formkey = GlobalKey<FormState>();
 
-  displayWidget() {
+  displayCategory() {
     if (type == "Income" || type == "Expenses") {
       return Column(
         children: [
-          //Display Title Text Field
-          Container(
-            margin: EdgeInsets.only(left: 12.0, right: 10.0),
-            child: Row(
-              children: [
-                Expanded(
-                  flex: 1,
-                  child: Text(
-                    'Title:',
-                    style: TextStyle(color: Colors.white, fontSize: 18.0),
-                  ),
-                ),
-                Expanded(
-                  flex: 3,
-                  child: Container(
-                    height: 50.0,
-                    child: TextFormField(
-                      validator: (_val) {
-                        if (_val.isEmpty) {
-                          return null;
-                        } else {
-                          return null;
-                        }
-                      },
-                      onChanged: (_val) {
-                        title = _val;
-                      },
-                      style: TextStyle(color: Colors.white),
-                      decoration: InputDecoration(
-                        //Remove visible borders
-                        border: InputBorder.none,
-                        //Enables color fill in the text form field.
-                        filled: true,
-                        fillColor: Color.fromRGBO(41, 41, 41, 1),
-                        //Border when it is not focused by user input.
-                        enabledBorder: OutlineInputBorder(
-                          borderRadius: BorderRadius.all(Radius.circular(10.0)),
-                          borderSide: BorderSide(color: Colors.transparent),
-                        ),
-                        //Border when it is focused by user input.
-                        focusedBorder: OutlineInputBorder(
-                            borderRadius:
-                                BorderRadius.all(Radius.circular(10.0)),
-                            borderSide: BorderSide(color: Colors.transparent)),
-                        contentPadding: EdgeInsets.all(12.0),
-                      ),
-                    ),
-                  ),
-                ),
-              ],
-            ),
-          ),
-
           SizedBox(height: 12.0),
-
-          //Display Date Field
-          Container(
-            margin: EdgeInsets.only(left: 12.0, right: 10.0),
-            child: Row(
-              children: [
-                Expanded(
-                  flex: 1,
-                  child: Text(
-                    'Date:',
-                    style: TextStyle(color: Colors.white, fontSize: 18.0),
-                  ),
-                ),
-                Expanded(
-                  flex: 3,
-                  child: Container(
-                    height: 50.0,
-                    child: TextFormField(
-                      focusNode: DisableFocusNode(),
-                      controller: _dateEditingController,
-                      onTap: () {
-                        pickDate();
-                      },
-                      validator: (_val) {
-                        if (_val.isEmpty) {
-                          return null;
-                        } else {
-                          return null;
-                        }
-                      },
-                      // onChanged: (_val) {
-                      //   dateTime = _pickedDate;
-                      //   print(dateTime);
-                      // },
-                      style: TextStyle(color: Colors.white),
-                      decoration: InputDecoration(
-                        border: InputBorder.none,
-                        filled: true,
-                        fillColor: Color.fromRGBO(41, 41, 41, 1),
-                        enabledBorder: OutlineInputBorder(
-                          borderRadius: BorderRadius.all(Radius.circular(10.0)),
-                          borderSide: BorderSide(color: Colors.transparent),
-                        ),
-                        focusedBorder: OutlineInputBorder(
-                          borderRadius: BorderRadius.all(Radius.circular(10.0)),
-                          borderSide: BorderSide(color: Colors.transparent),
-                        ),
-                        prefixIcon: Icon(
-                          Icons.calendar_today,
-                          color: Color.fromRGBO(101, 101, 101, 1),
-                        ),
-                        contentPadding: EdgeInsets.all(12.0),
-                      ),
-                    ),
-                  ),
-                ),
-              ],
-            ),
-          ),
-
-          SizedBox(height: 12.0),
-
-          //Display Category DropdownButton Field
           Container(
             margin: EdgeInsets.only(left: 12.0, right: 10.0),
             child: Row(
@@ -358,13 +243,119 @@ class _AddRecordState extends State<AddRecord> {
                       icon: Icon(Icons.settings),
                       color: Color.fromRGBO(101, 101, 101, 1),
                       onPressed: () {
-                        Navigator.push(
-                          context,
-                          MaterialPageRoute(
-                              builder: (context) => AddIncome(
-                                  //uid: user.uid,
-                                  ),
-                              fullscreenDialog: true),
+                        if (type == "Income") {
+                          Navigator.push(
+                            context,
+                            MaterialPageRoute(
+                                builder: (context) => AddIncome(
+                                    //uid: user.uid,
+                                    ),
+                                fullscreenDialog: true),
+                          );
+                        } else if (type == "Expenses") {
+                          Navigator.push(
+                            context,
+                            MaterialPageRoute(
+                                builder: (context) => AddExpense(
+                                    //uid: user.uid,
+                                    ),
+                                fullscreenDialog: true),
+                          );
+                        }
+                      },
+                    ),
+                  ),
+                ),
+              ],
+            ),
+          ),
+        ],
+      );
+    } else {
+      return SizedBox(height: 0.0);
+    }
+  }
+
+  displayAccount() {
+    if (type == "Income" || type == "Expenses") {
+      return Column(
+        children: [
+          Container(
+            margin: EdgeInsets.only(left: 12.0, right: 10.0),
+            child: Row(
+              children: [
+                Expanded(
+                  flex: 1,
+                  child: Text(
+                    'Account:',
+                    style: TextStyle(color: Colors.white, fontSize: 18.0),
+                  ),
+                ),
+                Expanded(
+                  flex: 3,
+                  child: Container(
+                    height: 50.0,
+                    child: FormField(
+                      validator: (newvalue) {
+                        if (newvalue.isEmpty) {
+                          return null;
+                        } else {
+                          return null;
+                        }
+                      },
+                      builder: (FormFieldState<String> state) {
+                        return InputDecorator(
+                          decoration: InputDecoration(
+                              border: InputBorder.none,
+                              filled: true,
+                              fillColor: Color.fromRGBO(41, 41, 41, 1),
+                              enabledBorder: OutlineInputBorder(
+                                borderRadius:
+                                    BorderRadius.all(Radius.circular(10.0)),
+                                borderSide:
+                                    BorderSide(color: Colors.transparent),
+                              ),
+                              focusedBorder: OutlineInputBorder(
+                                borderRadius:
+                                    BorderRadius.all(Radius.circular(10.0)),
+                                borderSide:
+                                    BorderSide(color: Colors.transparent),
+                              ),
+                              isDense: true),
+                          child: DropdownButtonHideUnderline(
+                            child: DropdownButton<String>(
+                              value: currentSelectedAccount,
+                              onChanged: (newValue) {
+                                setState(() {
+                                  // LANDMARK
+                                  currentSelectedAccount = newValue;
+                                  Account.list.forEach((element) {
+                                    if (element.name == newValue) {
+                                      account = element;
+                                      currency = element.currency;
+                                    }
+                                  });
+                                });
+                              },
+                              // LANDMARK
+                              items: accountTypes.map((Account value) {
+                                return DropdownMenuItem<String>(
+                                  value: value.name,
+                                  child: Text(value.name),
+                                );
+                              }).toList(),
+                              style: TextStyle(color: Colors.black),
+                              selectedItemBuilder: (BuildContext context) {
+                                return accountTypes.map((Account value) {
+                                  return Text(
+                                    currentSelectedAccount,
+                                    style: TextStyle(
+                                        color: Colors.white, fontSize: 15.0),
+                                  );
+                                }).toList();
+                              },
+                            ),
+                          ),
                         );
                       },
                     ),
@@ -373,10 +364,209 @@ class _AddRecordState extends State<AddRecord> {
               ],
             ),
           ),
-
           SizedBox(height: 12.0),
+        ],
+      );
+    } else {
+      return SizedBox(height: 0.0);
+    }
+  }
 
-          //Display Budget DropdownButton Field
+  displayAccountFrom() {
+    if (type == "Transfer") {
+      return Column(
+        children: [
+          SizedBox(height: 12.0),
+          Container(
+            margin: EdgeInsets.only(left: 12.0, right: 10.0),
+            child: Row(
+              children: [
+                Expanded(
+                  flex: 1,
+                  child: Text(
+                    'From:',
+                    style: TextStyle(color: Colors.white, fontSize: 18.0),
+                  ),
+                ),
+                Expanded(
+                  flex: 3,
+                  child: Container(
+                    height: 50.0,
+                    child: FormField(
+                      validator: (newvalue) {
+                        if (newvalue.isEmpty) {
+                          return null;
+                        } else {
+                          return null;
+                        }
+                      },
+                      builder: (FormFieldState<String> state) {
+                        return InputDecorator(
+                          decoration: InputDecoration(
+                              border: InputBorder.none,
+                              filled: true,
+                              fillColor: Color.fromRGBO(41, 41, 41, 1),
+                              enabledBorder: OutlineInputBorder(
+                                borderRadius:
+                                    BorderRadius.all(Radius.circular(10.0)),
+                                borderSide:
+                                    BorderSide(color: Colors.transparent),
+                              ),
+                              focusedBorder: OutlineInputBorder(
+                                borderRadius:
+                                    BorderRadius.all(Radius.circular(10.0)),
+                                borderSide:
+                                    BorderSide(color: Colors.transparent),
+                              ),
+                              isDense: true),
+                          child: DropdownButtonHideUnderline(
+                            child: DropdownButton<String>(
+                              value: currentSelectedAccount,
+                              onChanged: (newValue) {
+                                setState(() {
+                                  // LANDMARK
+                                  currentSelectedAccount = newValue;
+                                  Account.list.forEach((element) {
+                                    if (element.name == newValue) {
+                                      account = element;
+                                    }
+                                  });
+                                });
+                              },
+                              // LANDMARK
+                              items: accountTypes.map((Account value) {
+                                return DropdownMenuItem<String>(
+                                  value: value.name,
+                                  child: Text(value.name),
+                                );
+                              }).toList(),
+                              style: TextStyle(color: Colors.black),
+                              selectedItemBuilder: (BuildContext context) {
+                                return accountTypes.map((Account value) {
+                                  return Text(
+                                    currentSelectedAccount,
+                                    style: TextStyle(
+                                        color: Colors.white, fontSize: 15.0),
+                                  );
+                                }).toList();
+                              },
+                            ),
+                          ),
+                        );
+                      },
+                    ),
+                  ),
+                ),
+              ],
+            ),
+          ),
+          SizedBox(height: 12.0),
+        ],
+      );
+    } else {
+      return SizedBox(height: 0.0);
+    }
+  }
+
+  displayAccountTo() {
+    if (type == "Transfer") {
+      return Column(
+        children: [
+          Container(
+            margin: EdgeInsets.only(left: 12.0, right: 10.0),
+            child: Row(
+              children: [
+                Expanded(
+                  flex: 1,
+                  child: Text(
+                    'To:',
+                    style: TextStyle(color: Colors.white, fontSize: 18.0),
+                  ),
+                ),
+                Expanded(
+                  flex: 3,
+                  child: Container(
+                    height: 50.0,
+                    child: FormField(
+                      validator: (newvalue) {
+                        if (newvalue.isEmpty) {
+                          return null;
+                        } else {
+                          return null;
+                        }
+                      },
+                      builder: (FormFieldState<String> state) {
+                        return InputDecorator(
+                          decoration: InputDecoration(
+                              border: InputBorder.none,
+                              filled: true,
+                              fillColor: Color.fromRGBO(41, 41, 41, 1),
+                              enabledBorder: OutlineInputBorder(
+                                borderRadius:
+                                    BorderRadius.all(Radius.circular(10.0)),
+                                borderSide:
+                                    BorderSide(color: Colors.transparent),
+                              ),
+                              focusedBorder: OutlineInputBorder(
+                                borderRadius:
+                                    BorderRadius.all(Radius.circular(10.0)),
+                                borderSide:
+                                    BorderSide(color: Colors.transparent),
+                              ),
+                              isDense: true),
+                          child: DropdownButtonHideUnderline(
+                            child: DropdownButton<String>(
+                              value: currentSelectedTransferAccount,
+                              onChanged: (newValue) {
+                                setState(() {
+                                  // LANDMARK
+                                  currentSelectedTransferAccount = newValue;
+                                  Account.list.forEach((element) {
+                                    if (element.name == newValue) {
+                                      toAccount = element;
+                                    }
+                                  });
+                                });
+                              },
+                              // LANDMARK
+                              items: accountTypes.map((Account value) {
+                                return DropdownMenuItem<String>(
+                                  value: value.name,
+                                  child: Text(value.name),
+                                );
+                              }).toList(),
+                              style: TextStyle(color: Colors.black),
+                              selectedItemBuilder: (BuildContext context) {
+                                return accountTypes.map((Account value) {
+                                  return Text(
+                                    currentSelectedTransferAccount,
+                                    style: TextStyle(
+                                        color: Colors.white, fontSize: 15.0),
+                                  );
+                                }).toList();
+                              },
+                            ),
+                          ),
+                        );
+                      },
+                    ),
+                  ),
+                ),
+              ],
+            ),
+          ),
+          SizedBox(height: 12.0),
+        ],
+      );
+    } else {
+      return SizedBox(height: 12.0);
+    }
+  }
+
+  displayBudget() {
+    if (type == "Expenses") {
+      return Column(
+        children: [
           Container(
             margin: EdgeInsets.only(left: 12.0, right: 10.0),
             child: Row(
@@ -464,269 +654,315 @@ class _AddRecordState extends State<AddRecord> {
               ],
             ),
           ),
-
           SizedBox(height: 12.0),
-          //Display Amount DropdownButton Field
-          Container(
-            margin: EdgeInsets.only(left: 12.0, right: 10.0),
-            child: Row(
-              children: [
-                Expanded(
-                  flex: 1,
-                  child: Text(
-                    'Account:',
-                    style: TextStyle(color: Colors.white, fontSize: 18.0),
-                  ),
-                ),
-                Expanded(
-                  flex: 3,
-                  child: Container(
-                    height: 50.0,
-                    child: FormField(
-                      validator: (newvalue) {
-                        if (newvalue.isEmpty) {
-                          return null;
-                        } else {
-                          return null;
-                        }
-                      },
-                      builder: (FormFieldState<String> state) {
-                        return InputDecorator(
-                          decoration: InputDecoration(
-                              border: InputBorder.none,
-                              filled: true,
-                              fillColor: Color.fromRGBO(41, 41, 41, 1),
-                              enabledBorder: OutlineInputBorder(
-                                borderRadius:
-                                    BorderRadius.all(Radius.circular(10.0)),
-                                borderSide:
-                                    BorderSide(color: Colors.transparent),
-                              ),
-                              focusedBorder: OutlineInputBorder(
-                                borderRadius:
-                                    BorderRadius.all(Radius.circular(10.0)),
-                                borderSide:
-                                    BorderSide(color: Colors.transparent),
-                              ),
-                              isDense: true),
-                          child: DropdownButtonHideUnderline(
-                            child: DropdownButton<String>(
-                              value: currentSelectedAccount,
-                              onChanged: (newValue) {
-                                setState(() {
-                                  // LANDMARK
-                                  currentSelectedAccount = newValue;
-                                  Account.list.forEach((element) {
-                                    if (element.name == newValue) {
-                                      account = element;
-                                      currency = element.currency;
-                                    }
-                                  });
-                                });
-                              },
-                              // LANDMARK
-                              items: accountTypes.map((Account value) {
-                                return DropdownMenuItem<String>(
-                                  value: value.name,
-                                  child: Text(value.name),
-                                );
-                              }).toList(),
-                              style: TextStyle(color: Colors.black),
-                              selectedItemBuilder: (BuildContext context) {
-                                return accountTypes.map((Account value) {
-                                  return Text(
-                                    currentSelectedAccount,
-                                    style: TextStyle(
-                                        color: Colors.white, fontSize: 15.0),
-                                  );
-                                }).toList();
-                              },
-                            ),
-                          ),
-                        );
-                      },
-                    ),
-                  ),
-                ),
-              ],
-            ),
-          ),
+        ],
+      );
+    } else {
+      return SizedBox(height: 0.0);
+    }
+  }
 
-          SizedBox(height: 12.0),
-
-          //Display Amount Text Field
-          Container(
-            margin: EdgeInsets.only(left: 12.0, right: 10.0),
-            child: Row(
-              children: [
-                Expanded(
-                  flex: 1,
-                  child: Text(
-                    'Amount:',
-                    style: TextStyle(color: Colors.white, fontSize: 18.0),
-                  ),
+  displayWidget() {
+    return Column(
+      children: [
+        //Display Title Text Field
+        Container(
+          margin: EdgeInsets.only(left: 12.0, right: 10.0),
+          child: Row(
+            children: [
+              Expanded(
+                flex: 1,
+                child: Text(
+                  'Title:',
+                  style: TextStyle(color: Colors.white, fontSize: 18.0),
                 ),
-                Expanded(
-                  flex: 3,
-                  child: Container(
-                    height: 50.0,
-                    child: TextFormField(
-                      validator: (_val3) {
-                        if (_val3.isEmpty) {
-                          return null;
-                        } else {
-                          return null;
-                        }
-                      },
-                      onChanged: (_val3) {
-                        amount = double.parse(_val3);
-                      },
-                      style: TextStyle(color: Colors.white),
-                      decoration: InputDecoration(
-                        border: InputBorder.none,
-                        filled: true,
-                        fillColor: Color.fromRGBO(41, 41, 41, 1),
-                        enabledBorder: OutlineInputBorder(
-                          borderRadius: BorderRadius.all(Radius.circular(10.0)),
-                          borderSide: BorderSide(color: Colors.transparent),
-                        ),
-                        focusedBorder: OutlineInputBorder(
-                          borderRadius: BorderRadius.all(Radius.circular(10.0)),
-                          borderSide: BorderSide(color: Colors.transparent),
-                        ),
-                        prefixIcon: Padding(
-                          padding: EdgeInsets.only(left: 15.0, top: 15),
-                          child: Text(
-                            currency,
-                            style: TextStyle(
-                                color: Color.fromRGBO(101, 101, 101, 1)),
-                          ),
-                        ),
-                        contentPadding: EdgeInsets.all(12.0),
+              ),
+              Expanded(
+                flex: 3,
+                child: Container(
+                  height: 50.0,
+                  child: TextFormField(
+                    validator: (_val) {
+                      if (_val.isEmpty) {
+                        return null;
+                      } else {
+                        return null;
+                      }
+                    },
+                    onChanged: (_val) {
+                      title = _val;
+                    },
+                    style: TextStyle(color: Colors.white),
+                    decoration: InputDecoration(
+                      //Remove visible borders
+                      border: InputBorder.none,
+                      //Enables color fill in the text form field.
+                      filled: true,
+                      fillColor: Color.fromRGBO(41, 41, 41, 1),
+                      //Border when it is not focused by user input.
+                      enabledBorder: OutlineInputBorder(
+                        borderRadius: BorderRadius.all(Radius.circular(10.0)),
+                        borderSide: BorderSide(color: Colors.transparent),
                       ),
+                      //Border when it is focused by user input.
+                      focusedBorder: OutlineInputBorder(
+                          borderRadius: BorderRadius.all(Radius.circular(10.0)),
+                          borderSide: BorderSide(color: Colors.transparent)),
+                      contentPadding: EdgeInsets.all(12.0),
                     ),
                   ),
                 ),
-              ],
-            ),
+              ),
+            ],
           ),
+        ),
 
-          SizedBox(height: 12.0),
+        SizedBox(height: 12.0),
 
-          //Display Notes Text Field
-          Container(
-            margin: EdgeInsets.only(left: 12.0, right: 10.0),
-            child: Row(
-              children: [
-                Expanded(
-                  flex: 1,
-                  child: Text(
-                    'Notes:',
-                    style: TextStyle(color: Colors.white, fontSize: 18.0),
-                  ),
+        //Display Date Field
+        Container(
+          margin: EdgeInsets.only(left: 12.0, right: 10.0),
+          child: Row(
+            children: [
+              Expanded(
+                flex: 1,
+                child: Text(
+                  'Date:',
+                  style: TextStyle(color: Colors.white, fontSize: 18.0),
                 ),
-                Expanded(
-                  flex: 3,
-                  child: Container(
-                    height: 50.0,
-                    child: TextField(
-                      onChanged: (value) {
-                        note = value;
-                      },
-                      style: TextStyle(color: Colors.white),
-                      decoration: InputDecoration(
-                        border: InputBorder.none,
-                        filled: true,
-                        fillColor: Color.fromRGBO(41, 41, 41, 1),
-                        enabledBorder: OutlineInputBorder(
-                          borderRadius: BorderRadius.all(Radius.circular(10.0)),
-                          borderSide: BorderSide(color: Colors.transparent),
-                        ),
-                        focusedBorder: OutlineInputBorder(
-                          borderRadius: BorderRadius.all(Radius.circular(10.0)),
-                          borderSide: BorderSide(color: Colors.transparent),
-                        ),
-                        contentPadding: EdgeInsets.all(12.0),
+              ),
+              Expanded(
+                flex: 3,
+                child: Container(
+                  height: 50.0,
+                  child: TextFormField(
+                    focusNode: DisableFocusNode(),
+                    controller: _dateEditingController,
+                    onTap: () {
+                      pickDate();
+                    },
+                    validator: (_val) {
+                      if (_val.isEmpty) {
+                        return null;
+                      } else {
+                        return null;
+                      }
+                    },
+                    style: TextStyle(color: Colors.white),
+                    decoration: InputDecoration(
+                      border: InputBorder.none,
+                      filled: true,
+                      fillColor: Color.fromRGBO(41, 41, 41, 1),
+                      enabledBorder: OutlineInputBorder(
+                        borderRadius: BorderRadius.all(Radius.circular(10.0)),
+                        borderSide: BorderSide(color: Colors.transparent),
                       ),
+                      focusedBorder: OutlineInputBorder(
+                        borderRadius: BorderRadius.all(Radius.circular(10.0)),
+                        borderSide: BorderSide(color: Colors.transparent),
+                      ),
+                      prefixIcon: Icon(
+                        Icons.calendar_today,
+                        color: Color.fromRGBO(101, 101, 101, 1),
+                      ),
+                      contentPadding: EdgeInsets.all(12.0),
                     ),
                   ),
                 ),
-              ],
-            ),
+              ),
+            ],
           ),
+        ),
 
-          SizedBox(height: 12.0),
+        //Display Category DropdownButton Field
+        displayCategory(),
 
-          //Display Attachment Field
-          Container(
-            margin: EdgeInsets.only(left: 12.0, right: 10.0),
-            child: Row(
-              children: [
-                Expanded(
-                  flex: 7,
-                  child: Text(
-                    'Attachment:',
-                    style: TextStyle(color: Colors.white, fontSize: 18.0),
+        //Display Account From DropdownButton Field
+        displayAccountFrom(),
+
+        //Display Account To DropdownButton Field
+        displayAccountTo(),
+
+        //Display Budget DropdownButton Field
+        displayBudget(),
+
+        //Display Account DropdownButton Field
+        displayAccount(),
+
+        //Display Amount Text Field
+        Container(
+          margin: EdgeInsets.only(left: 12.0, right: 10.0),
+          child: Row(
+            children: [
+              Expanded(
+                flex: 1,
+                child: Text(
+                  'Amount:',
+                  style: TextStyle(color: Colors.white, fontSize: 18.0),
+                ),
+              ),
+              Expanded(
+                flex: 3,
+                child: Container(
+                  height: 50.0,
+                  child: TextFormField(
+                    validator: (_val3) {
+                      if (_val3.isEmpty) {
+                        return null;
+                      } else {
+                        return null;
+                      }
+                    },
+                    onChanged: (_val3) {
+                      amount = double.parse(_val3);
+                    },
+                    style: TextStyle(color: Colors.white),
+                    decoration: InputDecoration(
+                      border: InputBorder.none,
+                      filled: true,
+                      fillColor: Color.fromRGBO(41, 41, 41, 1),
+                      enabledBorder: OutlineInputBorder(
+                        borderRadius: BorderRadius.all(Radius.circular(10.0)),
+                        borderSide: BorderSide(color: Colors.transparent),
+                      ),
+                      focusedBorder: OutlineInputBorder(
+                        borderRadius: BorderRadius.all(Radius.circular(10.0)),
+                        borderSide: BorderSide(color: Colors.transparent),
+                      ),
+                      prefixIcon: Padding(
+                        padding: EdgeInsets.only(left: 15.0, top: 15),
+                        child: Text(
+                          currency,
+                          style: TextStyle(
+                              color: Color.fromRGBO(101, 101, 101, 1)),
+                        ),
+                      ),
+                      contentPadding: EdgeInsets.all(12.0),
+                    ),
                   ),
                 ),
-                Expanded(
-                  flex: 16,
-                  child: Padding(
-                    padding: EdgeInsets.only(left: 8.0),
-                    child: Container(
-                        height: 40.0,
-                        child: Align(
-                          alignment: Alignment.centerLeft,
-                          child: GestureDetector(
-                            onTap: () {
-                              showDialog(
-                                  context: context,
-                                  child: Dialog(
-                                    child: ViewImage(filepath: imageData.path),
-                                  ));
-                            },
-                            child: Text(
-                              imageData.fileName,
-                              style: TextStyle(color: Colors.white),
-                            ),
-                          ),
-                        )),
+              ),
+            ],
+          ),
+        ),
+
+        SizedBox(height: 12.0),
+
+        //Display Notes Text Field
+        Container(
+          margin: EdgeInsets.only(left: 12.0, right: 10.0),
+          child: Row(
+            children: [
+              Expanded(
+                flex: 1,
+                child: Text(
+                  'Notes:',
+                  style: TextStyle(color: Colors.white, fontSize: 18.0),
+                ),
+              ),
+              Expanded(
+                flex: 3,
+                child: Container(
+                  height: 50.0,
+                  child: TextField(
+                    onChanged: (value) {
+                      note = value;
+                    },
+                    style: TextStyle(color: Colors.white),
+                    decoration: InputDecoration(
+                      border: InputBorder.none,
+                      filled: true,
+                      fillColor: Color.fromRGBO(41, 41, 41, 1),
+                      enabledBorder: OutlineInputBorder(
+                        borderRadius: BorderRadius.all(Radius.circular(10.0)),
+                        borderSide: BorderSide(color: Colors.transparent),
+                      ),
+                      focusedBorder: OutlineInputBorder(
+                        borderRadius: BorderRadius.all(Radius.circular(10.0)),
+                        borderSide: BorderSide(color: Colors.transparent),
+                      ),
+                      contentPadding: EdgeInsets.all(12.0),
+                    ),
                   ),
                 ),
-                Expanded(
-                  flex: 2,
+              ),
+            ],
+          ),
+        ),
+
+        SizedBox(height: 12.0),
+
+        //Display Attachment Field
+        Container(
+          margin: EdgeInsets.only(left: 12.0, right: 10.0),
+          child: Row(
+            children: [
+              Expanded(
+                flex: 7,
+                child: Text(
+                  'Attachment:',
+                  style: TextStyle(color: Colors.white, fontSize: 18.0),
+                ),
+              ),
+              Expanded(
+                flex: 16,
+                child: Padding(
+                  padding: EdgeInsets.only(left: 8.0),
                   child: Container(
                       height: 40.0,
                       child: Align(
-                        alignment: Alignment.centerRight,
-                        child: IconButton(
-                          icon: Icon(Icons.attach_file,
-                              color: Color.fromRGBO(101, 101, 101, 1)),
-                          onPressed: () {
-                            selectAttachment();
+                        alignment: Alignment.centerLeft,
+                        child: GestureDetector(
+                          onTap: () {
+                            showDialog(
+                                context: context,
+                                child: Dialog(
+                                  child: ViewImage(filepath: imageData.path),
+                                ));
                           },
+                          child: Text(
+                            imageData.fileName,
+                            style: TextStyle(color: Colors.white),
+                          ),
                         ),
                       )),
                 ),
-              ],
-            ),
+              ),
+              Expanded(
+                flex: 2,
+                child: Container(
+                    height: 40.0,
+                    child: Align(
+                      alignment: Alignment.centerRight,
+                      child: IconButton(
+                        icon: Icon(Icons.attach_file,
+                            color: Color.fromRGBO(101, 101, 101, 1)),
+                        onPressed: () {
+                          selectAttachment();
+                        },
+                      ),
+                    )),
+              ),
+            ],
           ),
+        ),
 
-          SizedBox(height: 20.0),
+        SizedBox(height: 20.0),
 
-          //Display Save Button
-          Column(
-            children: <Widget>[
-              ButtonTheme(
-                height: 40.0,
-                minWidth: 300.0,
-                child: Column(
-                  children: [
-                    RaisedButton(
-                      color: Color.fromRGBO(255, 185, 49, 1),
-                      shape: RoundedRectangleBorder(
-                          borderRadius: BorderRadius.circular(18.0)),
-                      onPressed: () {
+        //Display Save Button
+        Column(
+          children: <Widget>[
+            ButtonTheme(
+              height: 40.0,
+              minWidth: 300.0,
+              child: Column(
+                children: [
+                  RaisedButton(
+                    color: Color.fromRGBO(255, 185, 49, 1),
+                    shape: RoundedRectangleBorder(
+                        borderRadius: BorderRadius.circular(18.0)),
+                    onPressed: () {
+                      if (type == "Income" || type == "Expenses") {
                         Record.add(Record(
                           uid: uid,
                           type: type,
@@ -742,488 +978,7 @@ class _AddRecordState extends State<AddRecord> {
                           isFav: isFav,
                           save: true,
                         ));
-                        Navigator.pop(context);
-                      },
-                      child: Text(
-                        'Save',
-                        style: TextStyle(
-                          fontSize: 20.0,
-                          color: Color.fromRGBO(41, 41, 41, 1),
-                        ),
-                      ),
-                    ),
-                  ],
-                ),
-              ),
-            ],
-          ),
-        ],
-      );
-    } else {
-      return Column(
-        children: [
-          //Display Title Text Field
-          Container(
-            margin: EdgeInsets.only(left: 12.0, right: 10.0),
-            child: Row(
-              children: [
-                Expanded(
-                  flex: 1,
-                  child: Text(
-                    'Title:',
-                    style: TextStyle(color: Colors.white, fontSize: 18.0),
-                  ),
-                ),
-                Expanded(
-                  flex: 3,
-                  child: Container(
-                    height: 50.0,
-                    child: TextFormField(
-                      validator: (_val) {
-                        if (_val.isEmpty) {
-                          return null;
-                        } else {
-                          return null;
-                        }
-                      },
-                      onChanged: (_val) {
-                        title = _val;
-                      },
-                      style: TextStyle(color: Colors.white),
-                      decoration: InputDecoration(
-                        //Remove visible borders
-                        border: InputBorder.none,
-                        //Enables color fill in the text form field.
-                        filled: true,
-                        fillColor: Color.fromRGBO(41, 41, 41, 1),
-                        //Border when it is not focused by user input.
-                        enabledBorder: OutlineInputBorder(
-                          borderRadius: BorderRadius.all(Radius.circular(10.0)),
-                          borderSide: BorderSide(color: Colors.transparent),
-                        ),
-                        //Border when it is focused by user input.
-                        focusedBorder: OutlineInputBorder(
-                            borderRadius:
-                                BorderRadius.all(Radius.circular(10.0)),
-                            borderSide: BorderSide(color: Colors.transparent)),
-                        contentPadding: EdgeInsets.all(12.0),
-                      ),
-                    ),
-                  ),
-                ),
-              ],
-            ),
-          ),
-
-          SizedBox(height: 12.0),
-
-          //Display Date Field
-          Container(
-            margin: EdgeInsets.only(left: 12.0, right: 10.0),
-            child: Row(
-              children: [
-                Expanded(
-                  flex: 1,
-                  child: Text(
-                    'Date:',
-                    style: TextStyle(color: Colors.white, fontSize: 18.0),
-                  ),
-                ),
-                Expanded(
-                  flex: 3,
-                  child: Container(
-                    height: 50.0,
-                    child: TextFormField(
-                      focusNode: DisableFocusNode(),
-                      controller: _dateEditingController,
-                      onTap: () {
-                        pickDate();
-                      },
-                      validator: (_val) {
-                        if (_val.isEmpty) {
-                          return null;
-                        } else {
-                          return null;
-                        }
-                      },
-                      // onChanged: (_val) {
-                      //   dateTime = DateTime.parse(_val);
-                      // },
-                      style: TextStyle(color: Colors.white),
-                      decoration: InputDecoration(
-                        border: InputBorder.none,
-                        filled: true,
-                        fillColor: Color.fromRGBO(41, 41, 41, 1),
-                        enabledBorder: OutlineInputBorder(
-                          borderRadius: BorderRadius.all(Radius.circular(10.0)),
-                          borderSide: BorderSide(color: Colors.transparent),
-                        ),
-                        focusedBorder: OutlineInputBorder(
-                          borderRadius: BorderRadius.all(Radius.circular(10.0)),
-                          borderSide: BorderSide(color: Colors.transparent),
-                        ),
-                        prefixIcon: Icon(
-                          Icons.calendar_today,
-                          color: Color.fromRGBO(101, 101, 101, 1),
-                        ),
-                        contentPadding: EdgeInsets.all(12.0),
-                      ),
-                    ),
-                  ),
-                ),
-              ],
-            ),
-          ),
-
-          SizedBox(height: 12.0),
-
-          //Display Account From: DropdownButton Field
-          Container(
-            margin: EdgeInsets.only(left: 12.0, right: 10.0),
-            child: Row(
-              children: [
-                Expanded(
-                  flex: 1,
-                  child: Text(
-                    'From:',
-                    style: TextStyle(color: Colors.white, fontSize: 18.0),
-                  ),
-                ),
-                Expanded(
-                  flex: 3,
-                  child: Container(
-                    height: 50.0,
-                    child: FormField(
-                      validator: (newvalue) {
-                        if (newvalue.isEmpty) {
-                          return null;
-                        } else {
-                          return null;
-                        }
-                      },
-                      builder: (FormFieldState<String> state) {
-                        return InputDecorator(
-                          decoration: InputDecoration(
-                              border: InputBorder.none,
-                              filled: true,
-                              fillColor: Color.fromRGBO(41, 41, 41, 1),
-                              enabledBorder: OutlineInputBorder(
-                                borderRadius:
-                                    BorderRadius.all(Radius.circular(10.0)),
-                                borderSide:
-                                    BorderSide(color: Colors.transparent),
-                              ),
-                              focusedBorder: OutlineInputBorder(
-                                borderRadius:
-                                    BorderRadius.all(Radius.circular(10.0)),
-                                borderSide:
-                                    BorderSide(color: Colors.transparent),
-                              ),
-                              isDense: true),
-                          child: DropdownButtonHideUnderline(
-                            child: DropdownButton<String>(
-                              value: currentSelectedAccount,
-                              onChanged: (newValue) {
-                                setState(() {
-                                  // LANDMARK
-                                  currentSelectedAccount = newValue;
-                                  Account.list.forEach((element) {
-                                    if (element.name == newValue) {
-                                      account = element;
-                                    }
-                                  });
-                                });
-                              },
-                              // LANDMARK
-                              items: accountTypes.map((Account value) {
-                                return DropdownMenuItem<String>(
-                                  value: value.name,
-                                  child: Text(value.name),
-                                );
-                              }).toList(),
-                              style: TextStyle(color: Colors.black),
-                              selectedItemBuilder: (BuildContext context) {
-                                return accountTypes.map((Account value) {
-                                  return Text(
-                                    currentSelectedAccount,
-                                    style: TextStyle(
-                                        color: Colors.white, fontSize: 15.0),
-                                  );
-                                }).toList();
-                              },
-                            ),
-                          ),
-                        );
-                      },
-                    ),
-                  ),
-                ),
-              ],
-            ),
-          ),
-
-          SizedBox(height: 12.0),
-
-          //Display Account To: DropdownButton Field
-          Container(
-            margin: EdgeInsets.only(left: 12.0, right: 10.0),
-            child: Row(
-              children: [
-                Expanded(
-                  flex: 1,
-                  child: Text(
-                    'To:',
-                    style: TextStyle(color: Colors.white, fontSize: 18.0),
-                  ),
-                ),
-                Expanded(
-                  flex: 3,
-                  child: Container(
-                    height: 50.0,
-                    child: FormField(
-                      validator: (newvalue) {
-                        if (newvalue.isEmpty) {
-                          return null;
-                        } else {
-                          return null;
-                        }
-                      },
-                      builder: (FormFieldState<String> state) {
-                        return InputDecorator(
-                          decoration: InputDecoration(
-                              border: InputBorder.none,
-                              filled: true,
-                              fillColor: Color.fromRGBO(41, 41, 41, 1),
-                              enabledBorder: OutlineInputBorder(
-                                borderRadius:
-                                    BorderRadius.all(Radius.circular(10.0)),
-                                borderSide:
-                                    BorderSide(color: Colors.transparent),
-                              ),
-                              focusedBorder: OutlineInputBorder(
-                                borderRadius:
-                                    BorderRadius.all(Radius.circular(10.0)),
-                                borderSide:
-                                    BorderSide(color: Colors.transparent),
-                              ),
-                              isDense: true),
-                          child: DropdownButtonHideUnderline(
-                            child: DropdownButton<String>(
-                              value: currentSelectedTransferAccount,
-                              onChanged: (newValue) {
-                                setState(() {
-                                  // LANDMARK
-                                  currentSelectedTransferAccount = newValue;
-                                  Account.list.forEach((element) {
-                                    if (element.name == newValue) {
-                                      toAccount = element;
-                                    }
-                                  });
-                                });
-                              },
-                              // LANDMARK
-                              items: accountTypes.map((Account value) {
-                                return DropdownMenuItem<String>(
-                                  value: value.name,
-                                  child: Text(value.name),
-                                );
-                              }).toList(),
-                              style: TextStyle(color: Colors.black),
-                              selectedItemBuilder: (BuildContext context) {
-                                return accountTypes.map((Account value) {
-                                  return Text(
-                                    currentSelectedTransferAccount,
-                                    style: TextStyle(
-                                        color: Colors.white, fontSize: 15.0),
-                                  );
-                                }).toList();
-                              },
-                            ),
-                          ),
-                        );
-                      },
-                    ),
-                  ),
-                ),
-              ],
-            ),
-          ),
-
-          SizedBox(height: 12.0),
-
-          //Display Amount Text Field
-          Container(
-            margin: EdgeInsets.only(left: 12.0, right: 10.0),
-            child: Row(
-              children: [
-                Expanded(
-                  flex: 1,
-                  child: Text(
-                    'Amount:',
-                    style: TextStyle(color: Colors.white, fontSize: 18.0),
-                  ),
-                ),
-                Expanded(
-                  flex: 3,
-                  child: Container(
-                    height: 50.0,
-                    child: TextFormField(
-                      validator: (_val3) {
-                        if (_val3.isEmpty) {
-                          return null;
-                        } else {
-                          return null;
-                        }
-                      },
-                      onChanged: (_val3) {
-                        amount = double.parse(_val3);
-                      },
-                      style: TextStyle(color: Colors.white),
-                      decoration: InputDecoration(
-                        border: InputBorder.none,
-                        filled: true,
-                        fillColor: Color.fromRGBO(41, 41, 41, 1),
-                        enabledBorder: OutlineInputBorder(
-                          borderRadius: BorderRadius.all(Radius.circular(10.0)),
-                          borderSide: BorderSide(color: Colors.transparent),
-                        ),
-                        focusedBorder: OutlineInputBorder(
-                          borderRadius: BorderRadius.all(Radius.circular(10.0)),
-                          borderSide: BorderSide(color: Colors.transparent),
-                        ),
-                        prefixIcon: Padding(
-                          padding: EdgeInsets.only(left: 15.0, top: 15),
-                          child: Text(
-                            account.currency,
-                            style: TextStyle(
-                                color: Color.fromRGBO(101, 101, 101, 1)),
-                          ),
-                        ),
-                        contentPadding: EdgeInsets.all(12.0),
-                      ),
-                    ),
-                  ),
-                ),
-              ],
-            ),
-          ),
-
-          SizedBox(height: 12.0),
-
-          //Display Notes Text Field
-          Container(
-            margin: EdgeInsets.only(left: 12.0, right: 10.0),
-            child: Row(
-              children: [
-                Expanded(
-                  flex: 1,
-                  child: Text(
-                    'Notes:',
-                    style: TextStyle(color: Colors.white, fontSize: 18.0),
-                  ),
-                ),
-                Expanded(
-                  flex: 3,
-                  child: Container(
-                    height: 50.0,
-                    child: TextField(
-                      onChanged: (value) {
-                        note = value;
-                      },
-                      style: TextStyle(color: Colors.white),
-                      decoration: InputDecoration(
-                        border: InputBorder.none,
-                        filled: true,
-                        fillColor: Color.fromRGBO(41, 41, 41, 1),
-                        enabledBorder: OutlineInputBorder(
-                          borderRadius: BorderRadius.all(Radius.circular(10.0)),
-                          borderSide: BorderSide(color: Colors.transparent),
-                        ),
-                        focusedBorder: OutlineInputBorder(
-                          borderRadius: BorderRadius.all(Radius.circular(10.0)),
-                          borderSide: BorderSide(color: Colors.transparent),
-                        ),
-                        contentPadding: EdgeInsets.all(12.0),
-                      ),
-                    ),
-                  ),
-                ),
-              ],
-            ),
-          ),
-
-          SizedBox(height: 12.0),
-
-          //Display Attachment Field
-          Container(
-            margin: EdgeInsets.only(left: 12.0, right: 10.0),
-            child: Row(
-              children: [
-                Expanded(
-                  flex: 7,
-                  child: Text(
-                    'Attachment:',
-                    style: TextStyle(color: Colors.white, fontSize: 18.0),
-                  ),
-                ),
-                Expanded(
-                  flex: 16,
-                  child: Padding(
-                    padding: EdgeInsets.only(left: 8.0),
-                    child: Container(
-                        height: 40.0,
-                        child: Align(
-                          alignment: Alignment.centerLeft,
-                          child: GestureDetector(
-                            onTap: () {
-                              showDialog(
-                                  context: context,
-                                  child: Dialog(
-                                    child: ViewImage(filepath: imageData.path),
-                                  ));
-                            },
-                            child: Text(
-                              imageData.fileName,
-                              style: TextStyle(color: Colors.white),
-                            ),
-                          ),
-                        )),
-                  ),
-                ),
-                Expanded(
-                  flex: 2,
-                  child: Container(
-                      height: 40.0,
-                      child: Align(
-                        alignment: Alignment.centerRight,
-                        child: IconButton(
-                          icon: Icon(Icons.attach_file,
-                              color: Color.fromRGBO(101, 101, 101, 1)),
-                          onPressed: () {
-                            selectAttachment();
-                          },
-                        ),
-                      )),
-                ),
-              ],
-            ),
-          ),
-
-          SizedBox(height: 20.0),
-
-          //Display Save Button
-          Column(
-            children: <Widget>[
-              ButtonTheme(
-                height: 40.0,
-                minWidth: 300.0,
-                child: Column(
-                  children: [
-                    RaisedButton(
-                      color: Color.fromRGBO(255, 185, 49, 1),
-                      shape: RoundedRectangleBorder(
-                          borderRadius: BorderRadius.circular(18.0)),
-                      onPressed: () {
+                      } else if (type == "Transfer") {
                         Record.add(Record(
                           uid: uid,
                           type: type,
@@ -1239,24 +994,25 @@ class _AddRecordState extends State<AddRecord> {
                           isFav: isFav,
                           save: true,
                         ));
-                        Navigator.pop(context);
-                      },
-                      child: Text(
-                        'Save',
-                        style: TextStyle(
-                          fontSize: 20.0,
-                          color: Color.fromRGBO(41, 41, 41, 1),
-                        ),
+                      }
+
+                      Navigator.pop(context);
+                    },
+                    child: Text(
+                      'Save',
+                      style: TextStyle(
+                        fontSize: 20.0,
+                        color: Color.fromRGBO(41, 41, 41, 1),
                       ),
                     ),
-                  ],
-                ),
+                  ),
+                ],
               ),
-            ],
-          ),
-        ],
-      );
-    }
+            ),
+          ],
+        ),
+      ],
+    );
   }
 
   @override

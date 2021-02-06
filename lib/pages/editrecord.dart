@@ -159,10 +159,6 @@ class _EditRecordState extends State<EditRecord> {
           budgetTypes.add(budget);
         });
 
-        budgetTypes.forEach((element) {
-          print(element);
-        });
-
         currentSelectedBudget =
             budgetTypes[0] is String ? 'No Budget' : budgetTypes[0].title;
       });

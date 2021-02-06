@@ -1094,7 +1094,7 @@ class _AddRecordState extends State<AddRecord> {
                         prefixIcon: Padding(
                           padding: EdgeInsets.only(left: 15.0, top: 15),
                           child: Text(
-                            'RM',
+                            account.currency,
                             style: TextStyle(
                                 color: Color.fromRGBO(101, 101, 101, 1)),
                           ),

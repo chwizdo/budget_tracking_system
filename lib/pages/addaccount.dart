@@ -22,8 +22,8 @@ class _AddAccountState extends State<AddAccount> {
   String currency = "MYR";
   double amount;
   DateTime dateTime;
-  String _currentSelectedCurrency = "MYR";
-  List _currencyTypes = Currency.fullList;
+  String _currentSelectedCurrency = Currency.list[0].name;
+  List _currencyTypes = Currency.list;
 
   GlobalKey<FormState> formkey = GlobalKey<FormState>();
 
@@ -136,8 +136,8 @@ class _AddAccountState extends State<AddAccount> {
                                   },
                                   items: _currencyTypes.map((value) {
                                     return DropdownMenuItem<String>(
-                                      value: value,
-                                      child: Text(value),
+                                      value: value.name,
+                                      child: Text(value.name),
                                     );
                                   }).toList(),
                                 ),

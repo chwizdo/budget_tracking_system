@@ -158,331 +158,368 @@ class _RecordState extends State<Record> {
         ],
       ),
 
-      body: SafeArea(
-        //GroupedListView is a widget that can help group the list view by anything
-        //Eg: Can group lists based on category or date.
-        //DateTime object is explicitly stated so that it can group the records by date
-        child: GroupedListView<dynamic, DateTime>(
-            //Elements takes in a list of data that needs to be grouped, in this case recordView's data needs to be taken in.
-            elements: service.Record.list,
-            //groupBy is a function that chooses what to group given by an element.
-            //In this case, we give an element named record to represent our recordView list, and we want to group by currentDate.
-            groupBy: (record) {
-              return DateTime(
-                record.dateTime.year,
-                record.dateTime.month,
-                record.dateTime.day,
-              );
-            },
-            //This function prepares to separate the lists by date.
-            //This can be done by returning a constructor of RecordGroupSeparator() that passes currentDate to date.
-            //Hence the RecordGroupSeparator() class can perform its own task which is to generate respective headers for each lists.
-            groupSeparatorBuilder: (DateTime dateTime) =>
-                RecordGroupSeparator(date: dateTime),
-            //Arrange the grouped lists in descending order
-            order: GroupedListOrder.DESC,
-            itemComparator: (item1, item2) =>
-                item1.dateTime.hour.compareTo(item2.dateTime.hour),
-            useStickyGroupSeparators: true,
-            separator: Divider(
-              color: Colors.grey,
-              indent: 15.0,
-              endIndent: 15.0,
+      body: service.Record.list.length != 0
+          ? SafeArea(
+              //GroupedListView is a widget that can help group the list view by anything
+              //Eg: Can group lists based on category or date.
+              //DateTime object is explicitly stated so that it can group the records by date
+              child: GroupedListView<dynamic, DateTime>(
+                  //Elements takes in a list of data that needs to be grouped, in this case recordView's data needs to be taken in.
+                  elements: service.Record.list,
+                  //groupBy is a function that chooses what to group given by an element.
+                  //In this case, we give an element named record to represent our recordView list, and we want to group by currentDate.
+                  groupBy: (record) {
+                    return DateTime(
+                      record.dateTime.year,
+                      record.dateTime.month,
+                      record.dateTime.day,
+                    );
+                  },
+                  //This function prepares to separate the lists by date.
+                  //This can be done by returning a constructor of RecordGroupSeparator() that passes currentDate to date.
+                  //Hence the RecordGroupSeparator() class can perform its own task which is to generate respective headers for each lists.
+                  groupSeparatorBuilder: (DateTime dateTime) =>
+                      RecordGroupSeparator(date: dateTime),
+                  //Arrange the grouped lists in descending order
+                  order: GroupedListOrder.DESC,
+                  itemComparator: (item1, item2) =>
+                      item1.dateTime.hour.compareTo(item2.dateTime.hour),
+                  useStickyGroupSeparators: true,
+                  separator: Divider(
+                    color: Colors.grey,
+                    indent: 15.0,
+                    endIndent: 15.0,
+                  ),
+                  padding: EdgeInsets.only(bottom: 100),
+                  //To build and display all the items of recordView list.
+                  indexedItemBuilder: (context, dynamic record, index) {
+                    return Container(
+                      height: 70.0,
+                      //Each list is a row and is expanded to 3 parts.
+                      child: Row(
+                        children: [
+                          //First part is to display the category.
+                          Expanded(
+                            flex: 4,
+                            child: ListTile(
+                              onTap: () {
+                                Navigator.push(
+                                  context,
+                                  MaterialPageRoute(
+                                      builder: (context) => EditRecord(
+                                            uid: user.uid,
+                                            index: service.Record.list.length -
+                                                1 -
+                                                index,
+                                            type: service
+                                                .Record
+                                                .list[
+                                                    service.Record.list.length -
+                                                        1 -
+                                                        index]
+                                                .type,
+                                            title: service
+                                                .Record
+                                                .list[
+                                                    service.Record.list.length -
+                                                        1 -
+                                                        index]
+                                                .title,
+                                            dateTime: service
+                                                .Record
+                                                .list[
+                                                    service.Record.list.length -
+                                                        1 -
+                                                        index]
+                                                .dateTime,
+                                            category: service
+                                                .Record
+                                                .list[
+                                                    service.Record.list.length -
+                                                        1 -
+                                                        index]
+                                                .category,
+                                            account: service
+                                                .Record
+                                                .list[
+                                                    service.Record.list.length -
+                                                        1 -
+                                                        index]
+                                                .account,
+                                            toAccount: service
+                                                .Record
+                                                .list[
+                                                    service.Record.list.length -
+                                                        1 -
+                                                        index]
+                                                .toAccount,
+                                            budget: service
+                                                .Record
+                                                .list[
+                                                    service.Record.list.length -
+                                                        1 -
+                                                        index]
+                                                .budget,
+                                            amount: service
+                                                .Record
+                                                .list[
+                                                    service.Record.list.length -
+                                                        1 -
+                                                        index]
+                                                .amount,
+                                            note: service
+                                                .Record
+                                                .list[
+                                                    service.Record.list.length -
+                                                        1 -
+                                                        index]
+                                                .note,
+                                            isFav: service
+                                                .Record
+                                                .list[
+                                                    service.Record.list.length -
+                                                        1 -
+                                                        index]
+                                                .isFav,
+                                          ),
+                                      fullscreenDialog: true),
+                                ).then((value) => setState(() {}));
+                              },
+                              leading: record.type != 'Transfer'
+                                  ? Text(
+                                      record.category.name,
+                                      //Used to wrap long texts
+                                      overflow: TextOverflow.ellipsis,
+                                      style: TextStyle(
+                                          color: Colors.grey, fontSize: 14),
+                                    )
+                                  : Text(
+                                      'Transfer',
+                                      //Used to wrap long texts
+                                      overflow: TextOverflow.ellipsis,
+                                      style: TextStyle(
+                                          color: Colors.grey, fontSize: 14),
+                                    ),
+                            ),
+                          ),
+                          //Second part is to display the title.
+                          Expanded(
+                            flex: 9,
+                            child: ListTile(
+                              onTap: () {
+                                Navigator.push(
+                                  context,
+                                  MaterialPageRoute(
+                                      builder: (context) => EditRecord(
+                                            uid: user.uid,
+                                            index: service.Record.list.length -
+                                                1 -
+                                                index,
+                                            type: service
+                                                .Record
+                                                .list[
+                                                    service.Record.list.length -
+                                                        1 -
+                                                        index]
+                                                .type,
+                                            title: service
+                                                .Record
+                                                .list[
+                                                    service.Record.list.length -
+                                                        1 -
+                                                        index]
+                                                .title,
+                                            dateTime: service
+                                                .Record
+                                                .list[
+                                                    service.Record.list.length -
+                                                        1 -
+                                                        index]
+                                                .dateTime,
+                                            category: service
+                                                .Record
+                                                .list[
+                                                    service.Record.list.length -
+                                                        1 -
+                                                        index]
+                                                .category,
+                                            account: service
+                                                .Record
+                                                .list[
+                                                    service.Record.list.length -
+                                                        1 -
+                                                        index]
+                                                .account,
+                                            toAccount: service
+                                                .Record
+                                                .list[
+                                                    service.Record.list.length -
+                                                        1 -
+                                                        index]
+                                                .toAccount,
+                                            budget: service
+                                                .Record
+                                                .list[
+                                                    service.Record.list.length -
+                                                        1 -
+                                                        index]
+                                                .budget,
+                                            amount: service
+                                                .Record
+                                                .list[
+                                                    service.Record.list.length -
+                                                        1 -
+                                                        index]
+                                                .amount,
+                                            note: service
+                                                .Record
+                                                .list[
+                                                    service.Record.list.length -
+                                                        1 -
+                                                        index]
+                                                .note,
+                                            isFav: service
+                                                .Record
+                                                .list[
+                                                    service.Record.list.length -
+                                                        1 -
+                                                        index]
+                                                .isFav,
+                                          ),
+                                      fullscreenDialog: true),
+                                ).then((value) => setState(() {}));
+                              },
+                              title: Text(
+                                record.title,
+                                overflow: TextOverflow.ellipsis,
+                                style: TextStyle(color: Colors.white),
+                              ),
+                              subtitle: record.type != 'Transfer'
+                                  ? Text(
+                                      record.account.name,
+                                      style: TextStyle(color: Colors.grey),
+                                    )
+                                  : Text(
+                                      '${record.account.name} - ${record.toAccount.name}',
+                                      style: TextStyle(color: Colors.grey),
+                                    ),
+                            ),
+                          ),
+                          //Third part is to display the money.
+                          Expanded(
+                            flex: 5,
+                            child: ListTile(
+                              onTap: () {
+                                Navigator.push(
+                                  context,
+                                  MaterialPageRoute(
+                                      builder: (context) => EditRecord(
+                                            uid: user.uid,
+                                            index: service.Record.list.length -
+                                                1 -
+                                                index,
+                                            type: service
+                                                .Record
+                                                .list[
+                                                    service.Record.list.length -
+                                                        1 -
+                                                        index]
+                                                .type,
+                                            title: service
+                                                .Record
+                                                .list[
+                                                    service.Record.list.length -
+                                                        1 -
+                                                        index]
+                                                .title,
+                                            dateTime: service
+                                                .Record
+                                                .list[
+                                                    service.Record.list.length -
+                                                        1 -
+                                                        index]
+                                                .dateTime,
+                                            category: service
+                                                .Record
+                                                .list[
+                                                    service.Record.list.length -
+                                                        1 -
+                                                        index]
+                                                .category,
+                                            account: service
+                                                .Record
+                                                .list[
+                                                    service.Record.list.length -
+                                                        1 -
+                                                        index]
+                                                .account,
+                                            toAccount: service
+                                                .Record
+                                                .list[
+                                                    service.Record.list.length -
+                                                        1 -
+                                                        index]
+                                                .toAccount,
+                                            budget: service
+                                                .Record
+                                                .list[
+                                                    service.Record.list.length -
+                                                        1 -
+                                                        index]
+                                                .budget,
+                                            amount: service
+                                                .Record
+                                                .list[
+                                                    service.Record.list.length -
+                                                        1 -
+                                                        index]
+                                                .amount,
+                                            note: service
+                                                .Record
+                                                .list[
+                                                    service.Record.list.length -
+                                                        1 -
+                                                        index]
+                                                .note,
+                                            isFav: service
+                                                .Record
+                                                .list[
+                                                    service.Record.list.length -
+                                                        1 -
+                                                        index]
+                                                .isFav,
+                                          ),
+                                      fullscreenDialog: true),
+                                ).then((value) => setState(() {}));
+                              },
+                              //An if else statement is used to check whether it is an expense or income
+                              //If it is expenses, add '-' in front of money, else add '+'
+                              trailing: record.type == 'Expenses'
+                                  ? Text(
+                                      "- ${record.account.currency} " +
+                                          record.amount.toString(),
+                                      style: TextStyle(
+                                          color: Colors.white, fontSize: 14.0),
+                                    )
+                                  : Text(
+                                      "+ ${record.account.currency} " +
+                                          record.amount.toString(),
+                                      style: TextStyle(
+                                          color: Colors.white, fontSize: 14.0),
+                                    ),
+                            ),
+                          ),
+                        ],
+                      ),
+                    );
+                  }),
+            )
+          : Center(
+              child: Text(
+                'No Records Added.',
+                style: TextStyle(color: Colors.white, fontSize: 15.0),
+              ),
             ),
-            padding: EdgeInsets.only(bottom: 100),
-            //To build and display all the items of recordView list.
-            indexedItemBuilder: (context, dynamic record, index) {
-              return Container(
-                height: 70.0,
-                //Each list is a row and is expanded to 3 parts.
-                child: Row(
-                  children: [
-                    //First part is to display the category.
-                    Expanded(
-                      flex: 4,
-                      child: ListTile(
-                        onTap: () {
-                          Navigator.push(
-                            context,
-                            MaterialPageRoute(
-                                builder: (context) => EditRecord(
-                                      uid: user.uid,
-                                      index: service.Record.list.length -
-                                          1 -
-                                          index,
-                                      type: service
-                                          .Record
-                                          .list[service.Record.list.length -
-                                              1 -
-                                              index]
-                                          .type,
-                                      title: service
-                                          .Record
-                                          .list[service.Record.list.length -
-                                              1 -
-                                              index]
-                                          .title,
-                                      dateTime: service
-                                          .Record
-                                          .list[service.Record.list.length -
-                                              1 -
-                                              index]
-                                          .dateTime,
-                                      category: service
-                                          .Record
-                                          .list[service.Record.list.length -
-                                              1 -
-                                              index]
-                                          .category,
-                                      account: service
-                                          .Record
-                                          .list[service.Record.list.length -
-                                              1 -
-                                              index]
-                                          .account,
-                                      toAccount: service
-                                          .Record
-                                          .list[service.Record.list.length -
-                                              1 -
-                                              index]
-                                          .toAccount,
-                                      budget: service
-                                          .Record
-                                          .list[service.Record.list.length -
-                                              1 -
-                                              index]
-                                          .budget,
-                                      amount: service
-                                          .Record
-                                          .list[service.Record.list.length -
-                                              1 -
-                                              index]
-                                          .amount,
-                                      note: service
-                                          .Record
-                                          .list[service.Record.list.length -
-                                              1 -
-                                              index]
-                                          .note,
-                                      isFav: service
-                                          .Record
-                                          .list[service.Record.list.length -
-                                              1 -
-                                              index]
-                                          .isFav,
-                                    ),
-                                fullscreenDialog: true),
-                          ).then((value) => setState(() {}));
-                        },
-                        leading: record.type != 'Transfer'
-                            ? Text(
-                                record.category.name,
-                                //Used to wrap long texts
-                                overflow: TextOverflow.ellipsis,
-                                style:
-                                    TextStyle(color: Colors.grey, fontSize: 14),
-                              )
-                            : Text(
-                                'Transfer',
-                                //Used to wrap long texts
-                                overflow: TextOverflow.ellipsis,
-                                style:
-                                    TextStyle(color: Colors.grey, fontSize: 14),
-                              ),
-                      ),
-                    ),
-                    //Second part is to display the title.
-                    Expanded(
-                      flex: 9,
-                      child: ListTile(
-                        onTap: () {
-                          Navigator.push(
-                            context,
-                            MaterialPageRoute(
-                                builder: (context) => EditRecord(
-                                      uid: user.uid,
-                                      index: service.Record.list.length -
-                                          1 -
-                                          index,
-                                      type: service
-                                          .Record
-                                          .list[service.Record.list.length -
-                                              1 -
-                                              index]
-                                          .type,
-                                      title: service
-                                          .Record
-                                          .list[service.Record.list.length -
-                                              1 -
-                                              index]
-                                          .title,
-                                      dateTime: service
-                                          .Record
-                                          .list[service.Record.list.length -
-                                              1 -
-                                              index]
-                                          .dateTime,
-                                      category: service
-                                          .Record
-                                          .list[service.Record.list.length -
-                                              1 -
-                                              index]
-                                          .category,
-                                      account: service
-                                          .Record
-                                          .list[service.Record.list.length -
-                                              1 -
-                                              index]
-                                          .account,
-                                      toAccount: service
-                                          .Record
-                                          .list[service.Record.list.length -
-                                              1 -
-                                              index]
-                                          .toAccount,
-                                      budget: service
-                                          .Record
-                                          .list[service.Record.list.length -
-                                              1 -
-                                              index]
-                                          .budget,
-                                      amount: service
-                                          .Record
-                                          .list[service.Record.list.length -
-                                              1 -
-                                              index]
-                                          .amount,
-                                      note: service
-                                          .Record
-                                          .list[service.Record.list.length -
-                                              1 -
-                                              index]
-                                          .note,
-                                      isFav: service
-                                          .Record
-                                          .list[service.Record.list.length -
-                                              1 -
-                                              index]
-                                          .isFav,
-                                    ),
-                                fullscreenDialog: true),
-                          ).then((value) => setState(() {}));
-                        },
-                        title: Text(
-                          record.title,
-                          overflow: TextOverflow.ellipsis,
-                          style: TextStyle(color: Colors.white),
-                        ),
-                        subtitle: record.type != 'Transfer'
-                            ? Text(
-                                record.account.name,
-                                style: TextStyle(color: Colors.grey),
-                              )
-                            : Text(
-                                '${record.account.name} - ${record.toAccount.name}',
-                                style: TextStyle(color: Colors.grey),
-                              ),
-                      ),
-                    ),
-                    //Third part is to display the money.
-                    Expanded(
-                      flex: 5,
-                      child: ListTile(
-                        onTap: () {
-                          Navigator.push(
-                            context,
-                            MaterialPageRoute(
-                                builder: (context) => EditRecord(
-                                      uid: user.uid,
-                                      index: service.Record.list.length -
-                                          1 -
-                                          index,
-                                      type: service
-                                          .Record
-                                          .list[service.Record.list.length -
-                                              1 -
-                                              index]
-                                          .type,
-                                      title: service
-                                          .Record
-                                          .list[service.Record.list.length -
-                                              1 -
-                                              index]
-                                          .title,
-                                      dateTime: service
-                                          .Record
-                                          .list[service.Record.list.length -
-                                              1 -
-                                              index]
-                                          .dateTime,
-                                      category: service
-                                          .Record
-                                          .list[service.Record.list.length -
-                                              1 -
-                                              index]
-                                          .category,
-                                      account: service
-                                          .Record
-                                          .list[service.Record.list.length -
-                                              1 -
-                                              index]
-                                          .account,
-                                      toAccount: service
-                                          .Record
-                                          .list[service.Record.list.length -
-                                              1 -
-                                              index]
-                                          .toAccount,
-                                      budget: service
-                                          .Record
-                                          .list[service.Record.list.length -
-                                              1 -
-                                              index]
-                                          .budget,
-                                      amount: service
-                                          .Record
-                                          .list[service.Record.list.length -
-                                              1 -
-                                              index]
-                                          .amount,
-                                      note: service
-                                          .Record
-                                          .list[service.Record.list.length -
-                                              1 -
-                                              index]
-                                          .note,
-                                      isFav: service
-                                          .Record
-                                          .list[service.Record.list.length -
-                                              1 -
-                                              index]
-                                          .isFav,
-                                    ),
-                                fullscreenDialog: true),
-                          ).then((value) => setState(() {}));
-                        },
-                        //An if else statement is used to check whether it is an expense or income
-                        //If it is expenses, add '-' in front of money, else add '+'
-                        trailing: record.type == 'Expenses'
-                            ? Text(
-                                "- ${record.account.currency} " +
-                                    record.amount.toString(),
-                                style: TextStyle(
-                                    color: Colors.white, fontSize: 14.0),
-                              )
-                            : Text(
-                                "+ ${record.account.currency} " +
-                                    record.amount.toString(),
-                                style: TextStyle(
-                                    color: Colors.white, fontSize: 14.0),
-                              ),
-                      ),
-                    ),
-                  ],
-                ),
-              );
-            }),
-      ),
 
       //This button can be navigated to add records page.
       floatingActionButton: FloatingActionButton(

@@ -40,7 +40,7 @@ class FavouriteRecord extends StatefulWidget {
 
 class _FavouriteRecordState extends State<FavouriteRecord> {
   final String uid;
-  List recordView = [];
+  List<Record>recordView = [];
 
   _FavouriteRecordState({this.uid});
 
@@ -100,6 +100,7 @@ class _FavouriteRecordState extends State<FavouriteRecord> {
                                   MaterialPageRoute(
                                       builder: (context) => EditRecord(
                                             uid: uid,
+                                            recordList: recordView,
                                             index:
                                                 recordView.length - 1 - index,
                                             type: recordView[recordView.length -
@@ -186,6 +187,7 @@ class _FavouriteRecordState extends State<FavouriteRecord> {
                                   MaterialPageRoute(
                                       builder: (context) => EditRecord(
                                             uid: uid,
+                                            recordList: recordView,
                                             index:
                                                 recordView.length - 1 - index,
                                             type: recordView[recordView.length -
@@ -274,6 +276,7 @@ class _FavouriteRecordState extends State<FavouriteRecord> {
                                   MaterialPageRoute(
                                       builder: (context) => EditRecord(
                                             uid: uid,
+                                            recordList: recordView,
                                             index:
                                                 recordView.length - 1 - index,
                                             type: recordView[recordView.length -

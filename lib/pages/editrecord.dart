@@ -125,7 +125,8 @@ class _EditRecordState extends State<EditRecord> {
       budgetTypes.add(budget);
     });
 
-    PeriodicBudget.returnList(dateTime).forEach((PeriodicBudget budget) {
+    PeriodicBudget.returnList(dateTime, category)
+        .forEach((PeriodicBudget budget) {
       print(budget.title);
       budgetTypes.add(budget);
     });
@@ -153,7 +154,8 @@ class _EditRecordState extends State<EditRecord> {
           budgetTypes.add(budget);
         });
 
-        PeriodicBudget.returnList(_pickedDate).forEach((PeriodicBudget budget) {
+        PeriodicBudget.returnList(_pickedDate, category)
+            .forEach((PeriodicBudget budget) {
           budgetTypes.add(budget);
         });
 

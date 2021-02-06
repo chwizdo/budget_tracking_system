@@ -1,3 +1,4 @@
+import 'package:budget_tracking_system/services/periodicbudget.dart';
 import 'package:flutter/material.dart';
 import 'package:fl_chart/fl_chart.dart';
 
@@ -11,6 +12,7 @@ class _DisplayLineChartState extends State<DisplayLineChart> {
     const Color(0xff23b6e6),
     const Color(0xff02d39a),
   ];
+  List periodicBudgetMonthlyTotal = PeriodicBudget.findHighest();
 
   @override
   Widget build(BuildContext context) {

@@ -1,12 +1,5 @@
 import 'package:flutter/material.dart';
-
-class BudgetRecords {
-  String category, title, type, interval;
-  double money, moneyUsed;
-
-
-  BudgetRecords({this.category, this.title, this.money, this.type, this.interval, this.moneyUsed}); 
-}
+import 'package:budget_tracking_system/services/periodicbudget.dart';
 
 class PeriodicStats extends StatefulWidget {
   @override
@@ -14,21 +7,13 @@ class PeriodicStats extends StatefulWidget {
 }
 
 class _PeriodicStatsState extends State<PeriodicStats> {
-
-  //A list to store all the BudgetRecords by passing the values through using the constructor from BudgetRecords() Class.
-  List recordView = [
-    BudgetRecords(category: 'Food', title: 'Food', money: 600.0, type: 'Expenses', interval: 'M', moneyUsed: 230.75),
-    BudgetRecords(category: 'Entertainment', title: 'Fun Time', money: 50.0, type: 'Expenses', interval: 'W', moneyUsed: 35.75),
-    BudgetRecords(category: 'Home', title: 'Home Appliances', money: 250.0, type: 'Expenses', interval: 'M', moneyUsed: 0.00),
-    BudgetRecords(category: 'Food', title: 'Snacks', money: 60.0, type: 'Expenses', interval: 'M', moneyUsed: 44.50),
-  ];
-
   @override
   Widget build(BuildContext context) {
+    PeriodicBudget.calculateAmountUsed();
     return Scaffold(
       backgroundColor: Color.fromRGBO(57, 57, 57, 1),
       body: ListView.separated(
-        itemCount: recordView.length,
+        itemCount: PeriodicBudget.list.length,
         itemBuilder: (context, index) {
           return Container(
             height: 70.0,
@@ -40,27 +25,22 @@ class _PeriodicStatsState extends State<PeriodicStats> {
                   flex: 1,
                   child: ListTile(
                     title: Text(
-                      recordView[index].title,
+                      PeriodicBudget.list[index].title,
                       //Used to wrap long texts
                       overflow: TextOverflow.ellipsis,
-                      style: TextStyle(
-                        color: Colors.white,
-                        fontSize: 16
-                      ),
+                      style: TextStyle(color: Colors.white, fontSize: 16),
                     ),
                     subtitle: Text(
-                      '${recordView[index].category} /' + ' ${recordView[index].interval}',
+                      '${PeriodicBudget.list[index].category.name} /' +
+                          ' ${PeriodicBudget.list[index].interval}',
                       //Used to wrap long texts
                       overflow: TextOverflow.ellipsis,
-                      style: TextStyle(
-                        color: Colors.grey,
-                        fontSize: 14.0
-                      ),
+                      style: TextStyle(color: Colors.grey, fontSize: 14.0),
                     ),
                   ),
                 ),
                 //Second part is to display the money budget and money used.
-                  Expanded(
+                Expanded(
                   flex: 1,
                   child: ListTile(
                     //RichText is used to display texts with multiple styles.
@@ -68,18 +48,15 @@ class _PeriodicStatsState extends State<PeriodicStats> {
                       text: TextSpan(
                         children: [
                           TextSpan(
-                            text: 'RM ' + '${recordView[index].moneyUsed.toString()}',
-                            style: TextStyle(
-                              color: Colors.grey,
-                              fontSize: 14.0
-                            )
-                          ),
+                              text: 'RM ' +
+                                  '${PeriodicBudget.list[index].amountUsed.toString()}',
+                              style: TextStyle(
+                                  color: Colors.grey, fontSize: 14.0)),
                           TextSpan(
-                            text: ' / ' + '${recordView[index].money.toString()}',
-                            style: TextStyle(
-                              color: Colors.white,
-                              fontSize: 14.0
-                            ),
+                            text: ' / ' +
+                                '${PeriodicBudget.list[index].amount.toString()}',
+                            style:
+                                TextStyle(color: Colors.white, fontSize: 14.0),
                           ),
                         ],
                       ),
@@ -89,15 +66,15 @@ class _PeriodicStatsState extends State<PeriodicStats> {
               ],
             ),
           );
-        }, 
+        },
         //Adds a divider in between lists items, no divider will be included in the first and last item from the list.
         separatorBuilder: (context, index) {
-        return Divider(
+          return Divider(
             color: Colors.grey,
             indent: 15.0,
             endIndent: 15.0,
           );
-        },       
+        },
       ),
     );
   }

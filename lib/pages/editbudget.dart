@@ -541,6 +541,7 @@ class _EditBudgetState extends State<EditBudget> {
                       shape: RoundedRectangleBorder(
                           borderRadius: BorderRadius.circular(18.0)),
                       onPressed: () {
+                        PeriodicBudget.list[index].delete();
                         if (currentSelectedType == "Periodic") {
                           PeriodicBudget.list[index].setBudget(
                             title: title,

@@ -1,5 +1,6 @@
 import 'dart:math';
 
+import 'package:budget_tracking_system/pages/budgetonetime.dart';
 import 'package:budget_tracking_system/pages/budgetperiodic.dart';
 import 'package:budget_tracking_system/services/currency.dart';
 import 'package:budget_tracking_system/services/onetimebudget.dart';
@@ -142,6 +143,17 @@ class Record {
 
   dynamic get budget {
     return _budget;
+  }
+
+  set budget(dynamic budget) {
+    _budget = budget;
+
+    Firestore.instance
+        .collection('users')
+        .document(_uid)
+        .collection('records')
+        .document(_id)
+        .updateData({'budget': _budget});
   }
 
   set category(Category category) {
@@ -490,8 +502,10 @@ class Record {
                 });
                 dynamic budget;
                 List<dynamic> budgetList = [];
-                PeriodicBudget.returnList(DateTime.fromMicrosecondsSinceEpoch(
-                        timestamp.microsecondsSinceEpoch))
+                PeriodicBudget.returnList(
+                        DateTime.fromMicrosecondsSinceEpoch(
+                            timestamp.microsecondsSinceEpoch),
+                        category)
                     .forEach((PeriodicBudget budget) {
                   budgetList.add(budget);
                 });

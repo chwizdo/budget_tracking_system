@@ -71,7 +71,7 @@ class _OneTimeStatsState extends State<OneTimeStats> {
           ),
           padding: EdgeInsets.only(bottom: 100),
           //To build and display all the items of recordView list.
-          itemBuilder: (context, dynamic record) {
+          indexedItemBuilder: (context, dynamic record, index) {
             return Container(
               height: 80.0,
               //Each list is a row and is expanded to 3 parts.
@@ -81,6 +81,9 @@ class _OneTimeStatsState extends State<OneTimeStats> {
                   Expanded(
                     flex: 1,
                     child: ListTile(
+                        onTap: () {
+                          Navigator.pop(context, OneTimeBudget.list[index]);
+                        },
                         title: Text(
                           record.title,
                           //Used to wrap long texts

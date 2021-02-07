@@ -256,27 +256,42 @@ class PeriodicBudget {
     return null;
   }
 
-  static List findHighest() {
-    List allbudget = [];
+  static List findEachMonthAmount(PeriodicBudget budget) {
+    List<double> eachmonth = [];
+    for (int i = 1; i < 13; i++) {
+      double sum = 0;
+      List<Record> r = [];
+      Record.list.forEach((record) {
+        if (record.budget == budget && record.dateTime.month == i) {
+          r.add(record);
+        }
+      });
+      r.forEach((element) {
+        sum += element.amount;
+      });
+      eachmonth.add(sum);
+    }
+    return eachmonth;
+  }
 
-    list.forEach((budget) {
-      List<double> eachmonth = [];
-      for (int i = 1; i < 13; i++) {
-        double sum = 0;
-        List<Record> r = [];
-        Record.list.forEach((record) {
-          if (record.budget == budget && record.dateTime.month == i) {
-            r.add(record);
-          }
-        });
-        r.forEach((element) {
-          sum += element.amount;
-        });
-        eachmonth.add(sum);
-      }
-      allbudget.add(eachmonth);
-      print(eachmonth);
-    });
-    return allbudget;
+  static List findEachDayAmount(PeriodicBudget budget, DateTime month) {
+    List<double> eachday = [];
+    for (int i = 1; i < 31; i++) {
+      double sum = 0;
+      List<Record> r = [];
+      Record.list.forEach((record) {
+        if (record.budget == budget &&
+            record.dateTime.day == i &&
+            record.dateTime.month == month.month &&
+            record.dateTime.year == month.year) {
+          r.add(record);
+        }
+      });
+      r.forEach((element) {
+        sum += element.amount;
+      });
+      eachday.add(sum);
+    }
+    return eachday;
   }
 }

@@ -24,6 +24,9 @@ class _PeriodicStatsState extends State<PeriodicStats> {
                 Expanded(
                   flex: 1,
                   child: ListTile(
+                    onTap: () {
+                      Navigator.pop(context, PeriodicBudget.list[index]);
+                    },
                     title: Text(
                       PeriodicBudget.list[index].title,
                       //Used to wrap long texts

@@ -244,6 +244,14 @@ class _SearchRecordState extends State<SearchRecord> {
                             setState(() {
                               groupValue = value;
                               type = value;
+
+                              categoryTypes = [];
+                              categoryTypes.add("--Select a category--");
+                              Category.incomeList.forEach((Category category) {
+                                categoryTypes.add(category);
+                              });
+
+                              currentSelectedCategory = "--Select a category--";
                             });
                           },
                         ),
@@ -251,7 +259,7 @@ class _SearchRecordState extends State<SearchRecord> {
                           'Income',
                           style: TextStyle(fontSize: 16.0, color: Colors.white),
                         ),
-                         Radio(
+                        Radio(
                           activeColor: Color.fromRGBO(255, 185, 49, 1),
                           value: "Expenses",
                           groupValue: groupValue,
@@ -259,6 +267,14 @@ class _SearchRecordState extends State<SearchRecord> {
                             setState(() {
                               groupValue = value;
                               type = value;
+
+                              categoryTypes = [];
+                              categoryTypes.add("--Select a category--");
+                              Category.expenseList.forEach((Category category) {
+                                categoryTypes.add(category);
+                              });
+
+                              currentSelectedCategory = "--Select a category--";
                             });
                           },
                         ),
@@ -266,7 +282,7 @@ class _SearchRecordState extends State<SearchRecord> {
                           'Expenses',
                           style: TextStyle(fontSize: 16.0, color: Colors.white),
                         ),
-                         Radio(
+                        Radio(
                           activeColor: Color.fromRGBO(255, 185, 49, 1),
                           value: "Transfer",
                           groupValue: groupValue,
@@ -274,6 +290,11 @@ class _SearchRecordState extends State<SearchRecord> {
                             setState(() {
                               groupValue = value;
                               type = value;
+
+                              categoryTypes = [];
+                              categoryTypes.add("--Select a category--");
+
+                              currentSelectedCategory = "--Select a category--";
                             });
                           },
                         ),

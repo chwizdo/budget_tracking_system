@@ -75,7 +75,8 @@ class _AddRecordState extends State<AddRecord> {
       budgetTypes.add(budget);
     });
 
-    PeriodicBudget.returnList(DateTime.now()).forEach((PeriodicBudget budget) {
+    PeriodicBudget.returnList(DateTime.now(), category)
+        .forEach((PeriodicBudget budget) {
       print(budget.title);
       budgetTypes.add(budget);
     });
@@ -104,7 +105,8 @@ class _AddRecordState extends State<AddRecord> {
           budgetTypes.add(budget);
         });
 
-        PeriodicBudget.returnList(_pickedDate).forEach((PeriodicBudget budget) {
+        PeriodicBudget.returnList(_pickedDate, category)
+            .forEach((PeriodicBudget budget) {
           budgetTypes.add(budget);
         });
 
@@ -246,19 +248,19 @@ class _AddRecordState extends State<AddRecord> {
                             context,
                             MaterialPageRoute(
                                 builder: (context) => AddIncome(
-                                    //uid: user.uid,
+                                      uid: uid,
                                     ),
                                 fullscreenDialog: true),
-                          );
+                          ).then((value) => setState(() {}));
                         } else if (type == "Expenses") {
                           Navigator.push(
                             context,
                             MaterialPageRoute(
                                 builder: (context) => AddExpense(
-                                    //uid: user.uid,
+                                      uid: uid,
                                     ),
                                 fullscreenDialog: true),
-                          );
+                          ).then((value) => setState(() {}));
                         }
                       },
                     ),

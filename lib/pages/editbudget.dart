@@ -516,10 +516,10 @@ class _EditBudgetState extends State<EditBudget> {
                                     context,
                                     MaterialPageRoute(
                                         builder: (context) => AddExpense(
-                                            //uid: user.uid,
+                                              uid: uid,
                                             ),
                                         fullscreenDialog: true),
-                                  );
+                                  ).then((value) => setState(() {}));
                                 },
                                 icon: Icon(Icons.settings),
                                 color: Color.fromRGBO(101, 101, 101, 1)),
@@ -597,6 +597,7 @@ class _EditBudgetState extends State<EditBudget> {
                       shape: RoundedRectangleBorder(
                           borderRadius: BorderRadius.circular(18.0)),
                       onPressed: () {
+                        PeriodicBudget.list[index].delete();
                         if (currentSelectedType == "Periodic") {
                           PeriodicBudget.list[index].setBudget(
                             title: title,

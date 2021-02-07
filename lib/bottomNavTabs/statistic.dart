@@ -17,9 +17,6 @@ class _StatisticState extends State<Statistic> {
   String _currentSelectedType = "Income";
   List _types = ["Income", "Expenses", "Budget"];
 
-  String _currentSelectedCurrency = "USD";
-  List _currencyTypes = Currency.list;
-
   //Initialize current date and date format
   DateTime _pickedDate;
   DateFormat df = new DateFormat('yyyy MMM');
@@ -36,6 +33,9 @@ class _StatisticState extends State<Statistic> {
     if (date != null) {
       setState(() {
         _pickedDate = date;
+
+        PieIncomeData.createObj(_pickedDate);
+        PieExpensesData.createObj(_pickedDate);
       });
     }
   }
@@ -46,8 +46,8 @@ class _StatisticState extends State<Statistic> {
     super.initState();
     _pickedDate = DateTime.now();
 
-    PieIncomeData.createObj();
-    PieExpensesData.createObj();
+    PieIncomeData.createObj(_pickedDate);
+    PieExpensesData.createObj(_pickedDate);
   }
 
   @override

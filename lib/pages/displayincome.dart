@@ -10,8 +10,6 @@ class DisplayIncome extends StatefulWidget {
 }
 
 class _DisplayIncomeState extends State<DisplayIncome> {
-  String _currentSelectedPeriod = "M";
-  List _periodTypes = ["M", "W", "D"];
   String currency = 'USD';
   List statistics;
 

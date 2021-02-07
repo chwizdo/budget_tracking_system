@@ -3,11 +3,20 @@ import 'package:budget_tracking_system/pages/budgetperiodic.dart';
 import 'package:budget_tracking_system/pages/budgetonetime.dart';
 import 'package:budget_tracking_system/pages/addbudget.dart';
 
-class Budget extends StatelessWidget {
+class Budget extends StatefulWidget {
   final String uid;
-  Budget({this.uid});
+  Budget({Key key, @required this.uid}) : super(key: key);
+
+  @override
+  _BudgetState createState() => _BudgetState(uid);
+}
+
+class _BudgetState extends State<Budget> {
+  final String uid;
+  _BudgetState(this.uid);
   @override
   Widget build(BuildContext context) {
+    print("got run here or not");
     return DefaultTabController(
       length: 2,
       child: Scaffold(
@@ -60,7 +69,7 @@ class Budget extends StatelessWidget {
                         uid: uid,
                       ),
                   fullscreenDialog: true),
-            );
+            ).then((value) => setState(() {}));
           },
         ),
       ),

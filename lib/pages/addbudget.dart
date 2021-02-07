@@ -26,12 +26,12 @@ class _AddBudgetState extends State<AddBudget> {
   var recordcollections = Firestore.instance.collection('users');
 
   // Initialized local variables for user input
-  String title = "Untitled";
+  String title;
   Category category = Category.expenseList[0];
-  double amount = 0;
+  double amount;
   DateTime startDate;
   DateTime endDate;
-  String interval;
+  String interval = "Weekly";
   String budgetstatus;
 
   //Creates a list of items for DropdownButton category and account.
@@ -494,16 +494,16 @@ class _AddBudgetState extends State<AddBudget> {
                           child: Align(
                             alignment: Alignment.centerLeft,
                             child: IconButton(
-                              onPressed: () {
-                                Navigator.push(
+                                onPressed: () {
+                                  Navigator.push(
                                     context,
                                     MaterialPageRoute(
                                         builder: (context) => AddExpense(
-                                            //uid: user.uid,
+                                              uid: uid,
                                             ),
                                         fullscreenDialog: true),
-                                  );
-                              },
+                                  ).then((value) => setState(() {}));
+                                },
                                 icon: Icon(Icons.settings),
                                 color: Color.fromRGBO(101, 101, 101, 1)),
                           ),
@@ -579,25 +579,40 @@ class _AddBudgetState extends State<AddBudget> {
                       shape: RoundedRectangleBorder(
                           borderRadius: BorderRadius.circular(18.0)),
                       onPressed: () {
-                        if (currentSelectedType == "Periodic") {
-                          PeriodicBudget.add(PeriodicBudget(
-                              uid: uid,
-                              title: title,
-                              category: category,
-                              amount: amount,
-                              interval: interval,
-                              save: true,
-                              startDate: DateTime.now()));
+                        if (title.isEmpty || amount.toString().isEmpty) {
+                          AlertDialog(
+                            content: Text("Missing Input!!"),
+                            actions: [
+                              FlatButton(
+                                  onPressed: () {
+                                    Navigator.of(context, rootNavigator: true)
+                                        .pop();
+                                  },
+                                  child: Text("OK"))
+                            ],
+                          );
                         } else {
-                          OneTimeBudget.add(OneTimeBudget(
-                              uid: uid,
-                              title: title,
-                              category: category,
-                              amount: amount,
-                              startDate: startDate,
-                              endDate: endDate,
-                              save: true));
+                          if (currentSelectedType == "Periodic") {
+                            PeriodicBudget.add(PeriodicBudget(
+                                uid: uid,
+                                title: title,
+                                category: category,
+                                amount: amount,
+                                interval: interval,
+                                save: true,
+                                startDate: DateTime.now()));
+                          } else {
+                            OneTimeBudget.add(OneTimeBudget(
+                                uid: uid,
+                                title: title,
+                                category: category,
+                                amount: amount,
+                                startDate: startDate,
+                                endDate: endDate,
+                                save: true));
+                          }
                         }
+
                         Navigator.pop(context);
                       },
                       child: Text(

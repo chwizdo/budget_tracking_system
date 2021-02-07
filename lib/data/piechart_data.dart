@@ -1,14 +1,12 @@
-import 'dart:math';
-
 import 'package:budget_tracking_system/services/category.dart';
 import 'package:flutter/material.dart';
 
 class PieIncomeData {
   static List<IncomeData> data = [];
 
-  static void createObj() {
+  static void createObj(DateTime date) {
     data = [];
-    Category.calIncomeTotal().forEach((key, value) {
+    Category.calIncomeTotal(date).forEach((key, value) {
       Color color;
       Category.incomeList.forEach((Category category) {
         if (category.name == key) {
@@ -33,9 +31,9 @@ class IncomeData {
 class PieExpensesData {
   static List<ExpensesData> data = [];
 
-  static void createObj() {
+  static void createObj(DateTime date) {
     data = [];
-    Category.calExpenseTotal().forEach((key, value) {
+    Category.calExpenseTotal(date).forEach((key, value) {
       print('$key: $value');
       Color color;
       Category.expenseList.forEach((Category category) {

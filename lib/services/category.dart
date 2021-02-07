@@ -213,12 +213,14 @@ class Category {
     return null;
   }
 
-  static Map<String, double> calIncomeTotal() {
+  static Map<String, double> calIncomeTotal(DateTime date) {
     Map<String, double> incomeMap = new Map<String, double>();
     _incomeList.forEach((Category category) {
       double total = 0;
       service.Record.list.forEach((service.Record record) {
-        if (record.category == category) {
+        if (record.category == category &&
+            record.dateTime.month == date.month &&
+            record.dateTime.year == date.year) {
           total += record.amount;
         }
       });
@@ -227,12 +229,14 @@ class Category {
     return incomeMap;
   }
 
-  static Map<String, double> calExpenseTotal() {
+  static Map<String, double> calExpenseTotal(DateTime date) {
     Map<String, double> expenseMap = new Map<String, double>();
     _expenseList.forEach((Category category) {
       double total = 0;
       service.Record.list.forEach((service.Record record) {
-        if (record.category == category) {
+        if (record.category == category &&
+            record.dateTime.month == date.month &&
+            record.dateTime.year == date.year) {
           total += record.amount;
         }
       });

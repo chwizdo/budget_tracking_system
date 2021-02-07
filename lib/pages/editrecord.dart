@@ -311,25 +311,25 @@ class _EditRecordState extends State<EditRecord> {
                         icon: Icon(Icons.settings),
                         color: Color.fromRGBO(101, 101, 101, 1),
                         onPressed: () {
-                         if (type == "Income") {
-                          Navigator.push(
-                            context,
-                            MaterialPageRoute(
-                                builder: (context) => AddIncome(
-                                    //uid: user.uid,
-                                    ),
-                                fullscreenDialog: true),
-                          );
-                        } else if (type == "Expenses") {
-                          Navigator.push(
-                            context,
-                            MaterialPageRoute(
-                                builder: (context) => AddExpense(
-                                    //uid: user.uid,
-                                    ),
-                                fullscreenDialog: true),
-                          );
-                        }
+                          if (type == "Income") {
+                            Navigator.push(
+                              context,
+                              MaterialPageRoute(
+                                  builder: (context) => AddIncome(
+                                        uid: uid,
+                                      ),
+                                  fullscreenDialog: true),
+                            ).then((value) => setState(() {}));
+                          } else if (type == "Expenses") {
+                            Navigator.push(
+                              context,
+                              MaterialPageRoute(
+                                  builder: (context) => AddExpense(
+                                        uid: uid,
+                                      ),
+                                  fullscreenDialog: true),
+                            ).then((value) => setState(() {}));
+                          }
                         },
                       ),
                     ),
@@ -478,12 +478,14 @@ class _EditRecordState extends State<EditRecord> {
                                 enabledBorder: OutlineInputBorder(
                                   borderRadius:
                                       BorderRadius.all(Radius.circular(10.0)),
-                                  borderSide: BorderSide(color: Colors.transparent),
+                                  borderSide:
+                                      BorderSide(color: Colors.transparent),
                                 ),
                                 focusedBorder: OutlineInputBorder(
                                   borderRadius:
                                       BorderRadius.all(Radius.circular(10.0)),
-                                  borderSide: BorderSide(color: Colors.transparent),
+                                  borderSide:
+                                      BorderSide(color: Colors.transparent),
                                 ),
                                 isDense: true),
                             child: DropdownButtonHideUnderline(
@@ -663,12 +665,14 @@ class _EditRecordState extends State<EditRecord> {
                                 enabledBorder: OutlineInputBorder(
                                   borderRadius:
                                       BorderRadius.all(Radius.circular(10.0)),
-                                  borderSide: BorderSide(color: Colors.transparent),
+                                  borderSide:
+                                      BorderSide(color: Colors.transparent),
                                 ),
                                 focusedBorder: OutlineInputBorder(
                                   borderRadius:
                                       BorderRadius.all(Radius.circular(10.0)),
-                                  borderSide: BorderSide(color: Colors.transparent),
+                                  borderSide:
+                                      BorderSide(color: Colors.transparent),
                                 ),
                                 isDense: true),
                             child: DropdownButtonHideUnderline(
@@ -688,8 +692,9 @@ class _EditRecordState extends State<EditRecord> {
                                 },
                                 items: budgetTypes.map((dynamic value) {
                                   return DropdownMenuItem<String>(
-                                    value:
-                                        value is String ? 'No Budget' : value.title,
+                                    value: value is String
+                                        ? 'No Budget'
+                                        : value.title,
                                     child: value is String
                                         ? Text('No budget')
                                         : Text(value.title),

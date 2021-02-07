@@ -6,10 +6,7 @@ import 'package:budget_tracking_system/services/user.dart';
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
 import 'package:grouped_list/grouped_list.dart';
-import 'package:budget_tracking_system/services/auth.dart';
 import 'package:budget_tracking_system/services/record.dart' as service;
-// import 'package:budget_tracking_system/services/category.dart';
-// import 'package:budget_tracking_system/services/account.dart';
 import 'package:provider/provider.dart';
 import 'package:month_picker_dialog/month_picker_dialog.dart';
 
@@ -73,8 +70,6 @@ class _RecordState extends State<Record> {
   final String uid;
   _RecordState(this.uid);
 
-  final AuthService _auth = AuthService();
-
   pickDate() async {
     DateTime date = await showMonthPicker(
         context: context,
@@ -93,7 +88,8 @@ class _RecordState extends State<Record> {
   void filterList() {
     List<service.Record> _searchList = [];
     service.Record.list.forEach((value) {
-      if (value.dateTime.month == (_pickedDate.month)) {
+      if (value.dateTime.month == _pickedDate.month &&
+          value.dateTime.year == _pickedDate.year) {
         _searchList.add(value);
       }
     });
@@ -150,7 +146,7 @@ class _RecordState extends State<Record> {
                 context,
                 MaterialPageRoute(
                     builder: (context) => SearchRecord(
-                        //uid: user.uid,
+                          uid: user.uid,
                         ),
                     fullscreenDialog: true),
               ).then((value) => setState(() {

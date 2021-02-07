@@ -494,16 +494,16 @@ class _AddBudgetState extends State<AddBudget> {
                           child: Align(
                             alignment: Alignment.centerLeft,
                             child: IconButton(
-                              onPressed: () {
-                                Navigator.push(
+                                onPressed: () {
+                                  Navigator.push(
                                     context,
                                     MaterialPageRoute(
                                         builder: (context) => AddExpense(
-                                            //uid: user.uid,
+                                              uid: uid,
                                             ),
                                         fullscreenDialog: true),
-                                  );
-                              },
+                                  ).then((value) => setState(() {}));
+                                },
                                 icon: Icon(Icons.settings),
                                 color: Color.fromRGBO(101, 101, 101, 1)),
                           ),

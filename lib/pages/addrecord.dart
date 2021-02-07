@@ -248,19 +248,19 @@ class _AddRecordState extends State<AddRecord> {
                             context,
                             MaterialPageRoute(
                                 builder: (context) => AddIncome(
-                                    //uid: user.uid,
+                                      uid: uid,
                                     ),
                                 fullscreenDialog: true),
-                          );
+                          ).then((value) => setState(() {}));
                         } else if (type == "Expenses") {
                           Navigator.push(
                             context,
                             MaterialPageRoute(
                                 builder: (context) => AddExpense(
-                                    //uid: user.uid,
+                                      uid: uid,
                                     ),
                                 fullscreenDialog: true),
-                          );
+                          ).then((value) => setState(() {}));
                         }
                       },
                     ),

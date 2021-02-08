@@ -76,7 +76,7 @@ class _EditBudgetState extends State<EditBudget> {
   List<String> budgetTypes = ["Periodic", "One-Time"];
 
   String currentSelectedInterval;
-  List<String> intervalTypes = ["Weekly", "Monthly"];
+  List<String> intervalTypes = ["Monthly"];
 
   //Initialize controller
   TextEditingController _startDateEditingController = TextEditingController();
@@ -308,6 +308,8 @@ class _EditBudgetState extends State<EditBudget> {
             ),
             onPressed: () {
               //DELETE
+              PeriodicBudget.list[index].delete();
+              Navigator.pop(context);
             },
           ),
         ],
@@ -597,7 +599,6 @@ class _EditBudgetState extends State<EditBudget> {
                       shape: RoundedRectangleBorder(
                           borderRadius: BorderRadius.circular(18.0)),
                       onPressed: () {
-                        PeriodicBudget.list[index].delete();
                         if (currentSelectedType == "Periodic") {
                           PeriodicBudget.list[index].setBudget(
                             title: title,

@@ -29,6 +29,20 @@ class _DisplayLineChartState extends State<DisplayLineChart> {
     const Color(0xff02d39a),
   ];
 
+  // List<FlSpot> returnSpotListPeriodicTry() {
+  //   List<FlSpot> list = [];
+  //   double y;
+  //   double x = 0;
+  //   List<dynamic> budgetEachDayAmount =
+  //       PeriodicBudget.findEachMonthAmount(widget.budget, widget.dateTime);
+  //   budgetEachDayAmount.forEach((element) {
+  //     y = element / (returnAmount() / 5);
+  //     list.add(FlSpot(x, y));
+  //     x++;
+  //   });
+  //   return list;
+  // }
+
   List<FlSpot> returnSpotListPeriodic() {
     List<FlSpot> list = [];
     double xcounter = 0;
@@ -39,9 +53,11 @@ class _DisplayLineChartState extends State<DisplayLineChart> {
         PeriodicBudget.findEachDayAmount(widget.budget, widget.dateTime);
     budgetEachDayAmount.forEach((element) {
       sum += element;
-      y = sum / (returnAmount() / 5);
+      y = sum / (returnAmount() / 6);
       // if (xcounter % 3 == 0) {
-      list.add(FlSpot(xcounter / 3, y));
+      if (element > 0) {
+        list.add(FlSpot(xcounter / 3, y));
+      }
 
       // }
       xcounter++;
@@ -60,9 +76,9 @@ class _DisplayLineChartState extends State<DisplayLineChart> {
         OneTimeBudget.findEachDayAmount(widget.budget, widget.dateTime);
     budgetEachDayAmount.forEach((element) {
       sum += element;
-      y = sum / (returnAmount() / 5);
+      y = sum / (returnAmount() / 6);
       if (element > 0) {
-        list.add(FlSpot(x / 3.toDouble(), y));
+        list.add(FlSpot((x / 3).toDouble(), y));
       }
       x++;
     });

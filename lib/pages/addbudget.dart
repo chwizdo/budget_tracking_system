@@ -31,7 +31,7 @@ class _AddBudgetState extends State<AddBudget> {
   double amount;
   DateTime startDate;
   DateTime endDate;
-  String interval = "Weekly";
+  String interval = "Monthly";
   String budgetstatus;
 
   //Creates a list of items for DropdownButton category and account.
@@ -41,8 +41,8 @@ class _AddBudgetState extends State<AddBudget> {
   String currentSelectedType = "Periodic";
   List<String> budgetTypes = ["Periodic", "One-Time"];
 
-  String currentSelectedInterval = "Weekly";
-  List<String> intervalTypes = ["Weekly", "Monthly"];
+  String currentSelectedInterval = "Monthly";
+  List<String> intervalTypes = ["Monthly"];
 
   //Initialize start date, end date and date format
   DateTime _pickedStartDate;

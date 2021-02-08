@@ -126,7 +126,8 @@ class _EditRecordState extends State<EditRecord> {
         TextEditingController(text: "${df.format(_pickedDate)}");
 
     budgetTypes.add('No Budget');
-    OneTimeBudget.returnList(dateTime).forEach((OneTimeBudget budget) {
+    OneTimeBudget.returnList(dateTime, category)
+        .forEach((OneTimeBudget budget) {
       print(budget.title);
       budgetTypes.add(budget);
     });
@@ -156,7 +157,8 @@ class _EditRecordState extends State<EditRecord> {
 
         budgetTypes = [];
         budgetTypes.add('No Budget');
-        OneTimeBudget.returnList(_pickedDate).forEach((OneTimeBudget budget) {
+        OneTimeBudget.returnList(_pickedDate, category)
+            .forEach((OneTimeBudget budget) {
           budgetTypes.add(budget);
         });
 

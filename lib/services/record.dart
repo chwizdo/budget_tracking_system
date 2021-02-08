@@ -509,8 +509,10 @@ class Record {
                     .forEach((PeriodicBudget budget) {
                   budgetList.add(budget);
                 });
-                OneTimeBudget.returnList(DateTime.fromMicrosecondsSinceEpoch(
-                        timestamp.microsecondsSinceEpoch))
+                OneTimeBudget.returnList(
+                        DateTime.fromMicrosecondsSinceEpoch(
+                            timestamp.microsecondsSinceEpoch),
+                        category)
                     .forEach((OneTimeBudget budget) {
                   budgetList.add(budget);
                 });

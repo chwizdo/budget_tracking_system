@@ -70,7 +70,8 @@ class _AddRecordState extends State<AddRecord> {
     dateTime = _pickedDate;
 
     budgetTypes.add('No Budget');
-    OneTimeBudget.returnList(DateTime.now()).forEach((OneTimeBudget budget) {
+    OneTimeBudget.returnList(DateTime.now(), category)
+        .forEach((OneTimeBudget budget) {
       print(budget.title);
       budgetTypes.add(budget);
     });
@@ -101,7 +102,8 @@ class _AddRecordState extends State<AddRecord> {
 
         budgetTypes = [];
         budgetTypes.add('No Budget');
-        OneTimeBudget.returnList(_pickedDate).forEach((OneTimeBudget budget) {
+        OneTimeBudget.returnList(_pickedDate, category)
+            .forEach((OneTimeBudget budget) {
           budgetTypes.add(budget);
         });
 

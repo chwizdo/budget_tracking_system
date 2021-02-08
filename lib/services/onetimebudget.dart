@@ -246,4 +246,27 @@ class OneTimeBudget {
         );
     return null;
   }
+
+  static List findEachDayAmount(OneTimeBudget budget, DateTime month) {
+    List<double> eachday = [];
+    int dayDiff = budget._endDate.difference(budget._startDate).inDays;
+    DateTime counter = budget.startDate;
+
+    for (int i = 0; i < dayDiff; i++) {
+      double sum = 0;
+      List<Record> r = [];
+      Record.list.forEach((record) {
+        if (record.budget == budget && record.dateTime == counter) {
+          r.add(record);
+        }
+      });
+      r.forEach((element) {
+        sum += element.amount;
+      });
+      eachday.add(sum);
+      counter = counter.add(Duration(days: 1));
+    }
+    print(eachday);
+    return eachday;
+  }
 }

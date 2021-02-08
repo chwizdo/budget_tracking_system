@@ -3,11 +3,15 @@ import 'package:budget_tracking_system/budgetStats/onetime_stats.dart';
 import 'package:budget_tracking_system/budgetStats/periodic_stats.dart';
 
 class SelectBudget extends StatefulWidget {
+  final DateTime dateTime;
+  SelectBudget({@required this.dateTime});
   @override
-  _SelectBudgetState createState() => _SelectBudgetState();
+  _SelectBudgetState createState() => _SelectBudgetState(dateTime: dateTime);
 }
 
 class _SelectBudgetState extends State<SelectBudget> {
+  DateTime dateTime;
+  _SelectBudgetState({@required this.dateTime});
   @override
   Widget build(BuildContext context) {
     return DefaultTabController(
@@ -37,7 +41,7 @@ class _SelectBudgetState extends State<SelectBudget> {
         body: SafeArea(
           child: TabBarView(
             children: [
-              PeriodicStats(),
+              PeriodicStats(dateTime: dateTime),
               OneTimeStats(),
             ],
           ),

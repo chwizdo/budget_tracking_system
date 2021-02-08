@@ -16,7 +16,6 @@ class _BudgetState extends State<Budget> {
   _BudgetState(this.uid);
   @override
   Widget build(BuildContext context) {
-    print("got run here or not");
     return DefaultTabController(
       length: 2,
       child: Scaffold(
@@ -69,7 +68,7 @@ class _BudgetState extends State<Budget> {
                         uid: uid,
                       ),
                   fullscreenDialog: true),
-            ).then((value) => setState(() {}));
+            );
           },
         ),
       ),

@@ -82,7 +82,10 @@ class _OneTimeStatsState extends State<OneTimeStats> {
                     flex: 1,
                     child: ListTile(
                         onTap: () {
-                          Navigator.pop(context, OneTimeBudget.list[index]);
+                          Navigator.pop(
+                              context,
+                              OneTimeBudget
+                                  .list[OneTimeBudget.list.length - 1 - index]);
                         },
                         title: Text(
                           record.title,

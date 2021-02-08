@@ -171,11 +171,12 @@ class OneTimeBudget {
   }
 
   //return list of active budget at thta time (parameter: that time)
-  static List<OneTimeBudget> returnList(DateTime dateTime) {
+  static List<OneTimeBudget> returnList(DateTime dateTime, Category category) {
     _activeList = [];
     _list.forEach((element) {
       if (!element.startDate.isAfter(dateTime) &&
-          !element.endDate.isBefore(dateTime)) {
+          !element.endDate.isBefore(dateTime) &&
+          element._category == category) {
         _activeList.add(element);
       }
     });

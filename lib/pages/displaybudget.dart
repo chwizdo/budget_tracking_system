@@ -23,7 +23,7 @@ class _DisplayBudgetState extends State<DisplayBudget> {
       mainAxisAlignment: MainAxisAlignment.center,
       children: [
         Text(
-          "Show Monthly Statistics",
+          "Show Yearly Statistics",
           style: TextStyle(color: Colors.white, fontSize: 14.0),
         ),
         Theme(
@@ -104,6 +104,7 @@ class _DisplayBudgetState extends State<DisplayBudget> {
                       child: DisplayLineChart(
                         budget: budget,
                         dateTime: widget.dateTime,
+                        type: isChecked,
                       )),
                 ),
                 displayCheckbox()

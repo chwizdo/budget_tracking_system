@@ -242,23 +242,25 @@ class PeriodicBudget {
     return null;
   }
 
-  // static List findEachMonthAmount(PeriodicBudget budget , DateTime dateTime) {
-  //   List<double> eachmonth = [];
-  //   for (int i = 1; i < 13; i++) {
-  //     double sum = 0;
-  //     List<Record> r = [];
-  //     Record.list.forEach((record) {
-  //       if (record.budget == budget && record.dateTime.month == i && record.dateTime.year == dateTime.year) {
-  //         r.add(record);
-  //       }
-  //     });
-  //     r.forEach((element) {
-  //       sum += element.amount;
-  //     });
-  //     eachmonth.add(sum);
-  //   }
-  //   return eachmonth;
-  // }
+  static List findEachMonthAmount(PeriodicBudget budget, DateTime dateTime) {
+    List<double> eachmonth = [];
+    for (int i = 1; i < 13; i++) {
+      double sum = 0;
+      List<Record> r = [];
+      Record.list.forEach((record) {
+        if (record.budget == budget &&
+            record.dateTime.month == i &&
+            record.dateTime.year == dateTime.year) {
+          r.add(record);
+        }
+      });
+      r.forEach((element) {
+        sum += element.amount;
+      });
+      eachmonth.add(sum);
+    }
+    return eachmonth;
+  }
 
   static List findEachDayAmount(PeriodicBudget budget, DateTime month) {
     List<double> eachday = [];

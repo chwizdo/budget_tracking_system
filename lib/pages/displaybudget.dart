@@ -1,5 +1,7 @@
 import 'package:budget_tracking_system/services/linechart.dart';
 import 'package:budget_tracking_system/pages/selectbudget.dart';
+import 'package:budget_tracking_system/services/onetimebudget.dart';
+import 'package:budget_tracking_system/services/periodicbudget.dart';
 import 'package:flutter/material.dart';
 
 class DisplayBudget extends StatefulWidget {
@@ -13,6 +15,49 @@ class DisplayBudget extends StatefulWidget {
 class _DisplayBudgetState extends State<DisplayBudget> {
   DateTime dateTime;
   dynamic budget;
+  bool isChecked = false;
+  bool type = false;
+
+  checkbox() {
+    return Row(
+      mainAxisAlignment: MainAxisAlignment.center,
+      children: [
+        Text(
+          "Show Monthly Statistics",
+          style: TextStyle(color: Colors.white, fontSize: 14.0),
+        ),
+        Theme(
+          data: ThemeData(unselectedWidgetColor: Colors.grey),
+          child: Checkbox(
+            //ListTileControlAffinity.trailing will place the checkbox at the trailing
+            activeColor: Color.fromRGBO(255, 185, 49, 1),
+            value: isChecked,
+            onChanged: (bool value) {
+              setState(() {
+                isChecked = value;
+              });
+            },
+          ),
+        ),
+      ],
+    );
+  }
+
+  checkType() {
+    if (budget.runtimeType == PeriodicBudget) {
+      type = true;
+    } else if (budget.runtimeType == OneTimeBudget) {
+      type = false;
+    }
+  }
+
+  displayCheckbox() {
+    if (type == false) {
+      return SizedBox(height: 0.0);
+    } else if (type == true) {
+      return checkbox();
+    }
+  }
 
   _DisplayBudgetState({@required this.dateTime});
 
@@ -46,6 +91,7 @@ class _DisplayBudgetState extends State<DisplayBudget> {
                                     )));
                         setState(() {
                           budget = result;
+                          checkType();
                         });
                       },
                     ),
@@ -60,6 +106,7 @@ class _DisplayBudgetState extends State<DisplayBudget> {
                         dateTime: widget.dateTime,
                       )),
                 ),
+                displayCheckbox()
               ],
             ),
           ),

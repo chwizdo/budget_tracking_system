@@ -18,7 +18,6 @@ class _DisplayBudgetState extends State<DisplayBudget> {
 
   @override
   Widget build(BuildContext context) {
-    print("this is the index:" + budget.toString());
     return Scaffold(
       backgroundColor: Color.fromRGBO(57, 57, 57, 1),
       body: SafeArea(
@@ -42,7 +41,9 @@ class _DisplayBudgetState extends State<DisplayBudget> {
                         final result = await Navigator.push(
                             context,
                             MaterialPageRoute(
-                                builder: (context) => SelectBudget()));
+                                builder: (context) => SelectBudget(
+                                      dateTime: dateTime,
+                                    )));
                         setState(() {
                           budget = result;
                         });
@@ -56,7 +57,7 @@ class _DisplayBudgetState extends State<DisplayBudget> {
                       color: Color.fromRGBO(57, 57, 57, 1),
                       child: DisplayLineChart(
                         budget: budget,
-                        dateTime: dateTime,
+                        dateTime: widget.dateTime,
                       )),
                 ),
               ],

@@ -37,7 +37,6 @@ class _StatisticState extends State<Statistic> {
     if (date != null) {
       setState(() {
         _pickedDate = date;
-        DisplayBudget(dateTime: _pickedDate);
       });
     }
   }
@@ -54,8 +53,6 @@ class _StatisticState extends State<Statistic> {
 
   @override
   Widget build(BuildContext context) {
-    print("run here");
-    print(_pickedDate);
     return Scaffold(
         backgroundColor: Color.fromRGBO(57, 57, 57, 1),
         appBar: AppBar(

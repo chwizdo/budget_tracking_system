@@ -2,11 +2,15 @@ import 'package:flutter/material.dart';
 import 'package:budget_tracking_system/services/periodicbudget.dart';
 
 class PeriodicStats extends StatefulWidget {
+  final DateTime dateTime;
+  PeriodicStats({@required this.dateTime});
   @override
-  _PeriodicStatsState createState() => _PeriodicStatsState();
+  _PeriodicStatsState createState() => _PeriodicStatsState(dateTime: dateTime);
 }
 
 class _PeriodicStatsState extends State<PeriodicStats> {
+  DateTime dateTime;
+  _PeriodicStatsState({this.dateTime});
   @override
   Widget build(BuildContext context) {
     PeriodicBudget.calculateAmountUsed();

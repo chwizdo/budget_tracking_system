@@ -1,6 +1,7 @@
 import 'package:budget_tracking_system/data/piechart_data.dart';
 import 'package:budget_tracking_system/pages/currencyselect.dart';
 import 'package:budget_tracking_system/services/currency.dart';
+import 'package:budget_tracking_system/services/linechart.dart';
 import 'package:flutter/material.dart';
 import 'package:budget_tracking_system/pages/displayincome.dart';
 import 'package:budget_tracking_system/pages/displayexpenses.dart';
@@ -33,6 +34,7 @@ class _StatisticState extends State<Statistic> {
     if (date != null) {
       setState(() {
         _pickedDate = date;
+        DisplayBudget(dateTime: _pickedDate);
 
         PieIncomeData.createObj(_pickedDate);
         PieExpensesData.createObj(_pickedDate);
@@ -120,6 +122,6 @@ class _StatisticState extends State<Statistic> {
             ? DisplayIncome()
             : _currentSelectedType == 'Expenses'
                 ? DisplayExpenses()
-                : DisplayBudget());
+                : DisplayBudget(dateTime: _pickedDate));
   }
 }
